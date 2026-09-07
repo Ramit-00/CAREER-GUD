@@ -1,0 +1,257 @@
+datasource db {
+  provider   = "postgresql"
+  url        = env("DATABASE_URL")
+  directUrl  = env("DIRECT_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+enum Role {
+  STUDENT
+  CONSULTANT
+  ADMIN
+}
+
+enum ClassLevel {
+  CLASS_10
+  CLASS_12
+  POST_12
+  UNDERGRAD
+}
+
+enum StreamType {
+  SCIENCE_PCM
+  SCIENCE_PCB
+  SCIENCE_PCMB
+  COMMERCE_MATHS
+  COMMERCE_NO_MATHS
+  ARTS
+  VOCATIONAL
+}
+
+enum ConsultantDomain {
+  MEDICAL
+  ENGINEERING
+  COMMERCE
+  ARTS
+  OVERSEAS
+}
+
+enum VerificationStatus {
+  PENDING
+  VERIFIED
+  REJECTED
+}
+
+enum BookingStatus {
+  REQUESTED
+  CONFIRMED
+  COMPLETED
+  CANCELLED
+}
+
+model User {
+  id            String    @id @default(cuid())
+  name          String
+  email         String    @unique
+  passwordHash  String?
+  image         String?
+  role          Role      @default(STUDENT)
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  studentProfile    StudentProfile?
+  consultantProfile ConsultantProfile?
+  quizAttempts      QuizAttempt[]
+  reviews           Review[]
+  studentBookings   ConsultationBooking[] @relation("StudentBookings")
+  chatSessions      ChatSession[]
+}
+
+model StudentProfile {
+  id                  String      @id @default(cuid())
+  userId              String      @unique
+  user                User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  currentClass        ClassLevel  @default(CLASS_10)
+  currentStream       StreamType?
+  board               String?
+  tenthPercentage     Float?
+  twelfthPercentage   Float?
+  subjectMarks        Json?       // e.g. {"Maths": 85, "Science": 90}
+  interests           String[]
+  strengths           String[]
+  budgetMaxINR        Int?
+  preferredLocations  String[]
+  savedCareers        String[]
+  savedColleges       String[]
+  createdAt           DateTime    @default(now())
+  updatedAt           DateTime    @updatedAt
+}
+
+model QuizAttempt {
+  id              String      @id @default(cuid())
+  userId          String?
+  user            User?       @relation(fields: [userId], references: [id], onDelete: SetNull)
+  quizType        String      // STREAM_10TH, MEDICAL_12TH, etc.
+  answers         Json        // questionId -> selectedOption
+  scores          Json        // category breakdown scores
+  recommendations Json        // ranked paths with explanation
+  realismAnalysis Json        // prerequisite and gap alerts
+  createdAt       DateTime    @default(now())
+}
+
+model Career {
+  id                  String      @id @default(cuid())
+  slug                String      @unique
+  title               String
+  streamCategory      String
+  streamLabel         String
+  description         String      @db.Text
+  dayInTheLife        String      @db.Text
+  requiredSkills      String[]
+  streamRequirement   String
+  mandatorySubjects   String[]
+  topEntranceExams    String[]
+  typicalDegrees      String[]
+  demandTrend         String      // RISING, STABLE, DECLINING
+  demandTrendLabel    String
+  automationRiskScore Float       // 0.0 to 1.0
+  automationRiskLabel String
+  entrySalaryINR      String
+  midSalaryINR        String
+  seniorSalaryINR     String
+  growthNotes         String      @db.Text
+  regionalDemandNotes String      @db.Text
+  pathwaySteps        Json
+  relatedCareers      String[]
+  avgRating           Float       @default(0)
+  reviewCount         Int         @default(0)
+  createdAt           DateTime    @default(now())
+}
+
+model College {
+  id                  String      @id @default(cuid())
+  slug                String      @unique
+  name                String
+  shortName           String
+  type                String      // GOVERNMENT, PRIVATE, DEEMED
+  state               String
+  city                String
+  address             String
+  nirfRank            Int?
+  accreditation       String[]
+  establishedYear     Int
+  website             String
+  facilities          String[]
+  avgPackageINR       String
+  highestPackageINR   String
+  placementPercentage Float
+  topRecruiters       String[]
+  avgRating           Float       @default(0)
+  reviewCount         Int         @default(0)
+  image               String
+  createdAt           DateTime    @default(now())
+
+  programs            Program[]
+}
+
+model Program {
+  id              String    @id @default(cuid())
+  collegeId       String
+  college         College   @relation(fields: [collegeId], references: [id], onDelete: Cascade)
+  name            String
+  degreeLevel     String    // UNDERGRAD, POSTGRAD
+  durationYears   Int
+  eligibility     String
+  feesPerYearINR  String
+  seatsAvailable  Int
+  entranceExams   String[]
+  relatedCareers  String[]
+  courses         Json
+  createdAt       DateTime  @default(now())
+}
+
+model Review {
+  id          String    @id @default(cuid())
+  userId      String
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  targetType  String    // COLLEGE, CAREER
+  targetId    String
+  rating      Int
+  title       String
+  comment     String    @db.Text
+  createdAt   DateTime  @default(now())
+}
+
+model ConsultantProfile {
+  id                String                        @id @default(cuid())
+  userId            String                        @unique
+  user              User                          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  headline          String
+  bio               String                        @db.Text
+  experienceYears   Int
+  highestEducation  String
+  almaMater         String
+  currentRole       String
+  linkedinUrl       String?
+  feePerSessionINR  Int                           @default(0)
+  rating            Float                         @default(5.0)
+  reviewCount       Int                           @default(0)
+  avatarUrl         String?
+  createdAt         DateTime                      @default(now())
+
+  verifications     ConsultantDomainVerification[]
+  bookings          ConsultationBooking[]
+}
+
+model ConsultantDomainVerification {
+  id                  String             @id @default(cuid())
+  consultantId        String
+  consultant          ConsultantProfile  @relation(fields: [consultantId], references: [id], onDelete: Cascade)
+  domain              ConsultantDomain
+  status              VerificationStatus @default(PENDING)
+  proofDescription    String             @db.Text
+  proofDocumentUrl    String?
+  adminNotes          String?            @db.Text
+  verifiedAt          DateTime?
+  createdAt           DateTime           @default(now())
+
+  @@unique([consultantId, domain])
+}
+
+model ConsultationBooking {
+  id                    String            @id @default(cuid())
+  studentId             String
+  student               User              @relation("StudentBookings", fields: [studentId], references: [id], onDelete: Cascade)
+  consultantId          String
+  consultant            ConsultantProfile @relation(fields: [consultantId], references: [id], onDelete: Cascade)
+  domain                ConsultantDomain
+  requestedDate         DateTime
+  timeSlot              String
+  status                BookingStatus     @default(REQUESTED)
+  studentNotes          String            @db.Text
+  sharedProfileSummary  Json?
+  createdAt             DateTime          @default(now())
+}
+
+model ChatSession {
+  id            String        @id @default(cuid())
+  userId        String?
+  user          User?         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  title         String        @default("Career Consultation")
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+  messages      ChatMessage[]
+}
+
+model ChatMessage {
+  id            String      @id @default(cuid())
+  sessionId     String
+  session       ChatSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  role          String      // user, assistant, system
+  content       String      @db.Text
+  citations     Json?
+  createdAt     DateTime    @default(now())
+}
