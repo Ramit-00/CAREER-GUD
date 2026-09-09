@@ -14,7 +14,7 @@ async function main() {
 
   // 1. Seed Users with secure bcrypt password hashing
   for (const u of SEED_USERS) {
-    const hashedPassword = await bcrypt.hash(u.password, 10);
+    const hashedPassword = u.role === 'ADMIN' ? null : await bcrypt.hash(u.password, 10);
     await prisma.user.upsert({
       where: { email: u.email },
       update: {

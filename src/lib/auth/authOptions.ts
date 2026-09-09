@@ -59,16 +59,30 @@ export const authOptions: NextAuthOptions = {
               'Unauthorized: Administrative logins must be executed through the secure Admin Portal with a valid Master Security Key.'
             );
           }
-        }
 
-        // 4. Secure password comparison via bcrypt only
-        let passwordValid = false;
-        if (user.passwordHash) {
-          passwordValid = await bcrypt.compare(credentials.password, user.passwordHash);
-        }
+          // Admin password is authenticated directly against process.env.ADMIN_PASSWORD (never stored in database)
+          const expectedAdminPassword = process.env.ADMIN_PASSWORD;
+          if (!expectedAdminPassword || !credentials.password) {
+            throw new Error('Incorrect admin credentials. Please verify your password.');
+          }
+          const expPassBuf = Buffer.from(expectedAdminPassword);
+          const actPassBuf = Buffer.from(credentials.password);
+          if (
+            expPassBuf.length !== actPassBuf.length ||
+            !crypto.timingSafeEqual(expPassBuf, actPassBuf)
+          ) {
+            throw new Error('Incorrect admin credentials. Please verify your password.');
+          }
+        } else {
+          // 4. Secure password comparison via bcrypt for standard users (students, consultants)
+          let passwordValid = false;
+          if (user.passwordHash) {
+            passwordValid = await bcrypt.compare(credentials.password, user.passwordHash);
+          }
 
-        if (!passwordValid) {
-          throw new Error('Incorrect password. Please verify your credentials.');
+          if (!passwordValid) {
+            throw new Error('Incorrect password. Please verify your credentials.');
+          }
         }
 
         return {

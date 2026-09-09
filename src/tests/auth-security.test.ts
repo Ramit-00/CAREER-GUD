@@ -23,7 +23,7 @@ test('security: bcrypt password hashing verification works properly', async () =
   assert.strictEqual(isWrongMatch, false, 'Incorrect password must be rejected');
 });
 
-test('security: admin account exists with bcrypt hash in database', async () => {
+test('security: admin account exists in database and password is decoupled to .env', async () => {
   const adminEmail = process.env.ADMIN_EMAIL;
   const admin = await prisma.user.findFirst({
     where: {
@@ -34,10 +34,11 @@ test('security: admin account exists with bcrypt hash in database', async () => 
 
   assert.ok(admin, 'Admin account must exist in database');
   assert.strictEqual(admin.role, 'ADMIN');
-  assert.ok(admin.passwordHash, 'Admin must have a password hash');
+  assert.strictEqual(admin.passwordHash, null, 'Admin password must not be stored in database');
 
-  const matchesDefault = await bcrypt.compare('password123', admin.passwordHash!);
-  assert.strictEqual(matchesDefault, true, 'Admin password hash must match seeded password');
+  const adminPassword = process.env.ADMIN_PASSWORD;
+  assert.ok(adminPassword, 'ADMIN_PASSWORD must be configured in environment');
+  assert.ok(adminPassword.length >= 8, 'ADMIN_PASSWORD must be at least 8 characters');
 });
 
 test('security: admin secret key environment variable is configured', () => {
@@ -155,6 +156,55 @@ test('security: Credentials authorize() rejects uncreated accounts', async () =>
     },
     'Must throw No account found error for unregistered emails'
   );
+});
+
+test('security: Admin authentication requires ADMIN_PASSWORD from .env and valid master secret key', async () => {
+  const { authOptions } = await import('../lib/auth/authOptions');
+  const credentialsProvider = authOptions.providers.find((p: any) => p.id === 'credentials') as any;
+  const authorizeFn = credentialsProvider.options?.authorize || credentialsProvider.authorize;
+
+  const adminEmail = process.env.ADMIN_EMAIL || 'admin@example.com';
+  const adminPass = process.env.ADMIN_PASSWORD || 'dummy_password';
+  const secretKey = process.env.ADMIN_SECRET_KEY || 'dummy_key';
+
+  // 1. Wrong password must be rejected
+  await assert.rejects(
+    async () => {
+      await authorizeFn({
+        email: adminEmail,
+        password: 'wrong_password_attempt',
+        adminSecretKey: secretKey,
+      });
+    },
+    {
+      message: 'Incorrect admin credentials. Please verify your password.',
+    }
+  );
+
+  // 2. Missing/wrong secret key must be rejected
+  await assert.rejects(
+    async () => {
+      await authorizeFn({
+        email: adminEmail,
+        password: adminPass,
+        adminSecretKey: 'wrong_key',
+      });
+    },
+    {
+      message:
+        'Unauthorized: Administrative logins must be executed through the secure Admin Portal with a valid Master Security Key.',
+    }
+  );
+
+  // 3. Correct credentials from environment must succeed
+  const authUser = await authorizeFn({
+    email: adminEmail,
+    password: adminPass,
+    adminSecretKey: secretKey,
+  });
+
+  assert.ok(authUser, 'Admin must authenticate successfully');
+  assert.strictEqual(authUser.role, 'ADMIN');
 });
 
 test('security: Google OAuth signIn callback blocks uncreated accounts when not registering', async () => {
