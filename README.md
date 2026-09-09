@@ -56,57 +56,50 @@ Visit **[http://localhost:3000](http://localhost:3000)** in your browser.
 
 ---
 
-## 🔑 4. Fast 1-Click Demo Accounts
+## 🛡️ 4. Role-Based Access Control (RBAC)
 
-On the `/login` page, you can click any of the 1-click test buttons to test different roles:
+CAREER-GUD enforces strict role-based access control for three user personas:
 
-| Role | Email | Password | Access Privileges |
-| :--- | :--- | :--- | :--- |
-| **Student** | `student@career-gud.in` | `password123` | Stream quizzes, profile signals, bookmarking, booking mentors |
-| **Consultant** | `consultant@career-gud.in` | `password123` | Consultant Portal (`/consultant/dashboard`), view student bookings |
-| **Admin** | `admin@career-gud.in` | `password123` | Admin Audit Portal (`/admin/verify-consultants`), Analytics |
+- **Students**: Complete diagnostic stream/degree quizzes, bookmark careers and colleges, customize academic profiles, and book 1-on-1 verified mentorship sessions.
+- **Consultants / Mentors**: Apply with domain expertise and proof documents, review verification status, and manage student consultation requests via the Consultant Dashboard.
+- **Administrators**: Dedicated multi-factor protected audit hub to verify consultant credentials domain-by-domain, inspect student records, and analyze platform-wide trends.
+
+> 🔒 **Security Notice**:
+> Default or administrative credentials should **never** be exposed in public documentation or repositories. Administrator portal access requires both valid administrator credentials and the configured `ADMIN_SECRET_KEY` via `/admin/portal-login`.
 
 ---
 
-## 🔐 5. Environment Variables (`.env.local`)
+## 🔐 5. Environment Variables (`.env.example`)
 
-All keys in `.env.local` are initially blank as requested. You can fill them in whenever you are ready:
+Refer to the included [`.env.example`](.env.example) template for environment setup. All values are kept blank by default for security:
 
 ```env
 # Server
 NEXT_PUBLIC_APP_URL=http://localhost:3000
 NODE_ENV=development
 
-# PostgreSQL Database (Supabase, Neon, Railway, or local Postgres)
+# PostgreSQL Database (Supabase / Neon / PostgreSQL)
 DATABASE_URL=
 DIRECT_URL=
 
 # NextAuth Authentication
-AUTH_SECRET=career-gud-dev-secret-replace-in-production-random-key-32b
+AUTH_SECRET=
 NEXTAUTH_URL=http://localhost:3000
-NEXTAUTH_SECRET=career-gud-dev-secret-replace-in-production-random-key-32b
+NEXTAUTH_SECRET=
+ADMIN_SECRET_KEY=
 
 # Google OAuth
 GOOGLE_CLIENT_ID=
 GOOGLE_CLIENT_SECRET=
 
-# AI LLM Provider Keys
-ANTHROPIC_API_KEY=
-OPENAI_API_KEY=
-LLM_MODEL=
-
-# Cloud Storage & Email (Optional)
-S3_BUCKET_NAME=
-S3_ACCESS_KEY_ID=
-S3_SECRET_ACCESS_KEY=
-S3_REGION=
-EMAIL_API_KEY=
-EMAIL_FROM=
+# Google Gemini API (AI Counselor)
+GEMINI_API_KEY=
+GEMINI_MODEL=gemini-3.6-flash
 ```
 
 > **Note on Graceful Degradation:**
-> If `DATABASE_URL` is empty, the platform automatically switches to its high-performance in-memory repository with pre-seeded IITs, AIIMS, NIRF colleges, 30+ careers, and mentors.
-> If `ANTHROPIC_API_KEY` or `OPENAI_API_KEY` is empty, the AI Chatbot runs the built-in Grounded Heuristic Counselor without crashing.
+> - If `DATABASE_URL` is empty, the platform automatically runs using its high-performance in-memory repository pre-seeded with NIRF colleges, 30+ careers, and mentors.
+> - If `GEMINI_API_KEY` is empty, the AI Chatbot runs the built-in Grounded Heuristic Counselor without crashing.
 
 ---
 
@@ -123,8 +116,10 @@ EMAIL_FROM=
 - `/consultants/[id]` — Consultant Booking Page with assessment profile sharing
 - `/consultants/apply` — Consultant Application Page with domain credential proofs
 - `/consultant/dashboard` — Private portal for mentors to review student session requests
-- `/admin/verify-consultants` — Administrative portal to approve/reject mentor domains
-- `/admin/overview` — Administrative analytics dashboard
+- `/consultant/pending` — Status portal for consultants awaiting administrative approval
+- `/admin/portal-login` — Multi-factor administrator authentication gateway
+- `/admin/hub` — Unified Administrator Verification Hub for advisor approvals
+- `/admin/overview` — Administrative analytics and student directory
 - `/chat` — Dedicated 24/7 AI Career Counselor with RAG citations
 - `/dashboard` — Student Personal Dashboard (history, bookmarks, bookings)
 
