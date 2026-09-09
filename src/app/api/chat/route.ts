@@ -3,12 +3,12 @@ import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
 
 const ChatMessageSchema = z.object({
-  role: z.enum(['user', 'assistant']),
-  content: z.string().min(1).max(3000),
+  role: z.enum(['user', 'assistant', 'system']).or(z.string()),
+  content: z.string().min(1).max(30000),
 });
 
 const ChatBodySchema = z.object({
-  messages: z.array(ChatMessageSchema).min(1).max(25),
+  messages: z.array(ChatMessageSchema).min(1).max(50),
   userProfile: z
     .object({
       currentClass: z.string().optional(),
@@ -26,7 +26,11 @@ export async function POST(req: NextRequest) {
     const parsed = ChatBodySchema.safeParse(raw);
 
     if (!parsed.success) {
-      return NextResponse.json({ error: 'Invalid message request payload', details: parsed.error.format() }, { status: 400 });
+      console.warn('API /api/chat invalid payload:', JSON.stringify(parsed.error.issues));
+      return NextResponse.json(
+        { error: 'Invalid message request payload', details: parsed.error.issues },
+        { status: 400 }
+      );
     }
 
     const response = await aiProvider.generateResponse(parsed.data);

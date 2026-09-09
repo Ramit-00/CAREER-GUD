@@ -40,11 +40,31 @@ Tell me about your current class, your marks, or what career field you are curio
   ]);
   const [inputValue, setInputValue] = useState('');
   const [loading, setLoading] = useState(false);
-  const messagesEndRef = useRef<HTMLDivElement>(null);
+  const chatContainerRef = useRef<HTMLDivElement>(null);
+  const isInitialMount = useRef(true);
+  const isNearBottomRef = useRef(true);
+
+  const handleScroll = () => {
+    if (!chatContainerRef.current) return;
+    const { scrollTop, scrollHeight, clientHeight } = chatContainerRef.current;
+    isNearBottomRef.current = scrollHeight - scrollTop - clientHeight <= 120;
+  };
 
   useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-  }, [messages, loading]);
+    // Prevent auto-scrolling on initial mount so users always start at the top
+    if (isInitialMount.current) {
+      isInitialMount.current = false;
+      return;
+    }
+
+    // Only scroll inner container if user is already near bottom or waiting on loading
+    if (chatContainerRef.current && (isNearBottomRef.current || loading)) {
+      chatContainerRef.current.scrollTo({
+        top: chatContainerRef.current.scrollHeight,
+        behavior: 'smooth',
+      });
+    }
+  }, [messages.length, loading]);
 
   const handleSendMessage = async (textToSend?: string) => {
     const text = textToSend || inputValue.trim();
@@ -57,23 +77,33 @@ Tell me about your current class, your marks, or what career field you are curio
       timestamp: new Date().toISOString(),
     };
 
+    isNearBottomRef.current = true;
     setMessages((prev) => [...prev, userMessage]);
     if (!textToSend) setInputValue('');
     setLoading(true);
 
     try {
+      // Exclude static UI greeting and error notices; send last 15 messages max
+      const safeHistory = [...messages, userMessage]
+        .filter((m) => m.id !== 'welcome_1' && !m.id.startsWith('bot_err_') && m.content.trim().length > 0)
+        .slice(-15)
+        .map((m) => ({
+          role: m.role,
+          content: m.content.slice(0, 5000),
+        }));
+
       const res = await fetch('/api/chat', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          messages: [...messages, userMessage].map((m) => ({
-            role: m.role,
-            content: m.content,
-          })),
+          messages: safeHistory,
         }),
       });
 
-      if (!res.ok) throw new Error('API request failed');
+      if (!res.ok) {
+        const errorData = await res.json().catch(() => ({}));
+        throw new Error(errorData.error || `API request failed with status ${res.status}`);
+      }
 
       const data = await res.json();
       const botMessage: ChatMessage = {
@@ -85,7 +115,7 @@ Tell me about your current class, your marks, or what career field you are curio
       };
 
       setMessages((prev) => [...prev, botMessage]);
-    } catch (err) {
+    } catch (err: any) {
       console.error('Chat error:', err);
       setMessages((prev) => [
         ...prev,
@@ -144,7 +174,11 @@ Tell me about your current class, your marks, or what career field you are curio
       </div>
 
       {/* Messages Scroll Area */}
-      <div className="flex-1 overflow-y-auto py-6 space-y-4">
+      <div
+        ref={chatContainerRef}
+        onScroll={handleScroll}
+        className="flex-1 overflow-y-auto py-6 space-y-4"
+      >
         {messages.map((msg) => (
           <div
             key={msg.id}
@@ -193,7 +227,6 @@ Tell me about your current class, your marks, or what career field you are curio
             <span>Consulting statutory databases and entrance statistics...</span>
           </div>
         )}
-        <div ref={messagesEndRef} />
       </div>
 
       {/* Suggested Questions */}

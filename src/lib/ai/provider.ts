@@ -52,8 +52,8 @@ export const aiProvider = {
     const geminiKey = process.env.GEMINI_API_KEY;
     if (geminiKey && geminiKey.trim().length > 0) {
       const candidateModels = [
-        process.env.GEMINI_MODEL || 'gemini-3.6-flash',
-        'gemini-3.5-flash-lite',
+        process.env.GEMINI_MODEL || 'gemini-3.5-flash-lite',
+        'gemini-3.6-flash',
       ];
 
       const systemPrompt = `You are CAREER-GUD's senior academic & career counselor for Indian high school & college students.
@@ -67,6 +67,9 @@ ${ragResult.groundingContext}
 
       for (const model of candidateModels) {
         try {
+          const controller = new AbortController();
+          const timeoutId = setTimeout(() => controller.abort(), 20000);
+
           const response = await fetch(
             `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent`,
             {
@@ -75,6 +78,7 @@ ${ragResult.groundingContext}
                 'Content-Type': 'application/json',
                 'x-goog-api-key': geminiKey.trim(),
               },
+              signal: controller.signal,
               body: JSON.stringify({
                 systemInstruction: {
                   parts: [{ text: systemPrompt }],
@@ -90,6 +94,7 @@ ${ragResult.groundingContext}
               }),
             }
           );
+          clearTimeout(timeoutId);
 
           if (response.ok) {
             const data = await response.json();
@@ -101,6 +106,9 @@ ${ragResult.groundingContext}
                 provider: 'gemini',
               };
             }
+          } else {
+            const errSnippet = await response.text().catch(() => '');
+            console.warn(`Gemini model ${model} returned HTTP ${response.status}:`, errSnippet.slice(0, 200));
           }
         } catch (err) {
           console.warn(`Gemini model ${model} request failed:`, err);

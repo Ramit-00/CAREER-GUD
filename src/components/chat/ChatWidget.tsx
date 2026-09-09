@@ -32,13 +32,30 @@ export function ChatWidget() {
   ]);
   const [inputValue, setInputValue] = useState('');
   const [loading, setLoading] = useState(false);
-  const messagesEndRef = useRef<HTMLDivElement>(null);
+  const chatContainerRef = useRef<HTMLDivElement>(null);
+  const isInitialMount = useRef(true);
+  const isNearBottomRef = useRef(true);
+
+  const handleScroll = () => {
+    if (!chatContainerRef.current) return;
+    const { scrollTop, scrollHeight, clientHeight } = chatContainerRef.current;
+    isNearBottomRef.current = scrollHeight - scrollTop - clientHeight <= 100;
+  };
 
   useEffect(() => {
-    if (isOpen) {
-      messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+    if (!isOpen) return;
+    if (isInitialMount.current) {
+      isInitialMount.current = false;
+      return;
     }
-  }, [messages, isOpen]);
+
+    if (chatContainerRef.current && (isNearBottomRef.current || loading)) {
+      chatContainerRef.current.scrollTo({
+        top: chatContainerRef.current.scrollHeight,
+        behavior: 'smooth',
+      });
+    }
+  }, [messages.length, isOpen, loading]);
 
   const handleSendMessage = async (text?: string) => {
     const messageContent = text || inputValue.trim();
@@ -51,24 +68,31 @@ export function ChatWidget() {
       timestamp: new Date().toISOString(),
     };
 
+    isNearBottomRef.current = true;
     setMessages((prev) => [...prev, userMessage]);
     if (!text) setInputValue('');
     setLoading(true);
 
     try {
+      const safeHistory = [...messages, userMessage]
+        .filter((m) => m.id !== 'welcome_1' && !m.id.startsWith('bot_err_') && m.content.trim().length > 0)
+        .slice(-15)
+        .map((m) => ({
+          role: m.role,
+          content: m.content.slice(0, 5000),
+        }));
+
       const res = await fetch('/api/chat', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          messages: [...messages, userMessage].map((m) => ({
-            role: m.role,
-            content: m.content,
-          })),
+          messages: safeHistory,
         }),
       });
 
       if (!res.ok) {
-        throw new Error('Chat API returned an error');
+        const errorData = await res.json().catch(() => ({}));
+        throw new Error(errorData.error || `Chat API returned status ${res.status}`);
       }
 
       const data = await res.json();
@@ -150,7 +174,11 @@ export function ChatWidget() {
           </div>
 
           {/* Messages Container */}
-          <div className="flex-1 overflow-y-auto p-4 space-y-3.5 text-xs sm:text-sm leading-relaxed">
+          <div
+            ref={chatContainerRef}
+            onScroll={handleScroll}
+            className="flex-1 overflow-y-auto p-4 space-y-3.5 text-xs sm:text-sm leading-relaxed"
+          >
             {messages.map((msg) => (
               <div
                 key={msg.id}
@@ -197,7 +225,6 @@ export function ChatWidget() {
                 <span>Consulting verified regulatory datasets...</span>
               </div>
             )}
-            <div ref={messagesEndRef} />
           </div>
 
           {/* Quick Prompts (visible if conversation is short) */}
