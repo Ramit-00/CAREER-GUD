@@ -1,9 +1,9 @@
+import { getJwtSecret } from '@/lib/auth/jwtSecret';
+import { prisma } from '@/lib/prisma';
 import { repository } from '@/lib/data/repository';
 import { getToken } from 'next-auth/jwt';
 import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
-
-import { StreamType } from '@/types';
 
 const UpdateProfileSchema = z.object({
   currentClass: z.enum(['CLASS_10', 'CLASS_12', 'POST_12', 'UNDERGRAD']).optional(),
@@ -35,13 +35,40 @@ const UpdateProfileSchema = z.object({
 
 export async function GET(req: NextRequest) {
   try {
-    const token = await getToken({ req, secret: process.env.NEXTAUTH_SECRET || 'carrer-gud-super-secret-key-for-jwt-token-at-least-32-chars' });
+    const token = await getToken({ req, secret: getJwtSecret() });
     if (!token?.id) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    const profile = await repository.getStudentProfile(token.id as string);
-    return NextResponse.json(profile || { userId: token.id });
+    const userId = token.id as string;
+
+    // Fetch from Supabase PostgreSQL
+    const user = await prisma.user.findUnique({
+      where: { id: userId },
+      include: {
+        studentProfile: true,
+        bookmarks: true,
+      },
+    });
+
+    const careerSlugs = new Set<string>();
+    const collegeSlugs = new Set<string>();
+
+    user?.bookmarks?.forEach((b) => {
+      if (b.itemType === 'CAREER') careerSlugs.add(b.itemSlug);
+      if (b.itemType === 'COLLEGE') collegeSlugs.add(b.itemSlug);
+    });
+
+    user?.studentProfile?.savedCareers?.forEach((s) => careerSlugs.add(s));
+    user?.studentProfile?.savedColleges?.forEach((s) => collegeSlugs.add(s));
+
+    const profile = await repository.getStudentProfile(userId);
+    return NextResponse.json({
+      ...(profile || { userId }),
+      savedCareers: Array.from(careerSlugs),
+      savedColleges: Array.from(collegeSlugs),
+      studentProfile: user?.studentProfile,
+    });
   } catch (error) {
     console.error('Error fetching profile:', error);
     return NextResponse.json({ error: 'Failed to fetch profile' }, { status: 500 });
@@ -50,7 +77,7 @@ export async function GET(req: NextRequest) {
 
 export async function PUT(req: NextRequest) {
   try {
-    const token = await getToken({ req, secret: process.env.NEXTAUTH_SECRET || 'carrer-gud-super-secret-key-for-jwt-token-at-least-32-chars' });
+    const token = await getToken({ req, secret: getJwtSecret() });
     if (!token?.id) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
@@ -88,23 +115,3 @@ export async function PUT(req: NextRequest) {
   }
 }
 
-export async function POST(req: NextRequest) {
-  // Toggle saved career or college bookmark
-  try {
-    const token = await getToken({ req, secret: process.env.NEXTAUTH_SECRET || 'carrer-gud-super-secret-key-for-jwt-token-at-least-32-chars' });
-    if (!token?.id) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-    }
-
-    const { type, slug } = await req.json();
-    if (!type || !slug) {
-      return NextResponse.json({ error: 'type and slug are required' }, { status: 400 });
-    }
-
-    const res = await repository.toggleSavedItem(token.id as string, type, slug);
-    return NextResponse.json(res);
-  } catch (error) {
-    console.error('Toggle saved error:', error);
-    return NextResponse.json({ error: 'Failed to toggle bookmark' }, { status: 500 });
-  }
-}

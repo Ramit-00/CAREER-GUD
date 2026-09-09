@@ -1,10 +1,13 @@
 import { Career, College, ConsultantProfile, QuizQuestion, User } from '@/types';
 
+// ⚠️ DEMO & LOCAL DEVELOPMENT ONLY:
+// These mock accounts are for local testing and initial database seeding.
+// Seeding is strictly blocked in production environments (NODE_ENV === 'production').
 export const SEED_USERS: (User & { password: string })[] = [
   {
     id: 'user_student_1',
     name: 'Aarav Patel',
-    email: 'student@carrer-gud.in',
+    email: 'student@career-gud.in',
     password: 'password123',
     role: 'STUDENT',
     createdAt: '2025-01-15T10:00:00Z',
@@ -12,7 +15,7 @@ export const SEED_USERS: (User & { password: string })[] = [
   {
     id: 'user_consultant_1',
     name: 'Dr. Ananya Sharma',
-    email: 'consultant@carrer-gud.in',
+    email: 'consultant@career-gud.in',
     password: 'password123',
     role: 'CONSULTANT',
     createdAt: '2024-11-20T10:00:00Z',
@@ -20,7 +23,7 @@ export const SEED_USERS: (User & { password: string })[] = [
   {
     id: 'user_consultant_2',
     name: 'Er. Rajesh Menon',
-    email: 'rajesh.menon@carrer-gud.in',
+    email: 'rajesh.menon@career-gud.in',
     password: 'password123',
     role: 'CONSULTANT',
     createdAt: '2024-12-05T10:00:00Z',
@@ -28,7 +31,7 @@ export const SEED_USERS: (User & { password: string })[] = [
   {
     id: 'user_consultant_3',
     name: 'CA Neha Agarwal',
-    email: 'neha.agarwal@carrer-gud.in',
+    email: 'neha.agarwal@career-gud.in',
     password: 'password123',
     role: 'CONSULTANT',
     createdAt: '2024-12-10T10:00:00Z',
@@ -36,7 +39,7 @@ export const SEED_USERS: (User & { password: string })[] = [
   {
     id: 'user_admin_1',
     name: 'Prof. Vikram Sen (Admin)',
-    email: 'admin@carrer-gud.in',
+    email: 'admin@career-gud.in',
     password: 'password123',
     role: 'ADMIN',
     createdAt: '2024-10-01T10:00:00Z',
@@ -48,7 +51,7 @@ export const SEED_CONSULTANTS: ConsultantProfile[] = [
     id: 'cons_1',
     userId: 'user_consultant_1',
     name: 'Dr. Ananya Sharma',
-    email: 'consultant@carrer-gud.in',
+    email: 'consultant@career-gud.in',
     headline: 'Senior Clinical Mentor & NEET-UG Career Strategist | AIIMS Alumna',
     bio: '12+ years mentoring over 2,000 students navigating medical school admissions (MBBS, BDS, Allied Health). Specializes in realistic academic stress management, clinical career pathways, and honest guidance on private vs. government medical colleges.',
     experienceYears: 12,
@@ -87,7 +90,7 @@ export const SEED_CONSULTANTS: ConsultantProfile[] = [
     id: 'cons_2',
     userId: 'user_consultant_2',
     name: 'Er. Rajesh Menon',
-    email: 'rajesh.menon@carrer-gud.in',
+    email: 'rajesh.menon@career-gud.in',
     headline: 'Principal Architect at Tier-1 Cloud Firm | IIT Madras B.Tech',
     bio: '15 years in software systems, AI platforms, and tech hiring. Advises +2 students on JEE preparation trade-offs, B.Tech branch selection (CSE vs ECE vs Data Science), and long-term career resilience against AI automation.',
     experienceYears: 15,
@@ -119,7 +122,7 @@ export const SEED_CONSULTANTS: ConsultantProfile[] = [
     id: 'cons_3',
     userId: 'user_consultant_3',
     name: 'CA Neha Agarwal',
-    email: 'neha.agarwal@carrer-gud.in',
+    email: 'neha.agarwal@career-gud.in',
     headline: 'Chartered Accountant (AIR 42) & Ex-Big 4 Advisory Director',
     bio: 'Passionate about demystifying CA, CFA, Investment Banking, and Corporate Law pathways for 10th/12th Commerce students. Honest advice on the CA article-ship grind, pass percentages, and alternative corporate finance routes.',
     experienceYears: 9,

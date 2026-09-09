@@ -6,10 +6,8 @@ import {
   Award,
   CheckCircle2,
   GraduationCap,
-  Search,
   ShieldCheck,
   Star,
-  UserCheck,
 } from 'lucide-react';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
@@ -56,38 +54,39 @@ export default function ConsultantsDirectoryPage() {
   return (
     <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
       {/* Header */}
-      <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 pb-8 border-b border-slate-200 dark:border-slate-800">
+      <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 pb-6 border-b-2 border-slate-200 dark:border-slate-800">
         <div>
-          <div className="inline-flex items-center gap-1.5 rounded-full bg-teal-50 px-3 py-1 text-xs font-bold text-teal-700 dark:bg-teal-950/40 dark:text-teal-300 mb-2">
-            <ShieldCheck className="h-3.5 w-3.5" />
-            Strict Per-Domain Human Verification
+          <div className="inline-flex items-center gap-1.5 rounded-lg border border-amber-300 bg-[#FFF8EE] px-3 py-1.5 text-xs font-bold text-[#D96B00] dark:border-amber-800 dark:bg-amber-950/40 dark:text-amber-300 mb-3 shadow-2xs">
+            <ShieldCheck className="h-4 w-4 text-[#138808] dark:text-emerald-400" />
+            Independent Domain Certification Registry
           </div>
-          <h1 className="text-3xl sm:text-4xl font-black text-slate-900 dark:text-white">
-            Verified Indian Career Consultants
+          <h1 className="text-3xl sm:text-4xl font-black text-[#0B2A4A] dark:text-white tracking-tight">
+            Verified Academic & Industry Advisors
           </h1>
-          <p className="mt-2 text-sm text-slate-600 dark:text-slate-400 max-w-2xl">
-            Book 1-on-1 strategic consultations with verified alumni and industry leaders. Mentors are rigorously restricted to advise only in domains where their credentials have been independently validated.
+          <p className="mt-2 text-sm text-slate-700 dark:text-slate-300 max-w-2xl leading-relaxed font-normal">
+            Direct advisory sessions with certified practitioners. Advisors are strictly restricted by administrative protocol to counsel solely within their verified domains.
           </p>
         </div>
 
         <Link
           href="/consultants/apply"
-          className="rounded-2xl border-2 border-indigo-600 px-5 py-2.5 text-xs font-bold text-indigo-600 hover:bg-indigo-50 dark:border-indigo-400 dark:text-indigo-400 dark:hover:bg-indigo-950/30 transition shrink-0"
+          className="inline-flex items-center gap-2 rounded-xl border-2 border-slate-300 bg-white px-5 py-2.5 text-xs sm:text-sm font-bold text-[#0B2A4A] hover:border-[#0B2A4A] hover:bg-[#0B2A4A] hover:text-white dark:border-slate-700 dark:bg-slate-900 dark:text-white dark:hover:border-blue-500 transition shrink-0 shadow-xs"
         >
-          Apply as Domain Mentor →
+          <span>Apply for Advisory Certification</span>
+          <ArrowRight className="h-4 w-4 text-amber-500" />
         </Link>
       </div>
 
       {/* Domain Filters */}
-      <div className="mt-8 flex flex-wrap gap-2">
+      <div className="mt-6 flex flex-wrap gap-2.5">
         {DOMAIN_FILTERS.map((f) => (
           <button
             key={f.id}
             onClick={() => setSelectedFilter(f.id)}
-            className={`rounded-xl px-4 py-2 text-xs font-bold transition ${
+            className={`rounded-xl px-4 py-2 text-xs sm:text-sm font-bold transition ${
               selectedFilter === f.id
-                ? 'bg-indigo-600 text-white shadow-md'
-                : 'bg-white text-slate-600 border border-slate-200 hover:bg-slate-50 dark:bg-slate-900 dark:border-slate-800 dark:text-slate-300'
+                ? 'bg-[#0B2A4A] text-white shadow-xs'
+                : 'bg-white text-slate-800 border-2 border-slate-300 hover:border-slate-400 hover:bg-slate-100 hover:text-slate-950 dark:bg-slate-900 dark:border-slate-700 dark:text-slate-200 dark:hover:bg-slate-800 dark:hover:text-white'
             }`}
           >
             {f.label}
@@ -97,66 +96,66 @@ export default function ConsultantsDirectoryPage() {
 
       {/* Consultants Grid */}
       {loading ? (
-        <div className="py-20 text-center text-sm text-slate-500">
-          <span className="animate-spin inline-block h-5 w-5 border-2 border-indigo-600 border-t-transparent rounded-full mb-2" />
-          <p>Loading verified consultants...</p>
+        <div className="py-20 text-center text-sm font-bold text-slate-700 dark:text-slate-300">
+          <span className="animate-spin inline-block h-6 w-6 border-3 border-blue-600 border-t-transparent rounded-full mb-3" />
+          <p>Loading verified advisor directory...</p>
         </div>
       ) : consultants.length === 0 ? (
-        <div className="py-20 text-center text-sm text-slate-500">
-          No consultants verified in this domain yet.
+        <div className="py-20 text-center text-sm font-bold text-slate-700 dark:text-slate-300">
+          No advisors currently certified in this specific domain.
         </div>
       ) : (
         <div className="mt-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {consultants.map((consultant) => (
             <div
               key={consultant.id}
-              className="flex flex-col justify-between rounded-3xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-800 dark:bg-slate-900 hover:border-indigo-300 dark:hover:border-indigo-800 transition"
+              className="flex flex-col justify-between rounded-2xl border-2 border-slate-200 bg-white p-6 shadow-xs dark:border-slate-800 dark:bg-slate-900 hover:border-slate-400 dark:hover:border-slate-600 transition"
             >
               <div>
                 <div className="flex items-start justify-between gap-3">
                   <div>
-                    <h3 className="text-xl font-bold text-slate-900 dark:text-white">
+                    <h3 className="text-lg font-black text-slate-950 dark:text-white">
                       {consultant.name}
                     </h3>
-                    <p className="text-xs text-indigo-600 dark:text-indigo-400 font-medium line-clamp-1 mt-0.5">
+                    <p className="text-xs sm:text-sm text-[#0B2A4A] dark:text-blue-400 font-bold line-clamp-1 mt-0.5">
                       {consultant.headline}
                     </p>
                   </div>
-                  <div className="flex items-center gap-1 rounded-lg bg-amber-50 px-2 py-1 text-xs font-bold text-amber-700 dark:bg-amber-950 dark:text-amber-300">
-                    <Star className="h-3 w-3 fill-amber-400 text-amber-400" />
+                  <div className="flex items-center gap-1 rounded-lg bg-amber-50 border border-amber-200 px-2.5 py-1 text-xs font-black text-amber-800 dark:bg-amber-950 dark:border-amber-900 dark:text-amber-300">
+                    <Star className="h-3.5 w-3.5 fill-amber-400 text-amber-500" />
                     <span>{consultant.rating}</span>
                   </div>
                 </div>
 
-                <p className="mt-3 text-xs text-slate-600 dark:text-slate-400 line-clamp-3 leading-relaxed">
+                <p className="mt-3 text-xs sm:text-sm text-slate-700 dark:text-slate-300 line-clamp-3 leading-relaxed font-normal">
                   {consultant.bio}
                 </p>
 
-                <div className="mt-4 flex flex-col gap-1 text-xs text-slate-500">
-                  <div className="flex items-center gap-1.5">
-                    <GraduationCap className="h-3.5 w-3.5 text-slate-400" />
+                <div className="mt-4 flex flex-col gap-1.5 text-xs font-semibold text-slate-700 dark:text-slate-300">
+                  <div className="flex items-center gap-2">
+                    <GraduationCap className="h-4 w-4 text-slate-500 shrink-0" />
                     <span>{consultant.almaMater} ({consultant.highestEducation})</span>
                   </div>
-                  <div className="flex items-center gap-1.5">
-                    <Award className="h-3.5 w-3.5 text-slate-400" />
-                    <span>{consultant.experienceYears} Years Clinical/Industry Experience</span>
+                  <div className="flex items-center gap-2">
+                    <Award className="h-4 w-4 text-slate-500 shrink-0" />
+                    <span>{consultant.experienceYears} Years Academic / Industry Experience</span>
                   </div>
                 </div>
 
                 {/* Verified Domain Badges */}
-                <div className="mt-4 pt-3 border-t border-slate-100 dark:border-slate-800">
-                  <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400">
-                    Verified Advisory Domains:
+                <div className="mt-4 pt-3.5 border-t-2 border-slate-100 dark:border-slate-800">
+                  <span className="text-xs font-black uppercase tracking-wider text-slate-700 dark:text-slate-300 block mb-2">
+                    Certified Domains:
                   </span>
-                  <div className="mt-1.5 flex flex-wrap gap-1.5">
+                  <div className="flex flex-wrap gap-1.5">
                     {consultant.domainVerifications
                       .filter((v) => v.status === 'VERIFIED')
                       .map((v, i) => (
                         <span
                           key={i}
-                          className="flex items-center gap-1 rounded-md bg-teal-50 border border-teal-200 px-2 py-0.5 text-[10px] font-bold text-teal-700 dark:bg-teal-950 dark:border-teal-800 dark:text-teal-300"
+                          className="flex items-center gap-1.5 rounded-lg bg-emerald-50 border border-emerald-300 px-2.5 py-1 text-xs font-bold text-[#138808] dark:bg-emerald-950 dark:border-emerald-800 dark:text-emerald-200"
                         >
-                          <CheckCircle2 className="h-3 w-3 text-teal-600" />
+                          <CheckCircle2 className="h-3.5 w-3.5 text-[#138808] dark:text-emerald-400" />
                           <span>{v.domain}</span>
                         </span>
                       ))}
@@ -164,17 +163,17 @@ export default function ConsultantsDirectoryPage() {
                 </div>
               </div>
 
-              <div className="mt-6 flex items-center justify-between border-t border-slate-100 dark:border-slate-800 pt-4">
+              <div className="mt-6 flex items-center justify-between border-t-2 border-slate-100 dark:border-slate-800 pt-4">
                 <div>
-                  <span className="text-[10px] text-slate-400 uppercase font-bold block">Fee per 45-min Session</span>
-                  <span className="text-sm font-black text-slate-900 dark:text-white">₹{consultant.feePerSessionINR}</span>
+                  <span className="text-xs text-slate-600 dark:text-slate-400 uppercase font-black block">Rate / 45-min Session</span>
+                  <span className="text-base font-black text-slate-950 dark:text-white">₹{consultant.feePerSessionINR}</span>
                 </div>
                 <Link
                   href={`/consultants/${consultant.id}`}
-                  className="flex items-center gap-1.5 rounded-xl bg-indigo-600 px-4 py-2 text-xs font-bold text-white hover:bg-indigo-500 shadow-sm transition"
+                  className="inline-flex items-center gap-2 rounded-xl bg-[#0B2A4A] px-4 py-2 text-xs sm:text-sm font-bold text-white hover:bg-[#071C33] transition shadow-xs"
                 >
-                  <span>Book Consultation</span>
-                  <ArrowRight className="h-3.5 w-3.5" />
+                  <span>Book Advisory</span>
+                  <ArrowRight className="h-4 w-4" />
                 </Link>
               </div>
             </div>

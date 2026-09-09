@@ -1,6 +1,6 @@
-# 🛡️ CARRER-GUD — Security & Guardrail Architecture
+# 🛡️ CAREER-GUD — Security & Guardrail Architecture
 
-CARRER-GUD handles academic assessments, career decision metrics, and mentorship data for high school students (Class 10 and Class 12), many of whom are minors. The following security practices are enforced across the platform:
+CAREER-GUD handles academic assessments, career decision metrics, and mentorship data for high school students (Class 10 and Class 12), many of whom are minors. The following security practices are enforced across the platform:
 
 ---
 

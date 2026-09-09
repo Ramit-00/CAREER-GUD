@@ -25,28 +25,30 @@ export function AutomationMeter({ score, label, className = '' }: AutomationMete
   }
 
   return (
-    <div className={`flex flex-col gap-2 rounded-2xl border border-slate-200 bg-white p-4 shadow-sm dark:border-slate-800 dark:bg-slate-900 ${className}`}>
+    <div className={`flex flex-col gap-2.5 rounded-xl border border-slate-300 bg-white p-4 shadow-xs dark:border-slate-800 dark:bg-slate-900 ${className}`}>
       <div className="flex items-center justify-between">
-        <span className="text-xs font-semibold uppercase tracking-wider text-slate-500">
+        <span className="text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300">
           AI Automation Exposure
         </span>
-        <div className={`flex items-center gap-1.5 rounded-full border px-2.5 py-0.5 text-xs font-bold ${badgeBg}`}>
+        <div className={`flex items-center gap-1.5 rounded-full border px-2.5 py-0.5 text-xs font-extrabold ${badgeBg}`}>
           <Icon className="h-3.5 w-3.5" />
           <span>{percentage}% Risk</span>
         </div>
       </div>
 
       {/* Visual Bar */}
-      <div className="relative h-3 w-full overflow-hidden rounded-full bg-slate-100 dark:bg-slate-800">
+      <div className="relative h-3 w-full overflow-hidden rounded-full bg-slate-200 dark:bg-slate-800">
         <div
           className={`h-full rounded-full bg-gradient-to-r ${color} transition-all duration-500`}
           style={{ width: `${percentage}%` }}
         />
       </div>
 
-      <div className="flex items-center justify-between text-xs text-slate-500">
-        <span className="font-medium text-slate-700 dark:text-slate-300">{label}</span>
-        <span>{percentage < 30 ? 'High Human Resilience' : percentage < 60 ? 'AI-Assisted Hybrid' : 'High Routine Replacement'}</span>
+      <div className="flex items-center justify-between text-xs font-bold">
+        <span className="text-slate-900 dark:text-white">{label}</span>
+        <span className="text-slate-600 dark:text-slate-400">
+          {percentage < 30 ? 'High Human Resilience' : percentage < 60 ? 'AI-Assisted Hybrid' : 'High Routine Replacement'}
+        </span>
       </div>
     </div>
   );

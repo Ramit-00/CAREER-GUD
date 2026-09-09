@@ -1,3 +1,4 @@
+import { getJwtSecret } from '@/lib/auth/jwtSecret';
 import { repository } from '@/lib/data/repository';
 import { Role } from '@/types';
 import { getToken } from 'next-auth/jwt';
@@ -14,7 +15,7 @@ const ReviewSubmissionSchema = z.object({
 
 export async function POST(req: NextRequest) {
   try {
-    const token = await getToken({ req, secret: process.env.NEXTAUTH_SECRET || 'carrer-gud-super-secret-key-for-jwt-token-at-least-32-chars' });
+    const token = await getToken({ req, secret: getJwtSecret() });
     if (!token?.id) {
       return NextResponse.json({ error: 'You must be logged in to post a review' }, { status: 401 });
     }
@@ -26,8 +27,30 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'Validation failed', details: parsed.error.format() }, { status: 400 });
     }
 
+    // Sanitize user inputs to prevent stored XSS
+    const cleanTitle = parsed.data.title.replace(/<[^>]*>?/gm, '').trim();
+    const cleanComment = parsed.data.comment.replace(/<[^>]*>?/gm, '').trim();
+
+    if (cleanTitle.length < 3 || cleanComment.length < 10) {
+      return NextResponse.json({ error: 'Review text is invalid or contains prohibited markup.' }, { status: 400 });
+    }
+
+    // Prevent review bombing and spam: one review per user per target (L5)
+    const existingReviews = await repository.getReviews(parsed.data.targetType, parsed.data.targetId);
+    const hasExistingReview = existingReviews.some((r) => r.userId === token.id);
+    if (hasExistingReview) {
+      return NextResponse.json(
+        { error: 'You have already submitted a verified review for this item.' },
+        { status: 409 }
+      );
+    }
+
     const review = await repository.addReview({
-      ...parsed.data,
+      targetType: parsed.data.targetType,
+      targetId: parsed.data.targetId,
+      rating: parsed.data.rating,
+      title: cleanTitle,
+      comment: cleanComment,
       userId: token.id as string,
       userName: (token.name as string) || 'Student Reviewer',
       userRole: (token.role as Role) || 'STUDENT',

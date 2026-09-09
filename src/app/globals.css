@@ -1,26 +1,78 @@
 @import "tailwindcss";
 
 :root {
+  /* Clean Light Canvas Surfaces */
   --background: #ffffff;
-  --foreground: #171717;
-}
+  --foreground: #0f172a;
+  --bg-subtle: #f8fafc;
+  --bg-muted: #f1f5f9;
+  --bg-card: #ffffff;
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  /* Authentic Institutional Palette */
+  --gov-navy-dark: #071c33;
+  --gov-navy-primary: #0b2a4a;
+  --gov-navy-light: #153e6b;
+  --gov-ashoka-blue: #002d62;
+
+  /* National Tricolor Accents */
+  --tricolor-saffron: #ff9933;
+  --tricolor-saffron-dark: #d96b00;
+  --tricolor-white: #ffffff;
+  --tricolor-green: #138808;
+  --tricolor-green-dark: #0d6105;
+
+  /* Typography & Slate Text */
+  --text-headline: #0f172a;
+  --text-main: #1e293b;
+  --text-muted: #475569;
+  --text-subtle: #64748b;
+
+  /* Borders & Dividers */
+  --border-subtle: #e2e8f0;
+  --border-official: #cbd5e1;
+  --border-prominent: #94a3b8;
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    --background: #071c33;
+    --foreground: #f8fafc;
+    --bg-subtle: #030f1c;
+    --bg-muted: #0a2540;
+    --bg-card: #0b2a4a;
+    --border-subtle: #1e3a5f;
+    --border-official: #2d517a;
+    --text-headline: #ffffff;
+    --text-main: #f1f5f9;
+    --text-muted: #94a3b8;
+    --text-subtle: #cbd5e1;
   }
 }
 
 body {
-  background: var(--background);
+  background-color: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
+
+input, textarea, select, button {
+  font-family: inherit;
+}
+
+/* National Tricolor Line */
+.tricolor-strip {
+  display: flex;
+  height: 4px;
+  width: 100%;
+}
+.strip-saffron { flex: 1; background-color: var(--tricolor-saffron); }
+.strip-white   { flex: 1; background-color: #e5e7eb; }
+.strip-green   { flex: 1; background-color: var(--tricolor-green); }
+
+/* Card Accent Bars */
+.card-accent-saffron { border-top: 4px solid var(--tricolor-saffron); }
+.card-accent-navy    { border-top: 4px solid var(--gov-navy-primary); }
+.card-accent-green   { border-top: 4px solid var(--tricolor-green); }

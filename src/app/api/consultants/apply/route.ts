@@ -1,3 +1,4 @@
+import { getJwtSecret } from '@/lib/auth/jwtSecret';
 import { repository } from '@/lib/data/repository';
 import { ConsultantDomain } from '@/types';
 import { getToken } from 'next-auth/jwt';
@@ -11,7 +12,9 @@ const ApplySchema = z.object({
   highestEducation: z.string().min(2),
   almaMater: z.string().min(2),
   currentRole: z.string().min(2),
-  linkedinUrl: z.string().url().optional().or(z.literal('')),
+  linkedinUrl: z.string().url().refine((url) => !url || /^https?:\/\//i.test(url), {
+    message: 'LinkedIn URL must start with http:// or https://',
+  }).optional().or(z.literal('')),
   feePerSessionINR: z.number().min(0).max(10000),
   domains: z.array(
     z.object({
@@ -23,7 +26,7 @@ const ApplySchema = z.object({
 
 export async function POST(req: NextRequest) {
   try {
-    const token = await getToken({ req, secret: process.env.NEXTAUTH_SECRET || 'carrer-gud-super-secret-key-for-jwt-token-at-least-32-chars' });
+    const token = await getToken({ req, secret: getJwtSecret() });
     if (!token?.id) {
       return NextResponse.json({ error: 'Authentication required to apply' }, { status: 401 });
     }
@@ -40,11 +43,16 @@ export async function POST(req: NextRequest) {
     const domainVerifications = domains.map((d) => ({
       domain: d.domain as ConsultantDomain,
       status: 'PENDING' as const,
-      proofDescription: d.proofDescription,
+      proofDescription: d.proofDescription.replace(/<[^>]*>?/gm, '').trim(),
     }));
 
     const profile = await repository.applyForConsultant({
       ...profileData,
+      headline: profileData.headline.replace(/<[^>]*>?/gm, '').trim(),
+      bio: profileData.bio.replace(/<[^>]*>?/gm, '').trim(),
+      highestEducation: profileData.highestEducation.replace(/<[^>]*>?/gm, '').trim(),
+      almaMater: profileData.almaMater.replace(/<[^>]*>?/gm, '').trim(),
+      currentRole: profileData.currentRole.replace(/<[^>]*>?/gm, '').trim(),
       userId: token.id as string,
       name: (token.name as string) || 'Consultant Applicant',
       email: (token.email as string) || '',

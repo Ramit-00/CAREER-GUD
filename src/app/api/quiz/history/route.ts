@@ -1,10 +1,11 @@
+import { getJwtSecret } from '@/lib/auth/jwtSecret';
 import { repository } from '@/lib/data/repository';
 import { getToken } from 'next-auth/jwt';
 import { NextRequest, NextResponse } from 'next/server';
 
 export async function GET(req: NextRequest) {
   try {
-    const token = await getToken({ req, secret: process.env.NEXTAUTH_SECRET || 'carrer-gud-super-secret-key-for-jwt-token-at-least-32-chars' });
+    const token = await getToken({ req, secret: getJwtSecret() });
     if (!token?.id) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }

@@ -1,5 +1,6 @@
 'use client';
 
+import { sanitizeCallbackUrl } from '@/lib/utils/urlSanitizer';
 import {
   AlertCircle,
   ArrowRight,
@@ -8,29 +9,35 @@ import {
   Lock,
   Mail,
   ShieldCheck,
-  User,
 } from 'lucide-react';
 import { signIn } from 'next-auth/react';
 import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { Suspense, useState } from 'react';
 
+function getInitialLoginError(error: string | null): string {
+  if (error === 'AdminAccessRequired') {
+    return 'Administrator privileges are required for that page. Please log in via the Admin Portal.';
+  }
+  if (error === 'ConsultantAccessRequired') {
+    return 'Consultant portal access required.';
+  }
+  if (error === 'NoAccountFound' || error === 'AccessDenied' || error === 'OAuthCallback') {
+    return 'No account was found with this email. You must create an account first before you can sign in.';
+  }
+  return '';
+}
+
 function LoginForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const callbackUrl = searchParams.get('callbackUrl') || '/dashboard';
+  const callbackUrl = sanitizeCallbackUrl(searchParams.get('callbackUrl'), '/dashboard');
   const urlError = searchParams.get('error');
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
-  const [errorMessage, setErrorMessage] = useState(
-    urlError === 'AdminAccessRequired'
-      ? 'Administrator privileges are required for that page.'
-      : urlError === 'ConsultantAccessRequired'
-      ? 'Consultant portal access required.'
-      : ''
-  );
+  const [errorMessage, setErrorMessage] = useState(() => getInitialLoginError(urlError));
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -38,9 +45,10 @@ function LoginForm() {
     setErrorMessage('');
 
     try {
+      const cleanEmail = email.trim().toLowerCase();
       const result = await signIn('credentials', {
         redirect: false,
-        email,
+        email: cleanEmail,
         password,
         callbackUrl,
       });
@@ -59,83 +67,37 @@ function LoginForm() {
     }
   };
 
-  const handleFastDemoLogin = async (demoEmail: string) => {
-    setEmail(demoEmail);
-    setPassword('password123');
-    setLoading(true);
-    setErrorMessage('');
-
-    const result = await signIn('credentials', {
-      redirect: false,
-      email: demoEmail,
-      password: 'password123',
-      callbackUrl,
-    });
-
-    if (result?.ok) {
-      router.push(callbackUrl);
-      router.refresh();
-    } else {
-      setErrorMessage(result?.error || 'Failed to sign in with demo credentials');
-      setLoading(false);
+  const handleGoogleLogin = () => {
+    // Explicitly set cookie indicating sign-in intent with secure attributes
+    if (typeof document !== 'undefined') {
+      document.cookie = 'auth_action=login; path=/; max-age=300; SameSite=Lax; Secure';
     }
+    signIn('google', { callbackUrl });
   };
 
   return (
     <div className="mx-auto flex min-h-[80vh] max-w-md flex-col justify-center px-4 py-12">
-      <div className="rounded-3xl border border-slate-200 bg-white p-8 shadow-xl dark:border-slate-800 dark:bg-slate-900">
+      <div className="rounded-3xl border border-slate-200/90 bg-white p-8 shadow-lg dark:border-slate-800 dark:bg-slate-900">
         <div className="text-center">
-          <div className="inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-tr from-indigo-600 to-teal-500 text-white shadow-md shadow-indigo-500/20 mb-3">
+          <div className="inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-[#0B2A4A] text-amber-400 shadow-sm mb-3">
             <GraduationCap className="h-6 w-6" />
           </div>
-          <h1 className="text-2xl font-black text-slate-900 dark:text-white">Welcome Back</h1>
-          <p className="mt-1 text-xs text-slate-500">Sign in to your CARRER-GUD account</p>
-        </div>
-
-        {/* 1-Click Fast Demo Logins */}
-        <div className="mt-6 rounded-2xl border border-indigo-100 bg-indigo-50/60 p-4 dark:border-indigo-950 dark:bg-indigo-950/30">
-          <span className="block text-[11px] font-bold uppercase tracking-wider text-indigo-700 dark:text-indigo-300 mb-2.5">
-            ⚡ Quick 1-Click Test Roles:
-          </span>
-          <div className="grid grid-cols-3 gap-2">
-            <button
-              type="button"
-              onClick={() => handleFastDemoLogin('student@carrer-gud.in')}
-              disabled={loading}
-              className="flex flex-col items-center justify-center rounded-xl bg-white p-2 text-center text-xs font-semibold text-slate-700 shadow-sm hover:border-indigo-500 hover:text-indigo-600 dark:bg-slate-800 dark:text-slate-200 border border-slate-200 dark:border-slate-700 transition"
-            >
-              <User className="h-4 w-4 mb-1 text-indigo-500" />
-              <span>Student</span>
-            </button>
-            <button
-              type="button"
-              onClick={() => handleFastDemoLogin('consultant@carrer-gud.in')}
-              disabled={loading}
-              className="flex flex-col items-center justify-center rounded-xl bg-white p-2 text-center text-xs font-semibold text-slate-700 shadow-sm hover:border-teal-500 hover:text-teal-600 dark:bg-slate-800 dark:text-slate-200 border border-slate-200 dark:border-slate-700 transition"
-            >
-              <Briefcase className="h-4 w-4 mb-1 text-teal-500" />
-              <span>Consultant</span>
-            </button>
-            <button
-              type="button"
-              onClick={() => handleFastDemoLogin('admin@carrer-gud.in')}
-              disabled={loading}
-              className="flex flex-col items-center justify-center rounded-xl bg-white p-2 text-center text-xs font-semibold text-slate-700 shadow-sm hover:border-purple-500 hover:text-purple-600 dark:bg-slate-800 dark:text-slate-200 border border-slate-200 dark:border-slate-700 transition"
-            >
-              <ShieldCheck className="h-4 w-4 mb-1 text-purple-500" />
-              <span>Admin</span>
-            </button>
-          </div>
+          <h1 className="text-2xl font-extrabold text-[#0B2A4A] dark:text-white tracking-tight">
+            Sign In to CAREER-GUD
+          </h1>
+          <p className="mt-1.5 text-xs sm:text-sm font-medium text-slate-600 dark:text-slate-300">
+            Access your personalized career pathways, assessments & mentor sessions
+          </p>
         </div>
 
         {/* Google OAuth Button */}
         <div className="mt-6">
           <button
             type="button"
-            onClick={() => signIn('google', { callbackUrl })}
-            className="flex w-full items-center justify-center gap-3 rounded-xl border border-slate-300 bg-white py-2.5 text-sm font-semibold text-slate-700 hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200 dark:hover:bg-slate-700 transition"
+            onClick={handleGoogleLogin}
+            className="flex w-full items-center justify-center gap-3 rounded-xl border border-slate-200 bg-white py-3 text-xs sm:text-sm font-bold text-slate-800 hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100 dark:hover:bg-slate-700 transition shadow-xs cursor-pointer"
           >
-            <svg className="h-4 w-4" viewBox="0 0 24 24">
+            <svg className="h-5 w-5" viewBox="0 0 24 24">
               <path
                 fill="#4285F4"
                 d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
@@ -161,49 +123,57 @@ function LoginForm() {
           <div className="absolute inset-0 flex items-center">
             <div className="w-full border-t border-slate-200 dark:border-slate-800" />
           </div>
-          <span className="relative bg-white px-3 text-xs uppercase text-slate-400 dark:bg-slate-900">
+          <span className="relative bg-white px-3 text-xs font-bold uppercase tracking-wider text-slate-400 dark:bg-slate-900 dark:text-slate-500">
             or sign in with email
           </span>
         </div>
 
         {errorMessage && (
-          <div className="mb-4 flex items-center gap-2 rounded-xl bg-rose-50 p-3 text-xs font-semibold text-rose-700 dark:bg-rose-950/40 dark:text-rose-300">
-            <AlertCircle className="h-4 w-4 shrink-0" />
-            <span>{errorMessage}</span>
+          <div className="mb-4 flex items-start gap-2.5 rounded-xl bg-rose-50 border border-rose-200 p-3.5 text-xs font-bold text-rose-800 dark:bg-rose-950/60 dark:border-rose-900 dark:text-rose-200">
+            <AlertCircle className="h-4 w-4 shrink-0 mt-0.5" />
+            <div>
+              <p>{errorMessage}</p>
+              <Link
+                href="/register"
+                className="mt-1.5 inline-block text-[11px] font-extrabold text-[#0B2A4A] underline dark:text-amber-400"
+              >
+                Click here to create an account →
+              </Link>
+            </div>
           </div>
         )}
 
         <form onSubmit={handleSubmit} className="flex flex-col gap-4">
           <div>
-            <label className="block text-xs font-bold uppercase text-slate-600 dark:text-slate-400 mb-1.5">
+            <label className="block text-xs font-bold uppercase text-slate-700 dark:text-slate-300 mb-1.5">
               Email Address
             </label>
             <div className="relative">
-              <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
+              <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
               <input
                 type="email"
                 required
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="you@example.com"
-                className="w-full rounded-xl border border-slate-200 bg-slate-50 py-2.5 pl-10 pr-3.5 text-sm focus:border-indigo-500 focus:bg-white focus:outline-none dark:border-slate-700 dark:bg-slate-800 dark:text-white"
+                className="w-full rounded-xl border border-slate-300 bg-white py-3 pl-11 pr-3.5 text-xs sm:text-sm font-medium text-slate-900 focus:border-[#0B2A4A] focus:outline-none dark:border-slate-700 dark:bg-slate-800 dark:text-white shadow-xs"
               />
             </div>
           </div>
 
           <div>
-            <label className="block text-xs font-bold uppercase text-slate-600 dark:text-slate-400 mb-1.5">
+            <label className="block text-xs font-bold uppercase text-slate-700 dark:text-slate-300 mb-1.5">
               Password
             </label>
             <div className="relative">
-              <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
+              <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
               <input
                 type="password"
                 required
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder="••••••••"
-                className="w-full rounded-xl border border-slate-200 bg-slate-50 py-2.5 pl-10 pr-3.5 text-sm focus:border-indigo-500 focus:bg-white focus:outline-none dark:border-slate-700 dark:bg-slate-800 dark:text-white"
+                className="w-full rounded-xl border border-slate-300 bg-white py-3 pl-11 pr-3.5 text-xs sm:text-sm font-medium text-slate-900 focus:border-[#0B2A4A] focus:outline-none dark:border-slate-700 dark:bg-slate-800 dark:text-white shadow-xs"
               />
             </div>
           </div>
@@ -211,19 +181,52 @@ function LoginForm() {
           <button
             type="submit"
             disabled={loading}
-            className="mt-2 flex w-full items-center justify-center gap-2 rounded-xl bg-indigo-600 py-3 text-sm font-bold text-white shadow-lg shadow-indigo-600/20 hover:bg-indigo-500 disabled:opacity-50 transition"
+            className="mt-2 flex w-full items-center justify-center gap-2 rounded-xl bg-[#0B2A4A] py-3 text-xs sm:text-sm font-bold text-white shadow-sm hover:bg-[#071C33] disabled:opacity-50 transition cursor-pointer"
           >
-            {loading ? 'Authenticating...' : 'Sign In'}
-            <ArrowRight className="h-4 w-4" />
+            {loading ? 'Verifying Account...' : 'Sign In'}
+            <ArrowRight className="h-4 w-4 text-amber-400" />
           </button>
         </form>
 
-        <p className="mt-6 text-center text-xs text-slate-500">
+        {/* Advisor Sign-in / Application Notice */}
+        <div className="mt-6 rounded-2xl border border-emerald-200/80 bg-emerald-50/60 p-3.5 dark:border-emerald-900/60 dark:bg-emerald-950/30 text-xs">
+          <div className="flex items-center gap-2 font-bold text-emerald-900 dark:text-emerald-300">
+            <Briefcase className="h-4 w-4 text-emerald-700 dark:text-emerald-400 shrink-0" />
+            <span>Are you a Career Advisor or Mentor?</span>
+          </div>
+          <p className="mt-1 text-slate-600 dark:text-slate-300">
+            Sign in with your registered account, or{' '}
+            <Link
+              href="/register/advisor"
+              className="font-bold text-emerald-800 underline dark:text-emerald-400"
+            >
+              apply for council verification
+            </Link>
+            .
+          </p>
+        </div>
+
+        {/* Register Link */}
+        <p className="mt-5 text-center text-xs sm:text-sm font-medium text-slate-600 dark:text-slate-300">
           Don&apos;t have an account yet?{' '}
-          <Link href="/register" className="font-bold text-indigo-600 hover:underline dark:text-indigo-400">
+          <Link
+            href="/register"
+            className="font-bold text-[#0B2A4A] hover:underline dark:text-amber-400"
+          >
             Create an account
           </Link>
         </p>
+
+        {/* Secure Admin Gate Link */}
+        <div className="mt-6 pt-4 border-t border-slate-200 dark:border-slate-800 text-center">
+          <Link
+            href="/admin/portal-login"
+            className="inline-flex items-center gap-1.5 text-[11px] font-bold text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-200 transition"
+          >
+            <ShieldCheck className="h-3.5 w-3.5 text-amber-500" />
+            <span>Authorized Personnel: Admin Security Portal</span>
+          </Link>
+        </div>
       </div>
     </div>
   );

@@ -15,7 +15,9 @@ enum Role {
 }
 
 enum ClassLevel {
+  CLASS_9
   CLASS_10
+  CLASS_11
   CLASS_12
   POST_12
   UNDERGRAD
@@ -68,17 +70,20 @@ model User {
   reviews           Review[]
   studentBookings   ConsultationBooking[] @relation("StudentBookings")
   chatSessions      ChatSession[]
+  bookmarks         UserBookmark[]
 }
 
 model StudentProfile {
   id                  String      @id @default(cuid())
   userId              String      @unique
   user                User        @relation(fields: [userId], references: [id], onDelete: Cascade)
-  currentClass        ClassLevel  @default(CLASS_10)
+  aboutMe             String?
+  currentClass        ClassLevel?
   currentStream       StreamType?
   board               String?
   tenthPercentage     Float?
   twelfthPercentage   Float?
+  previousClassPercentage Float?
   subjectMarks        Json?       // e.g. {"Maths": 85, "Science": 90}
   interests           String[]
   strengths           String[]
@@ -88,6 +93,21 @@ model StudentProfile {
   savedColleges       String[]
   createdAt           DateTime    @default(now())
   updatedAt           DateTime    @updatedAt
+}
+
+model UserBookmark {
+  id          String   @id @default(cuid())
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  itemType    String   // "CAREER" or "COLLEGE"
+  itemSlug    String   // e.g. "fullstack-software-engineer", "iit-bombay"
+  title       String?
+  subtitle    String?
+  metadata    Json?
+  createdAt   DateTime @default(now())
+
+  @@unique([userId, itemType, itemSlug])
+  @@index([userId])
 }
 
 model QuizAttempt {
@@ -100,6 +120,9 @@ model QuizAttempt {
   recommendations Json        // ranked paths with explanation
   realismAnalysis Json        // prerequisite and gap alerts
   createdAt       DateTime    @default(now())
+
+  @@index([userId])
+  @@index([createdAt])
 }
 
 model Career {
@@ -183,6 +206,9 @@ model Review {
   title       String
   comment     String    @db.Text
   createdAt   DateTime  @default(now())
+
+  @@index([targetType, targetId])
+  @@index([userId])
 }
 
 model ConsultantProfile {
@@ -195,11 +221,13 @@ model ConsultantProfile {
   highestEducation  String
   almaMater         String
   currentRole       String
+  phone             String?
   linkedinUrl       String?
   feePerSessionINR  Int                           @default(0)
   rating            Float                         @default(5.0)
   reviewCount       Int                           @default(0)
   avatarUrl         String?
+  verificationStatus VerificationStatus          @default(PENDING)
   createdAt         DateTime                      @default(now())
 
   verifications     ConsultantDomainVerification[]
@@ -224,9 +252,9 @@ model ConsultantDomainVerification {
 model ConsultationBooking {
   id                    String            @id @default(cuid())
   studentId             String
-  student               User              @relation("StudentBookings", fields: [studentId], references: [id], onDelete: Cascade)
+  student               User              @relation("StudentBookings", fields: [studentId], references: [id], onDelete: Restrict)
   consultantId          String
-  consultant            ConsultantProfile @relation(fields: [consultantId], references: [id], onDelete: Cascade)
+  consultant            ConsultantProfile @relation(fields: [consultantId], references: [id], onDelete: Restrict)
   domain                ConsultantDomain
   requestedDate         DateTime
   timeSlot              String
@@ -234,6 +262,10 @@ model ConsultationBooking {
   studentNotes          String            @db.Text
   sharedProfileSummary  Json?
   createdAt             DateTime          @default(now())
+
+  @@index([studentId])
+  @@index([consultantId])
+  @@index([status])
 }
 
 model ChatSession {
@@ -254,4 +286,6 @@ model ChatMessage {
   content       String      @db.Text
   citations     Json?
   createdAt     DateTime    @default(now())
+
+  @@index([sessionId])
 }

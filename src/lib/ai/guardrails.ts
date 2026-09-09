@@ -35,7 +35,7 @@ export const aiGuardrails = {
           passed: false,
           category: 'OFF_TOPIC_ROMANTIC',
           interceptMessage:
-            "I am CARRER-GUD's academic and career advisor. I'm here specifically to guide you on Class 10/12 streams, degrees, college selection, and career futures in India. Let's redirect our conversation to your education and career goals!",
+            "I am CAREER-GUD's academic and career advisor. I'm here specifically to guide you on Class 10/12 streams, degrees, college selection, and career futures in India. Let's redirect our conversation to your education and career goals!",
         };
       }
     }

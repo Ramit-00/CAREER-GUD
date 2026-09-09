@@ -20,12 +20,20 @@ export interface ChatCompletionResponse {
     link?: string;
     snippet?: string;
   }>;
-  provider: 'anthropic' | 'openai' | 'local_heuristic';
+  provider: 'gemini' | 'anthropic' | 'openai' | 'local_heuristic';
 }
 
 export const aiProvider = {
   async generateResponse(req: ChatCompletionRequest): Promise<ChatCompletionResponse> {
-    const lastUserMessage = [...req.messages].reverse().find((m) => m.role === 'user')?.content || '';
+    // Sanitize client-provided messages: strictly enforce user/assistant roles
+    const safeMessages = (req.messages || [])
+      .filter((m) => m.role === 'user' || m.role === 'assistant')
+      .map((m) => ({
+        role: m.role as 'user' | 'assistant',
+        content: String(m.content).slice(0, 3000),
+      }));
+
+    const lastUserMessage = [...safeMessages].reverse().find((m) => m.role === 'user')?.content || '';
 
     // Step 1: Safety & Guardrails evaluation
     const guardrailResult = aiGuardrails.evaluateMessage(lastUserMessage);
@@ -40,11 +48,71 @@ export const aiProvider = {
     // Step 2: RAG Context Retrieval
     const ragResult = ragRetriever.retrieveContext(lastUserMessage);
 
-    // Step 3: Check for Anthropic API Key
+    // Step 3: Check for Google Gemini API Key
+    const geminiKey = process.env.GEMINI_API_KEY;
+    if (geminiKey && geminiKey.trim().length > 0) {
+      const candidateModels = [
+        process.env.GEMINI_MODEL || 'gemini-3.6-flash',
+        'gemini-3.5-flash-lite',
+      ];
+
+      const systemPrompt = `You are CAREER-GUD's senior academic & career counselor for Indian high school & college students.
+CORE PRINCIPLE: "Be Realistic, Not Idealistic".
+- Never give generic blind encouragement. If a student's marks or goals face extreme competitive friction (e.g., wanting JEE Advanced with low 10th marks), explain what bridge effort it genuinely takes.
+- Ground your answers in the following verified platform knowledge base:
+${ragResult.groundingContext}
+- Never hallucinate non-existent Indian colleges or fake salary figures.
+- Emphasize trade-offs, entrance exams (JEE, NEET, CUET, CLAT), and 5-10 year career outlooks (including AI automation exposure).
+- Maintain an encouraging yet grounded, protective tone for young students.`;
+
+      for (const model of candidateModels) {
+        try {
+          const response = await fetch(
+            `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent`,
+            {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+                'x-goog-api-key': geminiKey.trim(),
+              },
+              body: JSON.stringify({
+                systemInstruction: {
+                  parts: [{ text: systemPrompt }],
+                },
+                contents: safeMessages.map((m) => ({
+                  role: m.role === 'assistant' ? 'model' : 'user',
+                  parts: [{ text: m.content }],
+                })),
+                generationConfig: {
+                  temperature: 0.6,
+                  maxOutputTokens: 1200,
+                },
+              }),
+            }
+          );
+
+          if (response.ok) {
+            const data = await response.json();
+            const reply = data.candidates?.[0]?.content?.parts?.[0]?.text;
+            if (reply) {
+              return {
+                reply,
+                citations: ragResult.citations,
+                provider: 'gemini',
+              };
+            }
+          }
+        } catch (err) {
+          console.warn(`Gemini model ${model} request failed:`, err);
+        }
+      }
+    }
+
+    // Step 4: Check for Anthropic API Key
     const anthropicKey = process.env.ANTHROPIC_API_KEY;
     if (anthropicKey && anthropicKey.trim().length > 0) {
       try {
-        const systemPrompt = `You are CARRER-GUD's senior career counselor for Indian high school & college students.
+        const systemPrompt = `You are CAREER-GUD's senior career counselor for Indian high school & college students.
 CORE PRINCIPLE: "Be Realistic, Not Idealistic".
 - Never give generic blind encouragement. If a student's marks or goals face extreme competitive friction (e.g., wanting JEE Advanced with low 10th marks), explain what bridge effort it genuinely takes.
 - Ground your answers in the following verified platform knowledge base:
@@ -64,7 +132,7 @@ ${ragResult.groundingContext}
             model: process.env.LLM_MODEL || 'claude-3-5-sonnet-20241022',
             max_tokens: 1000,
             system: systemPrompt,
-            messages: req.messages.map((m) => ({
+            messages: safeMessages.map((m) => ({
               role: m.role === 'user' ? 'user' : 'assistant',
               content: m.content,
             })),
@@ -102,9 +170,9 @@ ${ragResult.groundingContext}
             messages: [
               {
                 role: 'system',
-                content: `You are CARRER-GUD's AI Career Counselor for Indian students. Be realistic, not idealistic. Ground facts in: ${ragResult.groundingContext}`,
+                content: `You are CAREER-GUD's AI Career Counselor for Indian students. Be realistic, not idealistic. Ground facts in: ${ragResult.groundingContext}`,
               },
-              ...req.messages,
+              ...safeMessages,
             ],
             temperature: 0.6,
           }),
@@ -139,8 +207,8 @@ ${ragResult.groundingContext}
 
 function generateLocalHeuristicCounselorReply(
   userQuery: string,
-  groundingContext: string,
-  profile?: ChatCompletionRequest['userProfile']
+  _groundingContext?: string,
+  _profile?: ChatCompletionRequest['userProfile']
 ): string {
   const q = userQuery.toLowerCase();
 
@@ -223,7 +291,7 @@ Commerce is often misunderstood as a "backup option", but in reality, it powers 
   }
 
   // Default intelligent counseling response
-  return `### Hello! I am your CARRER-GUD Academic & Career Counselor.
+  return `### Hello! I am your CAREER-GUD Academic & Career Counselor.
 
 I am here to give you honest, realistic guidance on academic decisions in India without sugarcoating the challenges.
 

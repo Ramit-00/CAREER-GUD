@@ -3,11 +3,8 @@
 import { ConsultantDomain } from '@/types';
 import {
   ArrowRight,
-  Briefcase,
   CheckCircle2,
-  GraduationCap,
   Plus,
-  ShieldCheck,
   Trash2,
 } from 'lucide-react';
 import { useSession } from 'next-auth/react';
@@ -125,22 +122,22 @@ export default function ConsultantApplyPage() {
 
   return (
     <div className="mx-auto max-w-3xl px-4 py-12 sm:px-6 lg:px-8">
-      <div className="rounded-3xl border border-slate-200 bg-white p-8 sm:p-12 shadow-sm dark:border-slate-800 dark:bg-slate-900">
-        <div className="flex items-center gap-2 mb-2">
-          <span className="rounded-full bg-indigo-50 px-3 py-1 text-xs font-bold text-indigo-700 dark:bg-indigo-950/40 dark:text-indigo-300">
-            Professional Mentorship
+      <div className="rounded-3xl border-2 border-slate-200 bg-white p-8 sm:p-12 shadow-xs dark:border-slate-800 dark:bg-slate-900">
+        <div className="flex items-center gap-2 mb-3">
+          <span className="rounded-lg border border-amber-300 bg-[#FFF8EE] px-3.5 py-1 text-xs font-black text-[#D96B00] dark:bg-blue-950 dark:border-blue-900 dark:text-blue-200">
+            Professional Mentorship Registry
           </span>
         </div>
-        <h1 className="text-3xl font-black text-slate-900 dark:text-white">
+        <h1 className="text-3xl sm:text-4xl font-black text-[#0B2A4A] dark:text-white tracking-tight">
           Apply as a Verified Career Consultant
         </h1>
-        <p className="mt-2 text-xs text-slate-500 leading-relaxed">
-          CARRER-GUD maintains strict quality control: you will be independently audited and approved for specific domains (Medical, Engineering, Commerce, Law/Arts, Overseas).
+        <p className="mt-2 text-xs sm:text-sm text-slate-700 dark:text-slate-300 leading-relaxed font-normal">
+          CAREER-GUD maintains strict quality control: you will be independently audited and approved for specific domains (Medical, Engineering, Commerce, Law/Arts, Overseas).
         </p>
 
-        <form onSubmit={handleSubmit} className="mt-8 flex flex-col gap-5 text-xs">
+        <form onSubmit={handleSubmit} className="mt-8 flex flex-col gap-5 text-xs sm:text-sm">
           <div>
-            <label className="block font-bold text-slate-700 dark:text-slate-300 mb-1.5">
+            <label className="block font-black text-slate-900 dark:text-white mb-1.5">
               Professional Headline
             </label>
             <input
@@ -149,12 +146,12 @@ export default function ConsultantApplyPage() {
               value={headline}
               onChange={(e) => setHeadline(e.target.value)}
               placeholder="E.g. Senior Clinical Specialist & AIIMS Alumna | NEET Career Strategist"
-              className="w-full rounded-xl border border-slate-200 p-2.5 focus:border-indigo-500 focus:outline-none dark:border-slate-700 dark:bg-slate-800 dark:text-white"
+              className="w-full rounded-xl border-2 border-slate-300 bg-white p-3 font-medium text-slate-900 focus:border-blue-600 focus:outline-none dark:border-slate-700 dark:bg-slate-800 dark:text-white shadow-xs"
             />
           </div>
 
           <div>
-            <label className="block font-bold text-slate-700 dark:text-slate-300 mb-1.5">
+            <label className="block font-black text-slate-900 dark:text-white mb-1.5">
               Bio & Counseling Experience
             </label>
             <textarea
@@ -163,13 +160,13 @@ export default function ConsultantApplyPage() {
               value={bio}
               onChange={(e) => setBio(e.target.value)}
               placeholder="Describe your background, students mentored, and realistic counseling philosophy..."
-              className="w-full rounded-xl border border-slate-200 p-2.5 focus:border-indigo-500 focus:outline-none dark:border-slate-700 dark:bg-slate-800 dark:text-white"
+              className="w-full rounded-xl border-2 border-slate-300 bg-white p-3 font-medium text-slate-900 focus:border-blue-600 focus:outline-none dark:border-slate-700 dark:bg-slate-800 dark:text-white shadow-xs"
             />
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
             <div>
-              <label className="block font-bold text-slate-700 dark:text-slate-300 mb-1.5">
+              <label className="block font-black text-slate-900 dark:text-white mb-1.5">
                 Experience (Years)
               </label>
               <input
@@ -179,12 +176,12 @@ export default function ConsultantApplyPage() {
                 required
                 value={experienceYears}
                 onChange={(e) => setExperienceYears(Number(e.target.value))}
-                className="w-full rounded-xl border border-slate-200 p-2.5 focus:border-indigo-500 focus:outline-none dark:border-slate-700 dark:bg-slate-800 dark:text-white"
+                className="w-full rounded-xl border-2 border-slate-300 bg-white p-2.5 font-bold text-slate-900 focus:border-blue-600 focus:outline-none dark:border-slate-700 dark:bg-slate-800 dark:text-white shadow-xs"
               />
             </div>
 
             <div>
-              <label className="block font-bold text-slate-700 dark:text-slate-300 mb-1.5">
+              <label className="block font-black text-slate-900 dark:text-white mb-1.5">
                 Highest Education
               </label>
               <input
@@ -193,12 +190,12 @@ export default function ConsultantApplyPage() {
                 value={highestEducation}
                 onChange={(e) => setHighestEducation(e.target.value)}
                 placeholder="E.g. MBBS, MD or B.Tech, M.Tech"
-                className="w-full rounded-xl border border-slate-200 p-2.5 focus:border-indigo-500 focus:outline-none dark:border-slate-700 dark:bg-slate-800 dark:text-white"
+                className="w-full rounded-xl border-2 border-slate-300 bg-white p-2.5 font-bold text-slate-900 focus:border-blue-600 focus:outline-none dark:border-slate-700 dark:bg-slate-800 dark:text-white shadow-xs"
               />
             </div>
 
             <div>
-              <label className="block font-bold text-slate-700 dark:text-slate-300 mb-1.5">
+              <label className="block font-black text-slate-900 dark:text-white mb-1.5">
                 Alma Mater
               </label>
               <input
@@ -207,14 +204,14 @@ export default function ConsultantApplyPage() {
                 value={almaMater}
                 onChange={(e) => setAlmaMater(e.target.value)}
                 placeholder="E.g. AIIMS Delhi or IIT Bombay"
-                className="w-full rounded-xl border border-slate-200 p-2.5 focus:border-indigo-500 focus:outline-none dark:border-slate-700 dark:bg-slate-800 dark:text-white"
+                className="w-full rounded-xl border-2 border-slate-300 bg-white p-2.5 font-bold text-slate-900 focus:border-blue-600 focus:outline-none dark:border-slate-700 dark:bg-slate-800 dark:text-white shadow-xs"
               />
             </div>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
             <div>
-              <label className="block font-bold text-slate-700 dark:text-slate-300 mb-1.5">
+              <label className="block font-black text-slate-900 dark:text-white mb-1.5">
                 Current Role / Designation
               </label>
               <input
@@ -223,12 +220,12 @@ export default function ConsultantApplyPage() {
                 value={currentRole}
                 onChange={(e) => setCurrentRole(e.target.value)}
                 placeholder="E.g. Associate Professor"
-                className="w-full rounded-xl border border-slate-200 p-2.5 focus:border-indigo-500 focus:outline-none dark:border-slate-700 dark:bg-slate-800 dark:text-white"
+                className="w-full rounded-xl border-2 border-slate-300 bg-white p-2.5 font-bold text-slate-900 focus:border-blue-600 focus:outline-none dark:border-slate-700 dark:bg-slate-800 dark:text-white shadow-xs"
               />
             </div>
 
             <div>
-              <label className="block font-bold text-slate-700 dark:text-slate-300 mb-1.5">
+              <label className="block font-black text-slate-900 dark:text-white mb-1.5">
                 LinkedIn Profile
               </label>
               <input
@@ -236,12 +233,12 @@ export default function ConsultantApplyPage() {
                 value={linkedinUrl}
                 onChange={(e) => setLinkedinUrl(e.target.value)}
                 placeholder="https://linkedin.com/in/..."
-                className="w-full rounded-xl border border-slate-200 p-2.5 focus:border-indigo-500 focus:outline-none dark:border-slate-700 dark:bg-slate-800 dark:text-white"
+                className="w-full rounded-xl border-2 border-slate-300 bg-white p-2.5 font-medium text-slate-900 focus:border-blue-600 focus:outline-none dark:border-slate-700 dark:bg-slate-800 dark:text-white shadow-xs"
               />
             </div>
 
             <div>
-              <label className="block font-bold text-slate-700 dark:text-slate-300 mb-1.5">
+              <label className="block font-black text-slate-900 dark:text-white mb-1.5">
                 Fee per Session (INR)
               </label>
               <input
@@ -250,19 +247,19 @@ export default function ConsultantApplyPage() {
                 max={10000}
                 value={feePerSessionINR}
                 onChange={(e) => setFeePerSessionINR(Number(e.target.value))}
-                className="w-full rounded-xl border border-slate-200 p-2.5 focus:border-indigo-500 focus:outline-none dark:border-slate-700 dark:bg-slate-800 dark:text-white"
+                className="w-full rounded-xl border-2 border-slate-300 bg-white p-2.5 font-bold text-slate-900 focus:border-blue-600 focus:outline-none dark:border-slate-700 dark:bg-slate-800 dark:text-white shadow-xs"
               />
             </div>
           </div>
 
           {/* Per-Domain Verification Credentials */}
-          <div className="mt-4 border-t border-slate-100 dark:border-slate-800 pt-5">
+          <div className="mt-4 border-t-2 border-slate-200 dark:border-slate-800 pt-5">
             <div className="flex items-center justify-between mb-3">
               <div>
-                <h3 className="font-bold text-slate-900 dark:text-white text-sm">
+                <h3 className="font-black text-slate-950 dark:text-white text-base">
                   Domain Expertise & Credential Proof
                 </h3>
-                <p className="text-[11px] text-slate-500">
+                <p className="text-xs text-slate-600 dark:text-slate-400 font-medium">
                   Select which stream(s) you wish to advise on and describe your verifiable proof.
                 </p>
               </div>
@@ -270,9 +267,9 @@ export default function ConsultantApplyPage() {
               <button
                 type="button"
                 onClick={handleAddDomain}
-                className="flex items-center gap-1 rounded-lg bg-slate-100 px-3 py-1.5 text-xs font-semibold text-slate-700 hover:bg-slate-200 dark:bg-slate-800 dark:text-slate-300"
+                className="flex items-center gap-1.5 rounded-xl bg-slate-100 border-2 border-slate-300 px-3.5 py-1.5 text-xs font-bold text-slate-900 hover:bg-slate-200 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200 dark:hover:bg-slate-700 dark:hover:text-white transition-colors cursor-pointer"
               >
-                <Plus className="h-3.5 w-3.5" />
+                <Plus className="h-4 w-4" />
                 Add Domain
               </button>
             </div>
@@ -281,13 +278,13 @@ export default function ConsultantApplyPage() {
               {domainApplications.map((app, idx) => (
                 <div
                   key={idx}
-                  className="rounded-2xl border border-slate-200 bg-slate-50 p-4 dark:border-slate-800 dark:bg-slate-800/40 flex flex-col gap-3"
+                  className="rounded-2xl border-2 border-slate-200 bg-slate-100/80 p-4 dark:border-slate-800 dark:bg-slate-800/60 flex flex-col gap-3"
                 >
                   <div className="flex items-center justify-between">
                     <select
                       value={app.domain}
                       onChange={(e) => handleDomainChange(idx, e.target.value as ConsultantDomain)}
-                      className="rounded-lg border border-slate-300 p-1.5 font-bold text-slate-800 dark:border-slate-700 dark:bg-slate-900 dark:text-white text-xs"
+                      className="rounded-xl border-2 border-slate-300 bg-white p-2 font-black text-slate-900 dark:border-slate-700 dark:bg-slate-900 dark:text-white text-xs sm:text-sm shadow-xs"
                     >
                       {DOMAINS.map((d) => (
                         <option key={d} value={d}>
@@ -300,7 +297,7 @@ export default function ConsultantApplyPage() {
                       <button
                         type="button"
                         onClick={() => handleRemoveDomain(idx)}
-                        className="text-slate-400 hover:text-red-500"
+                        className="text-slate-400 hover:text-red-600 transition"
                       >
                         <Trash2 className="h-4 w-4" />
                       </button>
@@ -313,7 +310,7 @@ export default function ConsultantApplyPage() {
                     value={app.proofDescription}
                     onChange={(e) => handleProofChange(idx, e.target.value)}
                     placeholder="E.g. Degree certificate registration number, ICAI member ID, bar council number..."
-                    className="w-full rounded-xl border border-slate-200 bg-white p-2.5 text-xs focus:border-indigo-500 focus:outline-none dark:border-slate-700 dark:bg-slate-900 dark:text-white"
+                    className="w-full rounded-xl border-2 border-slate-300 bg-white p-2.5 text-xs sm:text-sm font-medium text-slate-900 focus:border-blue-600 focus:outline-none dark:border-slate-700 dark:bg-slate-900 dark:text-white shadow-xs"
                   />
                 </div>
               ))}
@@ -323,10 +320,10 @@ export default function ConsultantApplyPage() {
           <button
             type="submit"
             disabled={submitting}
-            className="mt-6 flex w-full items-center justify-center gap-2 rounded-2xl bg-indigo-600 py-4 text-sm font-bold text-white shadow-lg shadow-indigo-600/20 hover:bg-indigo-500 disabled:opacity-50 transition"
+            className="mt-6 flex w-full items-center justify-center gap-2 rounded-xl bg-[#0B2A4A] py-3.5 text-sm sm:text-base font-black text-white shadow-xs hover:bg-[#071C33] disabled:opacity-50 transition"
           >
             {submitting ? 'Submitting Application...' : 'Submit Application for Admin Audit'}
-            <ArrowRight className="h-4 w-4" />
+            <ArrowRight className="h-4 w-4 text-amber-400" />
           </button>
         </form>
       </div>

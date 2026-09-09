@@ -7,18 +7,22 @@ export const realismValidator = {
     mathScore?: number,
     scienceScore?: number
   ): QuizResult['realismCheck'] {
+    const safeTenth = typeof tenthPercentage === 'number' && Number.isFinite(tenthPercentage) ? tenthPercentage : undefined;
+    const safeMath = typeof mathScore === 'number' && Number.isFinite(mathScore) ? mathScore : undefined;
+    const safeScience = typeof scienceScore === 'number' && Number.isFinite(scienceScore) ? scienceScore : undefined;
+
     const gaps: string[] = [];
 
     // Check PCM requirements
     if (stream === 'SCIENCE_PCM') {
-      if (mathScore !== undefined && mathScore < 65) {
+      if (safeMath !== undefined && safeMath < 65) {
         gaps.push(
           `Class 10 Mathematics score (${mathScore}%) is below the recommended 70% threshold. Class 11 Trigonometry & Calculus move at 4x the speed and depth of Class 10.`
         );
       }
-      if (tenthPercentage !== undefined && tenthPercentage < 65) {
+      if (safeTenth !== undefined && safeTenth < 65) {
         gaps.push(
-          `Overall 10th performance (${tenthPercentage}%) suggests vulnerability to academic burnout under the rigorous 6-hour daily self-study cycle required for PCM + JEE.`
+          `Overall 10th performance (${safeTenth}%) suggests vulnerability to academic burnout under the rigorous 6-hour daily self-study cycle required for PCM + JEE.`
         );
       }
 
@@ -35,7 +39,7 @@ export const realismValidator = {
         };
       }
 
-      if (mathScore !== undefined && mathScore < 78) {
+      if (safeMath !== undefined && safeMath < 78) {
         return {
           status: 'AMBER',
           headline: 'Manageable Stretch with Focused Effort',
@@ -60,9 +64,9 @@ export const realismValidator = {
 
     // Check PCB requirements
     if (stream === 'SCIENCE_PCB') {
-      if (scienceScore !== undefined && scienceScore < 65) {
+      if (safeScience !== undefined && safeScience < 65) {
         gaps.push(
-          `Class 10 Science score (${scienceScore}%) indicates possible struggles with detailed NCERT retention and experimental theory.`
+          `Class 10 Science score (${safeScience}%) indicates possible struggles with detailed NCERT retention and experimental theory.`
         );
       }
 
@@ -117,7 +121,8 @@ export const realismValidator = {
   },
 
   validate12thEngineeringPathway(twelfthPercentage?: number, mathScore?: number): QuizResult['realismCheck'] {
-    if (mathScore !== undefined && mathScore < 60) {
+    const safeMath = typeof mathScore === 'number' && Number.isFinite(mathScore) ? mathScore : undefined;
+    if (safeMath !== undefined && safeMath < 60) {
       return {
         status: 'AMBER',
         headline: 'Branch Selection Advisory',
@@ -138,7 +143,7 @@ export const realismValidator = {
     };
   },
 
-  validate12thMedicalPathway(twelfthPercentage?: number, bioScore?: number): QuizResult['realismCheck'] {
+  validate12thMedicalPathway(_twelfthPercentage?: number, _bioScore?: number): QuizResult['realismCheck'] {
     return {
       status: 'AMBER',
       headline: 'NEET-UG Realistic Benchmarks',

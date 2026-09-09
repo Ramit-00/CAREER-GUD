@@ -1,4 +1,4 @@
-# 🎓 CARRER-GUD — AI-Powered Career & Academic Guidance Platform
+# 🎓 CAREER-GUD — AI-Powered Career & Academic Guidance Platform
 
 > **Realistic, Evidence-Based Educational Intelligence for Indian Students (Class 10 & 12)**
 
@@ -12,7 +12,7 @@ In India, students make life-altering academic decisions at two high-pressure ju
 
 Most Indian students make these choices under societal influence or coaching institute marketing hype, leading to burnout, wasted drop years, and career regret. 
 
-**CARRER-GUD** solves this by uniting:
+**CAREER-GUD** solves this by uniting:
 - **Diagnostic Aptitude & Stream Scoring Engines**
 - **Core Operating Principle: "Be Realistic, Not Idealistic"** (checking marks vs aspirations, coaching intensity, and drop-year risks)
 - **RAG-Grounded AI Career Counselor** (retrieving verified Indian entrance cutoffs, NIRF placement metrics, and automation exposure indices)
@@ -62,9 +62,9 @@ On the `/login` page, you can click any of the 1-click test buttons to test diff
 
 | Role | Email | Password | Access Privileges |
 | :--- | :--- | :--- | :--- |
-| **Student** | `student@carrer-gud.in` | `password123` | Stream quizzes, profile signals, bookmarking, booking mentors |
-| **Consultant** | `consultant@carrer-gud.in` | `password123` | Consultant Portal (`/consultant/dashboard`), view student bookings |
-| **Admin** | `admin@carrer-gud.in` | `password123` | Admin Audit Portal (`/admin/verify-consultants`), Analytics |
+| **Student** | `student@career-gud.in` | `password123` | Stream quizzes, profile signals, bookmarking, booking mentors |
+| **Consultant** | `consultant@career-gud.in` | `password123` | Consultant Portal (`/consultant/dashboard`), view student bookings |
+| **Admin** | `admin@career-gud.in` | `password123` | Admin Audit Portal (`/admin/verify-consultants`), Analytics |
 
 ---
 
@@ -82,9 +82,9 @@ DATABASE_URL=
 DIRECT_URL=
 
 # NextAuth Authentication
-AUTH_SECRET=carrer-gud-dev-secret-replace-in-production-random-key-32b
+AUTH_SECRET=career-gud-dev-secret-replace-in-production-random-key-32b
 NEXTAUTH_URL=http://localhost:3000
-NEXTAUTH_SECRET=carrer-gud-dev-secret-replace-in-production-random-key-32b
+NEXTAUTH_SECRET=career-gud-dev-secret-replace-in-production-random-key-32b
 
 # Google OAuth
 GOOGLE_CLIENT_ID=

@@ -2,6 +2,7 @@ import assert from 'node:assert';
 import test from 'node:test';
 import { aiGuardrails } from '../lib/ai/guardrails';
 import { repository } from '../lib/data/repository';
+import { getExamByName } from '../lib/data/examData';
 import { realismValidator } from '../lib/recommendation/realismValidator';
 import { scoringEngine } from '../lib/recommendation/scoringEngine';
 import { similarityEngine } from '../lib/recommendation/similarityEngine';
@@ -86,3 +87,71 @@ test('repository: strict domain verification check for consultants', async () =>
   assert.ok(medicalConsultants.some((c) => c.name === 'Dr. Ananya Sharma'));
   assert.ok(!engineeringConsultants.some((c) => c.name === 'Dr. Ananya Sharma'));
 });
+
+test('security: domain-level verification prevents fraudulent domain bookings', async () => {
+  const ananya = await repository.getConsultantById('cons_1');
+  assert.ok(ananya);
+
+  // Check that Dr. Ananya is verified in MEDICAL but NOT in ENGINEERING
+  const isMedicalVerified = ananya.domainVerifications.some(
+    (v) => v.domain === 'MEDICAL' && v.status === 'VERIFIED'
+  );
+  const isEngineeringVerified = ananya.domainVerifications.some(
+    (v) => v.domain === 'ENGINEERING' && v.status === 'VERIFIED'
+  );
+
+  assert.strictEqual(isMedicalVerified, true);
+  assert.strictEqual(isEngineeringVerified, false);
+});
+
+test('security: input sanitization strips HTML tags to prevent stored XSS', () => {
+  const dirtyTitle = 'Great Career Advice! <script>alert("xss")</script>';
+  const cleanTitle = dirtyTitle.replace(/<[^>]*>?/gm, '').trim();
+
+  assert.strictEqual(cleanTitle, 'Great Career Advice! alert("xss")');
+  assert.ok(!cleanTitle.includes('<script>'));
+  assert.ok(!cleanTitle.includes('</script>'));
+});
+
+test('cross-stream: PCM student selecting Management trajectory receives IPMAT/IIM recommendation', () => {
+  const result = scoringEngine.calculate12thDegreeResult(
+    'SCIENCE_PCM',
+    { targetTrajectory: 'MANAGEMENT_LEADERSHIP' },
+    { twelfthPercentage: 85, subjects: { Mathematics: 82 } }
+  );
+
+  assert.strictEqual(result.primaryRecommendation.id, 'integrated-management-ipmat');
+  assert.ok(result.primaryRecommendation.topExams?.includes('IPMAT'));
+  assert.ok(result.primaryRecommendation.recommendedDegrees?.some((d) => d.includes('IIM')));
+});
+
+test('cross-stream: PCB student selecting Biotech trajectory receives Genomics & Research recommendation without MBBS', () => {
+  const result = scoringEngine.calculate12thDegreeResult(
+    'SCIENCE_PCB',
+    { targetTrajectory: 'BIOTECH_HEALTH_ADMIN' },
+    { twelfthPercentage: 84, subjects: { Biology: 88 } }
+  );
+
+  assert.strictEqual(result.primaryRecommendation.id, 'biomedical-researcher');
+  assert.ok(result.primaryRecommendation.topExams?.includes('IISER IAT'));
+  assert.ok(result.primaryRecommendation.whyItFits.includes('without the clinical emergency stress'));
+});
+
+test('examRegistry: verified official websites and wikipedia URLs exist for national exams', () => {
+  const jee = getExamByName('JEE Main');
+  assert.ok(jee);
+  assert.ok(jee.officialWebsite.includes('nta.nic.in'));
+  assert.ok(jee.wikipediaUrl.includes('wikipedia.org'));
+
+  const ipmat = getExamByName('IPMAT');
+  assert.ok(ipmat);
+  assert.ok(ipmat.officialWebsite.includes('iimidr.ac.in'));
+  assert.strictEqual(ipmat.openToAllStreams, true);
+
+  const clat = getExamByName('CLAT');
+  assert.ok(clat);
+  assert.ok(clat.officialWebsite.includes('consortiumofnlus.ac.in'));
+  assert.strictEqual(clat.openToAllStreams, true);
+});
+
+

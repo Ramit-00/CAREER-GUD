@@ -1,15 +1,11 @@
 'use client';
 
+import { sanitizeSafeUrl } from '@/lib/utils/urlSanitizer';
 import { ChatMessage } from '@/types';
 import {
-  ArrowRight,
   ArrowUpRight,
-  Bot,
   Compass,
-  PhoneCall,
   Send,
-  ShieldCheck,
-  Sparkles,
   Trash2,
 } from 'lucide-react';
 import Link from 'next/link';
@@ -28,7 +24,7 @@ export default function ChatPage() {
     {
       id: 'welcome_1',
       role: 'assistant',
-      content: `### Welcome to CARRER-GUD's AI Career Counselor
+      content: `### Welcome to CAREER-GUD's AI Career Counselor
 
 I am grounded directly in verified Indian educational data, NIRF college placement metrics, and future career outlooks.
 
@@ -39,7 +35,7 @@ I am grounded directly in verified Indian educational data, NIRF college placeme
 4. **Honest Reality Checks**: Transparent facts on entrance exam competition ratios (JEE, NEET, CUET, CLAT).
 
 Tell me about your current class, your marks, or what career field you are curious about!`,
-      timestamp: new Date().toISOString(),
+      timestamp: '2025-01-01T00:00:00.000Z',
     },
   ]);
   const [inputValue, setInputValue] = useState('');
@@ -120,30 +116,30 @@ Tell me about your current class, your marks, or what career field you are curio
   return (
     <div className="mx-auto max-w-5xl px-4 py-8 sm:px-6 lg:px-8 flex flex-col h-[calc(100vh-5rem)]">
       {/* Top Header Bar */}
-      <div className="flex items-center justify-between pb-4 border-b border-slate-200 dark:border-slate-800">
+      <div className="flex items-center justify-between pb-4 border-b-2 border-slate-200 dark:border-slate-800">
         <div className="flex items-center gap-3">
-          <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-gradient-to-tr from-indigo-600 to-teal-500 text-white shadow-md">
-            <Bot className="h-5 w-5" />
+          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#0B2A4A] text-white shadow-xs">
+            <Compass className="h-5 w-5 text-amber-400" />
           </div>
           <div>
-            <h1 className="text-lg font-bold text-slate-900 dark:text-white flex items-center gap-2">
-              AI Academic & Career Counselor
-              <span className="rounded-full bg-teal-100 px-2 py-0.5 text-[10px] font-bold text-teal-800 dark:bg-teal-950 dark:text-teal-300">
-                RAG Grounded
+            <h1 className="text-lg font-black text-[#0B2A4A] dark:text-white flex items-center gap-2">
+              Academic & Secondary Counseling Console
+              <span className="rounded-lg border border-amber-300 bg-[#FFF8EE] px-2.5 py-0.5 text-xs font-black text-[#D96B00] dark:bg-blue-950 dark:text-blue-200">
+                NIRF & Statutory Grounded
               </span>
             </h1>
-            <p className="text-xs text-slate-500">
-              Evidence-based • Indian System • Strictly Academic
+            <p className="text-xs sm:text-sm font-semibold text-slate-700 dark:text-slate-300">
+              Evidence-based analytics • Indian Secondary Education System • Objective Counseling
             </p>
           </div>
         </div>
 
         <button
           onClick={handleClearHistory}
-          className="flex items-center gap-1.5 rounded-xl border border-slate-200 px-3 py-1.5 text-xs font-semibold text-slate-600 hover:bg-slate-50 dark:border-slate-800 dark:text-slate-400 dark:hover:bg-slate-800 transition"
+          className="flex items-center gap-1.5 rounded-xl border-2 border-slate-300 bg-white px-3.5 py-2 text-xs font-bold text-slate-800 hover:bg-slate-100 hover:text-slate-950 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200 dark:hover:bg-slate-800 dark:hover:text-white transition shadow-xs"
         >
-          <Trash2 className="h-3.5 w-3.5" />
-          <span>Clear Chat</span>
+          <Trash2 className="h-4 w-4 text-slate-500" />
+          <span>Clear Console</span>
         </button>
       </div>
 
@@ -157,10 +153,10 @@ Tell me about your current class, your marks, or what career field you are curio
             }`}
           >
             <div
-              className={`max-w-[88%] sm:max-w-[78%] rounded-3xl p-5 text-sm leading-relaxed ${
+              className={`max-w-[88%] sm:max-w-[80%] rounded-2xl p-5 text-xs sm:text-sm leading-relaxed ${
                 msg.role === 'user'
-                  ? 'bg-indigo-600 text-white rounded-br-none shadow-md'
-                  : 'bg-white border border-slate-200 text-slate-800 rounded-bl-none shadow-sm dark:bg-slate-900 dark:border-slate-800 dark:text-slate-100'
+                  ? 'bg-[#0B2A4A] text-white rounded-br-none shadow-xs font-medium'
+                  : 'bg-white border-2 border-slate-200 text-slate-950 rounded-bl-none shadow-xs dark:bg-slate-900 dark:border-slate-800 dark:text-slate-100 font-normal'
               }`}
             >
               <div className="prose prose-sm dark:prose-invert max-w-none whitespace-pre-wrap">
@@ -171,18 +167,18 @@ Tell me about your current class, your marks, or what career field you are curio
             {/* Citations List */}
             {msg.citations && msg.citations.length > 0 && (
               <div className="mt-2.5 flex flex-col gap-1.5 max-w-[85%]">
-                <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400">
-                  Grounded Platform Citations:
+                <span className="text-xs font-black uppercase tracking-wider text-slate-700 dark:text-slate-300">
+                  Institutional Citations & Knowledge Base:
                 </span>
                 <div className="flex flex-wrap gap-2">
                   {msg.citations.map((c, i) => (
                     <Link
                       key={i}
-                      href={c.link || '#'}
-                      className="flex items-center gap-1.5 rounded-xl border border-slate-200 bg-white px-3 py-1.5 text-xs font-semibold text-indigo-600 hover:border-indigo-400 dark:border-slate-700 dark:bg-slate-800 dark:text-indigo-400 shadow-sm"
+                      href={sanitizeSafeUrl(c.link)}
+                      className="flex items-center gap-1.5 rounded-lg border border-amber-300 bg-[#FFF8EE] px-3 py-1.5 text-xs font-black text-[#D96B00] hover:bg-[#FFF2DE] dark:border-blue-900 dark:bg-blue-950/80 dark:text-blue-200 shadow-2xs"
                     >
                       <span>{c.title}</span>
-                      <ArrowUpRight className="h-3 w-3" />
+                      <ArrowUpRight className="h-3.5 w-3.5 text-[#D96B00] dark:text-blue-400" />
                     </Link>
                   ))}
                 </div>
@@ -192,9 +188,9 @@ Tell me about your current class, your marks, or what career field you are curio
         ))}
 
         {loading && (
-          <div className="flex items-center gap-2 rounded-2xl bg-white border border-slate-200 p-4 text-xs text-slate-500 shadow-sm dark:bg-slate-900 dark:border-slate-800 w-fit">
-            <span className="animate-spin inline-block h-3.5 w-3.5 border-2 border-indigo-600 border-t-transparent rounded-full" />
-            <span>Consulting knowledge base and synthesizing Indian entrance statistics...</span>
+          <div className="flex items-center gap-3 rounded-xl bg-white border-2 border-slate-200 p-4 text-xs sm:text-sm font-bold text-slate-800 shadow-xs dark:bg-slate-900 dark:border-slate-800 dark:text-slate-200 w-fit">
+            <span className="animate-spin inline-block h-4 w-4 border-2 border-blue-600 border-t-transparent rounded-full" />
+            <span>Consulting statutory databases and entrance statistics...</span>
           </div>
         )}
         <div ref={messagesEndRef} />
@@ -203,15 +199,15 @@ Tell me about your current class, your marks, or what career field you are curio
       {/* Suggested Questions */}
       {messages.length <= 2 && (
         <div className="pb-3">
-          <span className="text-[11px] font-bold uppercase text-slate-400 mb-2 block">
-            Suggested topics:
+          <span className="text-xs font-black uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-2 block">
+            Suggested inquiry topics:
           </span>
           <div className="flex flex-wrap gap-2">
             {SUGGESTED_QUESTIONS.map((q, idx) => (
               <button
                 key={idx}
                 onClick={() => handleSendMessage(q)}
-                className="rounded-xl border border-slate-200 bg-white px-3 py-1.5 text-xs text-slate-700 hover:border-indigo-400 hover:text-indigo-600 dark:border-slate-800 dark:bg-slate-900 dark:text-slate-300 transition"
+                className="rounded-xl border-2 border-slate-300 bg-white px-3 py-1.5 text-xs sm:text-sm font-semibold text-slate-800 hover:border-[#0B2A4A] hover:text-[#0B2A4A] hover:bg-blue-50/70 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200 dark:hover:bg-slate-800 dark:hover:text-white dark:hover:border-blue-500 transition shadow-xs"
               >
                 {q}
               </button>
@@ -233,15 +229,16 @@ Tell me about your current class, your marks, or what career field you are curio
             type="text"
             value={inputValue}
             onChange={(e) => setInputValue(e.target.value)}
-            placeholder="Ask anything regarding 10th/12th streams, exams, cutoff percentiles, or career futures..."
-            className="w-full rounded-2xl border border-slate-300 bg-white py-4 pl-5 pr-14 text-sm focus:border-indigo-500 focus:outline-none dark:border-slate-700 dark:bg-slate-900 dark:text-white shadow-md"
+            maxLength={3000}
+            placeholder="Inquire regarding stream choices, prerequisite checks, cutoffs, or career outlooks..."
+            className="w-full rounded-xl border-2 border-slate-300 bg-white py-3.5 pl-4 pr-14 text-xs sm:text-sm font-medium text-slate-900 focus:border-[#0B2A4A] focus:outline-none dark:border-slate-700 dark:bg-slate-900 dark:text-white shadow-xs"
           />
           <button
             type="submit"
             disabled={!inputValue.trim() || loading}
-            className="absolute right-2.5 flex h-10 w-10 items-center justify-center rounded-xl bg-indigo-600 text-white hover:bg-indigo-500 disabled:opacity-40 transition shadow-sm"
+            className="absolute right-2.5 flex h-9 w-9 items-center justify-center rounded-lg bg-[#0B2A4A] text-white hover:bg-[#071C33] disabled:opacity-40 transition shadow-xs"
           >
-            <Send className="h-4 w-4" />
+            <Send className="h-4 w-4 text-amber-400" />
           </button>
         </form>
       </div>

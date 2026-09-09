@@ -3,16 +3,9 @@
 import { ConsultantDomain, ConsultantProfile } from '@/types';
 import {
   ArrowLeft,
-  Calendar,
   CheckCircle2,
-  Clock,
-  GraduationCap,
-  ExternalLink,
-  Lock,
-  Share2,
   ShieldCheck,
   Star,
-  UserCheck,
 } from 'lucide-react';
 import { useSession } from 'next-auth/react';
 import Link from 'next/link';
@@ -30,7 +23,7 @@ export default function ConsultantDetailPage() {
 
   // Booking Form State
   const [selectedDomain, setSelectedDomain] = useState<ConsultantDomain | null>(null);
-  const [requestedDate, setRequestedDate] = useState('2025-04-10');
+  const [requestedDate, setRequestedDate] = useState(() => new Date().toISOString().split('T')[0]);
   const [timeSlot, setTimeSlot] = useState('17:00 - 17:45 IST');
   const [studentNotes, setStudentNotes] = useState('');
   const [shareProfile, setShareProfile] = useState(true);
@@ -38,6 +31,9 @@ export default function ConsultantDetailPage() {
   const [bookingSuccess, setBookingSuccess] = useState(false);
 
   useEffect(() => {
+    window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
+    if (document.documentElement) document.documentElement.scrollTop = 0;
+    if (document.body) document.body.scrollTop = 0;
     fetchConsultant();
   }, [id]);
 
@@ -101,8 +97,8 @@ export default function ConsultantDetailPage() {
 
   if (loading) {
     return (
-      <div className="py-24 text-center text-sm text-slate-500">
-        <span className="animate-spin inline-block h-6 w-6 border-2 border-indigo-600 border-t-transparent rounded-full mb-3" />
+      <div className="py-24 text-center text-sm font-semibold text-slate-600 dark:text-slate-400">
+        <span className="animate-spin inline-block h-6 w-6 border-2 border-[#0B2A4A] border-t-transparent rounded-full mb-3" />
         <p>Loading mentor credentials...</p>
       </div>
     );
@@ -111,8 +107,8 @@ export default function ConsultantDetailPage() {
   if (!consultant) {
     return (
       <div className="py-24 text-center">
-        <h2 className="text-xl font-bold">Mentor Profile Not Found</h2>
-        <Link href="/consultants" className="mt-4 inline-block text-indigo-600 underline">
+        <h2 className="text-xl font-bold text-[#0B2A4A] dark:text-white">Mentor Profile Not Found</h2>
+        <Link href="/consultants" className="mt-4 inline-block text-[#0B2A4A] font-bold hover:underline dark:text-sky-400">
           Back to Mentors Directory
         </Link>
       </div>
@@ -136,76 +132,83 @@ export default function ConsultantDetailPage() {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         {/* Profile Card (2 cols) */}
         <div className="lg:col-span-2 flex flex-col gap-6">
-          <div className="rounded-3xl border border-slate-200 bg-white p-8 shadow-sm dark:border-slate-800 dark:bg-slate-900">
+          <div className="rounded-3xl border-2 border-slate-200 bg-white p-8 shadow-xs dark:border-slate-800 dark:bg-slate-900">
             <div className="flex items-start justify-between gap-4">
               <div>
-                <h1 className="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white">
+                <h1 className="text-3xl sm:text-4xl font-black text-[#0B2A4A] dark:text-white tracking-tight">
                   {consultant.name}
                 </h1>
-                <p className="text-sm font-semibold text-indigo-600 dark:text-indigo-400 mt-1">
+                <p className="text-sm sm:text-base font-bold text-[#0B2A4A] dark:text-blue-400 mt-1">
                   {consultant.headline}
                 </p>
-                <p className="text-xs text-slate-500 mt-0.5">
-                  {consultant.currentRole} • {consultant.experienceYears} Years Experience
+                <p className="text-xs sm:text-sm font-semibold text-slate-700 dark:text-slate-300 mt-1">
+                  {consultant.currentRole} • {consultant.experienceYears} Years Professional Experience
                 </p>
               </div>
 
-              <div className="flex items-center gap-1 rounded-xl bg-amber-50 px-2.5 py-1.5 text-xs font-bold text-amber-700 dark:bg-amber-950 dark:text-amber-300">
-                <Star className="h-3.5 w-3.5 fill-amber-400 text-amber-400" />
+              <div className="flex items-center gap-1.5 rounded-xl bg-amber-50 border border-amber-200 px-3 py-1.5 text-xs sm:text-sm font-black text-amber-800 dark:bg-amber-950 dark:border-amber-900 dark:text-amber-300 shadow-xs">
+                <Star className="h-4 w-4 fill-amber-400 text-amber-500" />
                 <span>{consultant.rating} ({consultant.reviewCount} Sessions)</span>
               </div>
             </div>
 
-            <div className="mt-6 border-t border-slate-100 dark:border-slate-800 pt-4">
-              <h3 className="text-xs font-bold uppercase tracking-wider text-slate-400 mb-2">
+            <div className="mt-6 border-t-2 border-slate-100 dark:border-slate-800 pt-5">
+              <h3 className="text-xs font-black uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-2">
                 About the Mentor
               </h3>
-              <p className="text-xs sm:text-sm text-slate-700 dark:text-slate-300 leading-relaxed">
+              <p className="text-xs sm:text-sm text-slate-700 dark:text-slate-200 leading-relaxed font-normal">
                 {consultant.bio}
               </p>
             </div>
 
-            <div className="mt-6 grid grid-cols-1 sm:grid-cols-2 gap-4 border-t border-slate-100 dark:border-slate-800 pt-4 text-xs">
-              <div>
-                <span className="font-bold text-slate-400 uppercase text-[10px] block">Alma Mater</span>
-                <span className="font-semibold text-slate-800 dark:text-slate-200 mt-0.5 block">{consultant.almaMater}</span>
+            <div className="mt-6 grid grid-cols-1 sm:grid-cols-2 gap-4 border-t-2 border-slate-100 dark:border-slate-800 pt-5 text-xs sm:text-sm">
+              <div className="rounded-xl bg-[#F8F9FA] p-3.5 border border-slate-200 dark:bg-slate-800/80 dark:border-slate-700">
+                <span className="font-black text-slate-700 dark:text-slate-300 uppercase text-xs block">Alma Mater</span>
+                <span className="font-bold text-slate-950 dark:text-white mt-1 block text-sm">{consultant.almaMater}</span>
               </div>
-              <div>
-                <span className="font-bold text-slate-400 uppercase text-[10px] block">Highest Degree</span>
-                <span className="font-semibold text-slate-800 dark:text-slate-200 mt-0.5 block">{consultant.highestEducation}</span>
+              <div className="rounded-xl bg-[#F8F9FA] p-3.5 border border-slate-200 dark:bg-slate-800/80 dark:border-slate-700">
+                <span className="font-black text-slate-700 dark:text-slate-300 uppercase text-xs block">Highest Degree</span>
+                <span className="font-bold text-slate-950 dark:text-white mt-1 block text-sm">{consultant.highestEducation}</span>
               </div>
             </div>
 
             {/* Per-Domain Verification Table */}
-            <div className="mt-6 border-t border-slate-100 dark:border-slate-800 pt-4">
+            <div className="mt-6 border-t-2 border-slate-100 dark:border-slate-800 pt-5">
               <div className="flex items-center gap-2 mb-3">
-                <ShieldCheck className="h-4 w-4 text-teal-600" />
-                <h3 className="text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300">
+                <ShieldCheck className="h-5 w-5 text-[#138808] dark:text-emerald-400" />
+                <h3 className="text-xs sm:text-sm font-black uppercase tracking-wider text-[#0B2A4A] dark:text-white">
                   Domain Verification Audit Status
                 </h3>
               </div>
 
-              <div className="flex flex-col gap-2">
+              <div className="flex flex-col gap-2.5">
                 {consultant.domainVerifications.map((v, idx) => (
                   <div
                     key={idx}
-                    className="flex flex-col sm:flex-row sm:items-center justify-between gap-1.5 rounded-xl border border-slate-100 bg-slate-50 p-3 text-xs dark:border-slate-800 dark:bg-slate-800/50"
+                    className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 rounded-xl border-2 border-slate-200 bg-[#F8F9FA] p-3.5 text-xs sm:text-sm dark:border-slate-800 dark:bg-slate-800/60"
                   >
                     <div>
-                      <strong className="text-slate-900 dark:text-white font-bold">{v.domain} Guidance:</strong>
-                      <span className="text-slate-500 ml-1.5">{v.proofDescription}</span>
+                      <strong className="text-slate-950 dark:text-white font-bold">{v.domain} Guidance:</strong>
+                      <span className="text-slate-700 dark:text-slate-300 ml-2 font-medium">{v.proofDescription}</span>
                     </div>
 
                     <span
-                      className={`rounded-md px-2 py-0.5 text-[10px] font-bold shrink-0 self-start sm:self-auto ${
+                      className={`inline-flex items-center gap-1.5 rounded-lg px-2.5 py-1 text-xs font-black shrink-0 self-start sm:self-auto border ${
                         v.status === 'VERIFIED'
-                          ? 'bg-teal-100 text-teal-800 dark:bg-teal-950 dark:text-teal-300'
+                          ? 'bg-emerald-50 text-[#138808] border-emerald-300 dark:bg-emerald-950 dark:text-emerald-200 dark:border-emerald-800'
                           : v.status === 'REJECTED'
-                          ? 'bg-rose-100 text-rose-800 dark:bg-rose-950 dark:text-rose-300'
-                          : 'bg-amber-100 text-amber-800 dark:bg-amber-950 dark:text-amber-300'
+                          ? 'bg-rose-100 text-rose-900 border-rose-300 dark:bg-rose-950 dark:text-rose-200'
+                          : 'bg-amber-100 text-amber-900 border-amber-300 dark:bg-amber-950 dark:text-amber-200'
                       }`}
                     >
-                      {v.status === 'VERIFIED' ? '✓ Verified & Bookable' : v.status}
+                      {v.status === 'VERIFIED' ? (
+                        <>
+                          <CheckCircle2 className="h-3.5 w-3.5 text-[#138808] dark:text-emerald-400" />
+                          <span>Verified & Bookable</span>
+                        </>
+                      ) : (
+                        v.status
+                      )}
                     </span>
                   </div>
                 ))}
@@ -215,43 +218,43 @@ export default function ConsultantDetailPage() {
         </div>
 
         {/* Booking Form (1 col) */}
-        <div className="rounded-3xl border border-slate-200 bg-white p-6 sm:p-8 shadow-sm dark:border-slate-800 dark:bg-slate-900 h-fit">
-          <div className="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-4">
-            <span className="text-xs font-bold uppercase tracking-wider text-slate-400">Consultation Fee</span>
-            <span className="text-xl font-black text-slate-900 dark:text-white">
+        <div className="rounded-3xl border-2 border-slate-200 bg-white p-6 sm:p-8 shadow-xs dark:border-slate-800 dark:bg-slate-900 h-fit">
+          <div className="flex items-center justify-between border-b-2 border-slate-100 dark:border-slate-800 pb-4">
+            <span className="text-xs font-black uppercase tracking-wider text-slate-700 dark:text-slate-300">Consultation Fee</span>
+            <span className="text-2xl font-black text-slate-950 dark:text-white">
               ₹{consultant.feePerSessionINR}{' '}
-              <span className="text-xs font-normal text-slate-400">/ 45 mins</span>
+              <span className="text-xs font-bold text-slate-500">/ 45 mins</span>
             </span>
           </div>
 
           {bookingSuccess ? (
-            <div className="mt-6 rounded-2xl bg-teal-50 p-5 text-center text-xs dark:bg-teal-950/40">
-              <CheckCircle2 className="h-8 w-8 text-teal-600 mx-auto mb-2" />
-              <h4 className="font-bold text-teal-900 dark:text-teal-200 text-sm">Consultation Requested!</h4>
-              <p className="text-teal-700 dark:text-teal-300 mt-1">
+            <div className="mt-6 rounded-2xl bg-emerald-50 border-2 border-emerald-200 p-6 text-center text-xs dark:bg-emerald-950/40 dark:border-emerald-900">
+              <CheckCircle2 className="h-10 w-10 text-emerald-600 mx-auto mb-2.5" />
+              <h4 className="font-black text-emerald-950 dark:text-emerald-200 text-base">Consultation Requested!</h4>
+              <p className="text-emerald-800 dark:text-emerald-300 mt-1.5 font-medium leading-relaxed">
                 Your session request with {consultant.name} has been confirmed. You can view details in your Student Dashboard.
               </p>
               <Link
                 href="/dashboard"
-                className="mt-4 inline-block rounded-xl bg-teal-600 px-4 py-2 font-bold text-white hover:bg-teal-500"
+                className="mt-5 inline-block rounded-xl bg-emerald-600 px-5 py-2.5 font-bold text-white hover:bg-emerald-500 shadow-xs"
               >
                 Go to Dashboard
               </Link>
             </div>
           ) : (
-            <form onSubmit={handleBooking} className="mt-6 flex flex-col gap-4 text-xs">
+            <form onSubmit={handleBooking} className="mt-6 flex flex-col gap-4 text-xs sm:text-sm">
               <div>
-                <label className="block font-bold text-slate-700 dark:text-slate-300 mb-1.5">
+                <label className="block font-black text-slate-900 dark:text-white mb-2">
                   Select Verified Domain
                 </label>
-                <div className="flex flex-col gap-1.5">
+                <div className="flex flex-col gap-2">
                   {verifiedDomains.map((vd) => (
                     <label
                       key={vd.domain}
-                      className={`flex items-center gap-2 rounded-xl border p-2.5 cursor-pointer transition ${
+                      className={`flex items-center gap-2.5 rounded-xl border-2 p-3 cursor-pointer transition ${
                         selectedDomain === vd.domain
-                          ? 'border-indigo-600 bg-indigo-50/70 text-indigo-900 dark:border-indigo-400 dark:bg-indigo-950/50 dark:text-indigo-200'
-                          : 'border-slate-200 hover:bg-slate-50 dark:border-slate-700'
+                          ? 'border-[#0B2A4A] bg-blue-50/80 text-[#0B2A4A] dark:border-blue-400 dark:bg-blue-950/60 dark:text-blue-200'
+                          : 'border-slate-300 bg-white hover:bg-slate-100 hover:border-slate-400 dark:border-slate-700 dark:bg-slate-900 dark:hover:bg-slate-800'
                       }`}
                     >
                       <input
@@ -260,35 +263,36 @@ export default function ConsultantDetailPage() {
                         value={vd.domain}
                         checked={selectedDomain === vd.domain}
                         onChange={() => setSelectedDomain(vd.domain)}
-                        className="accent-indigo-600"
+                        className="accent-[#0B2A4A] h-4 w-4"
                       />
-                      <span className="font-bold">{vd.domain}</span>
+                      <span className="font-bold text-slate-950 dark:text-white">{vd.domain}</span>
                     </label>
                   ))}
                 </div>
               </div>
 
               <div>
-                <label className="block font-bold text-slate-700 dark:text-slate-300 mb-1.5">
+                <label className="block font-black text-slate-900 dark:text-white mb-1.5">
                   Preferred Date
                 </label>
                 <input
                   type="date"
                   required
+                  min={new Date().toISOString().split('T')[0]}
                   value={requestedDate}
                   onChange={(e) => setRequestedDate(e.target.value)}
-                  className="w-full rounded-xl border border-slate-200 p-2.5 focus:border-indigo-500 focus:outline-none dark:border-slate-700 dark:bg-slate-800 dark:text-white"
+                  className="w-full rounded-xl border-2 border-slate-300 bg-white p-2.5 font-semibold text-slate-900 focus:border-[#0B2A4A] focus:outline-none dark:border-slate-700 dark:bg-slate-900 dark:text-white shadow-xs"
                 />
               </div>
 
               <div>
-                <label className="block font-bold text-slate-700 dark:text-slate-300 mb-1.5">
+                <label className="block font-black text-slate-900 dark:text-white mb-1.5">
                   Preferred Slot
                 </label>
                 <select
                   value={timeSlot}
                   onChange={(e) => setTimeSlot(e.target.value)}
-                  className="w-full rounded-xl border border-slate-200 p-2.5 focus:border-indigo-500 focus:outline-none dark:border-slate-700 dark:bg-slate-800 dark:text-white"
+                  className="w-full rounded-xl border-2 border-slate-300 bg-white p-2.5 font-semibold text-slate-900 focus:border-[#0B2A4A] focus:outline-none dark:border-slate-700 dark:bg-slate-900 dark:text-white shadow-xs"
                 >
                   <option>17:00 - 17:45 IST</option>
                   <option>18:00 - 18:45 IST</option>
@@ -298,7 +302,7 @@ export default function ConsultantDetailPage() {
               </div>
 
               <div>
-                <label className="block font-bold text-slate-700 dark:text-slate-300 mb-1.5">
+                <label className="block font-black text-slate-900 dark:text-white mb-1.5">
                   Your Background & Question
                 </label>
                 <textarea
@@ -307,27 +311,27 @@ export default function ConsultantDetailPage() {
                   value={studentNotes}
                   onChange={(e) => setStudentNotes(e.target.value)}
                   placeholder="E.g. In Class 10 with 82% in math, wondering if PCM workload will be too intense..."
-                  className="w-full rounded-xl border border-slate-200 p-2.5 focus:border-indigo-500 focus:outline-none dark:border-slate-700 dark:bg-slate-800 dark:text-white"
+                  className="w-full rounded-xl border-2 border-slate-300 bg-white p-2.5 font-medium text-slate-900 focus:border-[#0B2A4A] focus:outline-none dark:border-slate-700 dark:bg-slate-900 dark:text-white shadow-xs"
                 />
               </div>
 
               {/* Share Profile Toggle */}
-              <label className="flex items-start gap-2 rounded-xl bg-slate-50 p-3 dark:bg-slate-800/40 cursor-pointer">
+              <label className="flex items-start gap-2.5 rounded-xl border border-slate-300 bg-[#F8F9FA] p-3 dark:border-slate-700 dark:bg-slate-800/60 cursor-pointer">
                 <input
                   type="checkbox"
                   checked={shareProfile}
                   onChange={(e) => setShareProfile(e.target.checked)}
-                  className="mt-0.5 accent-indigo-600 rounded"
+                  className="mt-0.5 accent-[#0B2A4A] h-4 w-4 rounded"
                 />
-                <span className="text-[11px] text-slate-600 dark:text-slate-300">
-                  <strong>Share my CARRER-GUD assessment profile summary</strong> with the mentor so they review my quiz marks & interest signals before the session.
+                <span className="text-xs text-slate-800 dark:text-slate-200 font-medium leading-relaxed">
+                  <strong className="font-bold text-slate-950 dark:text-white">Share my CAREER-GUD assessment profile summary</strong> with the mentor so they review my quiz marks & interest signals before the session.
                 </span>
               </label>
 
               <button
                 type="submit"
                 disabled={bookingLoading}
-                className="mt-2 w-full rounded-xl bg-indigo-600 py-3 font-bold text-white hover:bg-indigo-500 disabled:opacity-50 transition shadow-md shadow-indigo-600/20"
+                className="mt-2 w-full rounded-xl bg-[#0B2A4A] py-3 font-black text-white hover:bg-[#071C33] disabled:opacity-50 transition shadow-xs"
               >
                 {bookingLoading ? 'Submitting Request...' : 'Confirm Consultation Request'}
               </button>

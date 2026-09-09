@@ -9,7 +9,7 @@ export interface User {
   createdAt: string;
 }
 
-export type ClassLevel = 'CLASS_10' | 'CLASS_12' | 'POST_12' | 'UNDERGRAD';
+export type ClassLevel = 'CLASS_9' | 'CLASS_10' | 'CLASS_11' | 'CLASS_12' | 'POST_12' | 'UNDERGRAD';
 
 export type StreamType =
   | 'SCIENCE_PCM'
@@ -216,11 +216,13 @@ export interface ConsultantProfile {
   highestEducation: string;
   almaMater: string;
   currentRole: string;
+  phone?: string;
   linkedinUrl?: string;
   feePerSessionINR: number;
   rating: number;
   reviewCount: number;
   avatarUrl?: string;
+  verificationStatus?: VerificationStatus;
   domainVerifications: ConsultantDomainVerification[];
 }
 

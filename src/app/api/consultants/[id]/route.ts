@@ -13,9 +13,15 @@ export async function GET(
       return NextResponse.json({ error: 'Consultant not found' }, { status: 404 });
     }
 
-    return NextResponse.json(consultant);
+    // Sanitize: redact mentor private email, phone, and admin audit remarks from public view
+    const { email: _email, phone: _phone, ...sanitizedProfile } = consultant;
+    const cleanVerifications = (sanitizedProfile.domainVerifications || []).map(
+      ({ adminNotes: _notes, ...dv }) => dv
+    );
+    return NextResponse.json({ ...sanitizedProfile, domainVerifications: cleanVerifications });
   } catch (error) {
     console.error('Error fetching consultant:', error);
     return NextResponse.json({ error: 'Failed to fetch consultant' }, { status: 500 });
   }
 }
+

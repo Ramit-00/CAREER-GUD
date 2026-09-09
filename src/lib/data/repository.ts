@@ -4,7 +4,6 @@ import {
   ConsultantDomain,
   ConsultantProfile,
   ConsultationBooking,
-  QuizAttempt,
   QuizResult,
   Review,
   StudentProfile,
@@ -27,11 +26,11 @@ interface DataStore {
 
 declare global {
   // eslint-disable-next-line no-var
-  var __CARRER_GUD_STORE__: DataStore | undefined;
+  var __CAREER_GUD_STORE__: DataStore | undefined;
 }
 
 function getStore(): DataStore {
-  if (!global.__CARRER_GUD_STORE__) {
+  if (!global.__CAREER_GUD_STORE__) {
     const initialProfiles = new Map<string, StudentProfile>();
     initialProfiles.set('user_student_1', {
       userId: 'user_student_1',
@@ -82,7 +81,7 @@ function getStore(): DataStore {
         id: 'book_1',
         studentId: 'user_student_1',
         studentName: 'Aarav Patel',
-        studentEmail: 'student@carrer-gud.in',
+        studentEmail: 'student@career-gud.in',
         consultantId: 'cons_1',
         consultantName: 'Dr. Ananya Sharma',
         domain: 'MEDICAL',
@@ -101,7 +100,7 @@ function getStore(): DataStore {
       },
     ];
 
-    global.__CARRER_GUD_STORE__ = {
+    global.__CAREER_GUD_STORE__ = {
       users: [...SEED_USERS],
       profiles: initialProfiles,
       careers: [...SEED_CAREERS],
@@ -113,7 +112,7 @@ function getStore(): DataStore {
     };
   }
 
-  return global.__CARRER_GUD_STORE__;
+  return global.__CAREER_GUD_STORE__;
 }
 
 export const repository = {
@@ -184,6 +183,15 @@ export const repository = {
 
   async addReview(review: Omit<Review, 'id' | 'createdAt'>): Promise<Review> {
     const store = getStore();
+
+    // Prevent duplicate reviews by the same user
+    const existingIndex = store.reviews.findIndex(
+      (r) => r.userId === review.userId && r.targetType === review.targetType && r.targetId === review.targetId
+    );
+    if (existingIndex !== -1) {
+      throw new Error('User has already reviewed this target.');
+    }
+
     const newReview: Review = {
       ...review,
       id: `rev_${Date.now()}`,
