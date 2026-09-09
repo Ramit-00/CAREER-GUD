@@ -39,7 +39,7 @@ export const SEED_USERS: (User & { password: string })[] = [
   {
     id: 'user_admin_1',
     name: 'Prof. Vikram Sen (Admin)',
-    email: 'admin@career-gud.in',
+    email: process.env.ADMIN_EMAIL || 'admin@example.com',
     password: 'password123',
     role: 'ADMIN',
     createdAt: '2024-10-01T10:00:00Z',

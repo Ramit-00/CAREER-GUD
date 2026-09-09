@@ -24,13 +24,13 @@ test('security: bcrypt password hashing verification works properly', async () =
 });
 
 test('security: admin account exists with bcrypt hash in database', async () => {
-  const admin =
-    (await prisma.user.findUnique({
-      where: { email: 'admin@career-gud.in' },
-    })) ||
-    (await prisma.user.findUnique({
-      where: { email: 'admin@carrer-gud.in' },
-    }));
+  const adminEmail = process.env.ADMIN_EMAIL;
+  const admin = await prisma.user.findFirst({
+    where: {
+      role: 'ADMIN',
+      ...(adminEmail ? { email: adminEmail } : {}),
+    },
+  });
 
   assert.ok(admin, 'Admin account must exist in database');
   assert.strictEqual(admin.role, 'ADMIN');

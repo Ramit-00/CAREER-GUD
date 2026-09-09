@@ -92,7 +92,7 @@ function AdminPortalLoginForm() {
                 required
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                placeholder="admin@career-gud.in"
+                placeholder="admin@example.com"
                 className="w-full rounded-xl border border-slate-700 bg-slate-900/90 py-3 pl-11 pr-3.5 text-xs sm:text-sm font-medium text-white focus:border-amber-400 focus:outline-none shadow-xs"
               />
             </div>
