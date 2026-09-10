@@ -12,6 +12,7 @@ import {
 } from '@/types';
 import { SEED_CAREERS, SEED_COLLEGES, SEED_CONSULTANTS, SEED_USERS } from './seedData';
 import { prisma } from '@/lib/prisma';
+import { cacheGetOrSet, cacheDelete } from '@/lib/redis';
 
 // Global in-memory mutable store for zero-config graceful degradation
 interface DataStore {
@@ -119,8 +120,16 @@ function getStore(): DataStore {
 export const repository = {
   // Careers
   async getCareers(filter?: { stream?: string; search?: string }): Promise<Career[]> {
-    const store = getStore();
-    let list = store.careers;
+    const allCareers = await cacheGetOrSet(
+      'cache:careers:all',
+      async () => {
+        const store = getStore();
+        return store.careers;
+      },
+      1800
+    );
+
+    let list = allCareers;
 
     if (filter?.stream && filter.stream !== 'ALL') {
       list = list.filter((c) => c.streamCategory === filter.stream);
@@ -140,14 +149,28 @@ export const repository = {
   },
 
   async getCareerBySlug(slug: string): Promise<Career | null> {
-    const store = getStore();
-    return store.careers.find((c) => c.slug === slug) || null;
+    return cacheGetOrSet(
+      `cache:career:${slug}`,
+      async () => {
+        const store = getStore();
+        return store.careers.find((c) => c.slug === slug) || null;
+      },
+      1800
+    );
   },
 
   // Colleges
   async getColleges(filter?: { state?: string; type?: string; search?: string }): Promise<College[]> {
-    const store = getStore();
-    let list = store.colleges;
+    const allColleges = await cacheGetOrSet(
+      'cache:colleges:all',
+      async () => {
+        const store = getStore();
+        return store.colleges;
+      },
+      1800
+    );
+
+    let list = allColleges;
 
     if (filter?.state && filter.state !== 'ALL') {
       list = list.filter((c) => c.state === filter.state);
@@ -172,39 +195,51 @@ export const repository = {
   },
 
   async getCollegeBySlug(slug: string): Promise<College | null> {
-    const store = getStore();
-    return store.colleges.find((c) => c.slug === slug) || null;
+    return cacheGetOrSet(
+      `cache:college:${slug}`,
+      async () => {
+        const store = getStore();
+        return store.colleges.find((c) => c.slug === slug) || null;
+      },
+      1800
+    );
   },
 
-  // Reviews - Database persistence with in-memory fallback
+  // Reviews - Database persistence with Redis read caching & in-memory fallback
   async getReviews(targetType: 'COLLEGE' | 'CAREER', targetId: string): Promise<Review[]> {
-    const store = getStore();
-    try {
-      const dbReviews = await prisma.review.findMany({
-        where: { targetType, targetId },
-        include: { user: true },
-        orderBy: { createdAt: 'desc' },
-      });
+    return cacheGetOrSet(
+      `cache:reviews:${targetType}:${targetId}`,
+      async () => {
+        const store = getStore();
+        try {
+          const dbReviews = await prisma.review.findMany({
+            where: { targetType, targetId },
+            include: { user: true },
+            orderBy: { createdAt: 'desc' },
+          });
 
-      if (dbReviews && dbReviews.length > 0) {
-        return dbReviews.map((r) => ({
-          id: r.id,
-          userId: r.userId,
-          userName: r.user.name,
-          userRole: r.user.role as any,
-          targetType: r.targetType as 'COLLEGE' | 'CAREER',
-          targetId: r.targetId,
-          rating: r.rating,
-          title: r.title,
-          comment: r.comment,
-          createdAt: r.createdAt.toISOString(),
-        }));
-      }
-    } catch (err) {
-      console.warn('Database getReviews fallback:', err);
-    }
+          if (dbReviews && dbReviews.length > 0) {
+            return dbReviews.map((r) => ({
+              id: r.id,
+              userId: r.userId,
+              userName: r.user.name,
+              userRole: r.user.role as any,
+              targetType: r.targetType as 'COLLEGE' | 'CAREER',
+              targetId: r.targetId,
+              rating: r.rating,
+              title: r.title,
+              comment: r.comment,
+              createdAt: r.createdAt.toISOString(),
+            }));
+          }
+        } catch (err) {
+          console.warn('Database getReviews fallback:', err);
+        }
 
-    return store.reviews.filter((r) => r.targetType === targetType && r.targetId === targetId);
+        return store.reviews.filter((r) => r.targetType === targetType && r.targetId === targetId);
+      },
+      300
+    );
   },
 
   async addReview(review: Omit<Review, 'id' | 'createdAt'>): Promise<Review> {
@@ -252,6 +287,12 @@ export const repository = {
         col.avgRating = Number(avg.toFixed(2));
         col.reviewCount = allColReviews.length;
       }
+      // Evict Redis caches
+      cacheDelete([
+        'cache:colleges:all',
+        `cache:college:${review.targetId}`,
+        `cache:reviews:COLLEGE:${review.targetId}`,
+      ]).catch(() => {});
     } else {
       const car = store.careers.find((c) => c.id === review.targetId || c.slug === review.targetId);
       if (car) {
@@ -260,6 +301,12 @@ export const repository = {
         car.avgRating = Number(avg.toFixed(2));
         car.reviewCount = allCarReviews.length;
       }
+      // Evict Redis caches
+      cacheDelete([
+        'cache:careers:all',
+        `cache:career:${review.targetId}`,
+        `cache:reviews:CAREER:${review.targetId}`,
+      ]).catch(() => {});
     }
 
     return newReview;

@@ -7,7 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "test": "npx tsx --env-file=.env --test --test-concurrency=1 src/tests/engine.test.ts src/tests/auth-security.test.ts src/tests/serverless-features.test.ts",
+    "test": "npx tsx --env-file=.env --test --test-concurrency=1 src/tests/engine.test.ts src/tests/auth-security.test.ts src/tests/serverless-features.test.ts src/tests/redis.test.ts",
     "security:check": "npx tsx scripts/security-check.ts",
     "verify": "npm run security:check && npm test && npm run lint -- --quiet && npm run build",
     "prepare": "git config core.hooksPath .githooks || true",
@@ -17,6 +17,7 @@
   },
   "dependencies": {
     "@prisma/client": "^6.19.3",
+    "@upstash/redis": "^1.38.4",
     "bcryptjs": "^3.0.3",
     "canvas-confetti": "^1.9.4",
     "clsx": "^2.1.1",
