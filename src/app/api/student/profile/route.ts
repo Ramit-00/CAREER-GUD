@@ -88,10 +88,13 @@ export async function POST(req: NextRequest) {
     const data = parsed.data;
     const userId = token.id as string;
 
+    // Sanitize user text inputs to prevent stored XSS
+    const stripHtml = (str?: string | null) => (str ? str.replace(/<[^>]*>?/gm, '').trim() : str);
+
     // Update user name if provided
     let updatedUserName = token.name as string;
     if (data.name && data.name.trim()) {
-      const cleanName = data.name.trim();
+      const cleanName = stripHtml(data.name)!;
       const updatedUser = await prisma.user.update({
         where: { id: userId },
         data: { name: cleanName },
@@ -99,30 +102,35 @@ export async function POST(req: NextRequest) {
       updatedUserName = updatedUser.name;
     }
 
+    const cleanAboutMe = data.aboutMe !== undefined ? (data.aboutMe === null ? null : stripHtml(data.aboutMe)) : undefined;
+    const cleanBoard = data.board !== undefined ? (data.board === null ? null : stripHtml(data.board)) : undefined;
+    const cleanInterests = data.interests ? data.interests.map((i) => stripHtml(i) || '').filter(Boolean) : undefined;
+    const cleanStrengths = data.strengths ? data.strengths.map((s) => stripHtml(s) || '').filter(Boolean) : undefined;
+
     const profile = await prisma.studentProfile.upsert({
       where: { userId },
       update: {
-        aboutMe: data.aboutMe !== undefined ? data.aboutMe : undefined,
+        aboutMe: cleanAboutMe,
         currentClass: data.currentClass !== undefined ? data.currentClass : undefined,
         currentStream: data.currentStream !== undefined ? data.currentStream : undefined,
-        board: data.board !== undefined ? data.board : undefined,
+        board: cleanBoard,
         previousClassPercentage: data.previousClassPercentage !== undefined ? data.previousClassPercentage : undefined,
         tenthPercentage: data.tenthPercentage !== undefined ? data.tenthPercentage : undefined,
         twelfthPercentage: data.twelfthPercentage !== undefined ? data.twelfthPercentage : undefined,
-        interests: data.interests || undefined,
-        strengths: data.strengths || undefined,
+        interests: cleanInterests,
+        strengths: cleanStrengths,
       },
       create: {
         userId,
-        aboutMe: data.aboutMe || null,
+        aboutMe: cleanAboutMe || null,
         currentClass: data.currentClass || null,
         currentStream: data.currentStream || null,
-        board: data.board || null,
+        board: cleanBoard || null,
         previousClassPercentage: data.previousClassPercentage ?? null,
         tenthPercentage: data.tenthPercentage ?? null,
         twelfthPercentage: data.twelfthPercentage ?? null,
-        interests: data.interests || [],
-        strengths: data.strengths || [],
+        interests: cleanInterests || [],
+        strengths: cleanStrengths || [],
       },
     });
 

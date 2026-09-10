@@ -7,17 +7,19 @@ const rateLimitMap = new Map<string, { count: number; resetTime: number }>();
 
 interface RateRule {
   limit: number;
+  unauthLimit?: number;
   windowMs: number;
   postOnly?: boolean;
 }
 
 const RATE_RULES: Record<string, RateRule> = {
-  '/api/chat': { limit: 30, windowMs: 60 * 1000 },
+  '/api/chat': { limit: 30, unauthLimit: 10, windowMs: 60 * 1000 },
   '/api/auth/register': { limit: 10, windowMs: 60 * 1000, postOnly: true },
   '/api/auth/register-advisor': { limit: 10, windowMs: 60 * 1000, postOnly: true },
   '/api/reviews': { limit: 15, windowMs: 60 * 1000, postOnly: true },
   '/api/quiz/submit': { limit: 20, windowMs: 60 * 1000, postOnly: true },
   '/api/consultants/apply': { limit: 10, windowMs: 60 * 1000, postOnly: true },
+  '/api/consultants/bookings': { limit: 15, windowMs: 60 * 1000, postOnly: true },
 };
 
 function pruneRateLimitMap() {
@@ -31,18 +33,30 @@ function pruneRateLimitMap() {
   }
 }
 
-function checkRateLimit(req: NextRequest, path: string): NextResponse | null {
+function getClientIdentifier(req: NextRequest, userId?: string): string {
+  if (userId) {
+    return `user:${userId}`;
+  }
+  // Trusted reverse-proxy IP extraction (prevents simple X-Forwarded-For injection)
+  const realIp = req.headers.get('x-real-ip');
+  const cfIp = req.headers.get('cf-connecting-ip');
+  const vercelIp = req.headers.get('x-vercel-forwarded-for')?.split(',')[0].trim();
+  const forwardedFor = req.headers.get('x-forwarded-for')?.split(',')[0].trim();
+
+  const ip = realIp || cfIp || vercelIp || forwardedFor || '127.0.0.1';
+  return `ip:${ip}`;
+}
+
+function checkRateLimit(req: NextRequest, path: string, userId?: string): NextResponse | null {
   for (const [endpoint, rule] of Object.entries(RATE_RULES)) {
     if (path === endpoint || path.startsWith(`${endpoint}/`)) {
       if (rule.postOnly && req.method !== 'POST') {
         continue;
       }
       pruneRateLimitMap();
-      const ip =
-        req.headers.get('x-real-ip') ||
-        req.headers.get('x-forwarded-for')?.split(',')[0].trim() ||
-        '127.0.0.1';
-      const key = `${ip}:${endpoint}`;
+      const identifier = getClientIdentifier(req, userId);
+      const key = `${identifier}:${endpoint}`;
+      const effectiveLimit = !userId && rule.unauthLimit ? rule.unauthLimit : rule.limit;
       const currentTime = Date.now();
       const rateData = rateLimitMap.get(key) || { count: 0, resetTime: currentTime + rule.windowMs };
 
@@ -54,12 +68,19 @@ function checkRateLimit(req: NextRequest, path: string): NextResponse | null {
       }
       rateLimitMap.set(key, rateData);
 
-      if (rateData.count > rule.limit) {
+      if (rateData.count > effectiveLimit) {
+        const retryAfterSec = Math.max(1, Math.ceil((rateData.resetTime - currentTime) / 1000));
         return new NextResponse(
           JSON.stringify({
             error: 'Too many requests. Rate limit exceeded. Please wait a moment before trying again.',
           }),
-          { status: 429, headers: { 'Content-Type': 'application/json' } }
+          {
+            status: 429,
+            headers: {
+              'Content-Type': 'application/json',
+              'Retry-After': retryAfterSec.toString(),
+            },
+          }
         );
       }
     }
@@ -70,18 +91,19 @@ function checkRateLimit(req: NextRequest, path: string): NextResponse | null {
 export async function middleware(req: NextRequest) {
   const path = req.nextUrl.pathname;
 
-  // 1. Rate limiting on sensitive endpoints
-  const rateLimitResponse = checkRateLimit(req, path);
-  if (rateLimitResponse) {
-    return rateLimitResponse;
-  }
-
-  // 2. Token extraction & Role-based Access Control
+  // 1. Token extraction & Role-based Access Control
   const token = await getToken({ 
     req, 
     secret: getJwtSecret()
   });
   const role = token?.role as string | undefined;
+  const userId = token?.id as string | undefined;
+
+  // 2. Rate limiting on sensitive endpoints (session-aware)
+  const rateLimitResponse = checkRateLimit(req, path, userId);
+  if (rateLimitResponse) {
+    return rateLimitResponse;
+  }
 
   // Protect Admin API routes (Return 401/403 JSON, never HTML redirects)
   if (path.startsWith('/api/admin')) {
@@ -181,12 +203,15 @@ export const config = {
     '/admin/:path*', 
     '/onboarding/:path*',
     '/api/admin/:path*',
+    '/api/chat',
     '/api/chat/:path*',
     '/api/auth/register',
     '/api/auth/register-advisor',
     '/api/reviews/:path*',
     '/api/quiz/:path*',
-    '/api/consultants/apply'
+    '/api/consultants/apply',
+    '/api/consultants/bookings',
+    '/api/consultants/bookings/:path*',
   ],
 };
 

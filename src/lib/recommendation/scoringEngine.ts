@@ -52,19 +52,35 @@ export const scoringEngine = {
       }
     });
 
-    // If student has explicit academic marks, blend them into the aptitude score
-    if (userProfile?.mathScore !== undefined) {
-      if (userProfile.mathScore >= 80) {
+    // If student has explicit academic marks, blend them safely into the aptitude score
+    const safeMath =
+      typeof userProfile?.mathScore === 'number' &&
+      Number.isFinite(userProfile.mathScore) &&
+      userProfile.mathScore >= 0 &&
+      userProfile.mathScore <= 100
+        ? userProfile.mathScore
+        : undefined;
+
+    const safeScience =
+      typeof userProfile?.scienceScore === 'number' &&
+      Number.isFinite(userProfile.scienceScore) &&
+      userProfile.scienceScore >= 0 &&
+      userProfile.scienceScore <= 100
+        ? userProfile.scienceScore
+        : undefined;
+
+    if (safeMath !== undefined) {
+      if (safeMath >= 80) {
         scores.SCIENCE_PCM += 4;
         scores.COMMERCE_MATHS += 3;
-      } else if (userProfile.mathScore < 60) {
+      } else if (safeMath < 60) {
         scores.COMMERCE_NO_MATHS += 3;
         scores.ARTS += 3;
       }
     }
 
-    if (userProfile?.scienceScore !== undefined) {
-      if (userProfile.scienceScore >= 80) {
+    if (safeScience !== undefined) {
+      if (safeScience >= 80) {
         scores.SCIENCE_PCB += 3;
         scores.SCIENCE_PCM += 3;
       }
