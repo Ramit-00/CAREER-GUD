@@ -47,16 +47,80 @@ function getClientIdentifier(req: NextRequest, userId?: string): string {
   return `ip:${ip}`;
 }
 
-function checkRateLimit(req: NextRequest, path: string, userId?: string): NextResponse | null {
+// Distributed Upstash Redis Edge rate limiter with automatic in-memory fallback
+async function checkDistributedRateLimit(
+  key: string,
+  limit: number,
+  windowMs: number
+): Promise<{ success: boolean; retryAfterSec: number } | null> {
+  const url = process.env.UPSTASH_REDIS_REST_URL;
+  const token = process.env.UPSTASH_REDIS_REST_TOKEN;
+
+  if (url && token && url.startsWith('http')) {
+    try {
+      const windowSec = Math.max(1, Math.ceil(windowMs / 1000));
+      const res = await fetch(`${url.replace(/\/$/, '')}/pipeline`, {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify([
+          ['INCR', `ratelimit:${key}`],
+          ['EXPIRE', `ratelimit:${key}`, windowSec, 'NX'],
+        ]),
+        signal: AbortSignal.timeout(1000),
+      });
+
+      if (res.ok) {
+        const data = await res.json();
+        const currentCount = Number(data[0]?.result) || 1;
+        if (currentCount > limit) {
+          return { success: false, retryAfterSec: windowSec };
+        }
+        return { success: true, retryAfterSec: 0 };
+      }
+    } catch {
+      // Fallback to local in-memory rate limiter on network error or timeout
+    }
+  }
+
+  return null; // Signals fallback to in-memory rate limiter
+}
+
+async function checkRateLimit(req: NextRequest, path: string, userId?: string): Promise<NextResponse | null> {
   for (const [endpoint, rule] of Object.entries(RATE_RULES)) {
     if (path === endpoint || path.startsWith(`${endpoint}/`)) {
       if (rule.postOnly && req.method !== 'POST') {
         continue;
       }
-      pruneRateLimitMap();
+
       const identifier = getClientIdentifier(req, userId);
       const key = `${identifier}:${endpoint}`;
       const effectiveLimit = !userId && rule.unauthLimit ? rule.unauthLimit : rule.limit;
+
+      // 1. Attempt distributed Upstash rate limiting across Edge PoPs
+      const upstashResult = await checkDistributedRateLimit(key, effectiveLimit, rule.windowMs);
+      if (upstashResult !== null) {
+        if (!upstashResult.success) {
+          return new NextResponse(
+            JSON.stringify({
+              error: 'Too many requests. Rate limit exceeded. Please wait a moment before trying again.',
+            }),
+            {
+              status: 429,
+              headers: {
+                'Content-Type': 'application/json',
+                'Retry-After': upstashResult.retryAfterSec.toString(),
+              },
+            }
+          );
+        }
+        return null;
+      }
+
+      // 2. Fallback to in-memory sliding window rate limiter
+      pruneRateLimitMap();
       const currentTime = Date.now();
       const rateData = rateLimitMap.get(key) || { count: 0, resetTime: currentTime + rule.windowMs };
 
@@ -99,8 +163,8 @@ export async function middleware(req: NextRequest) {
   const role = token?.role as string | undefined;
   const userId = token?.id as string | undefined;
 
-  // 2. Rate limiting on sensitive endpoints (session-aware)
-  const rateLimitResponse = checkRateLimit(req, path, userId);
+  // 2. Rate limiting on sensitive endpoints (session-aware with Edge Redis support)
+  const rateLimitResponse = await checkRateLimit(req, path, userId);
   if (rateLimitResponse) {
     return rateLimitResponse;
   }
@@ -207,6 +271,7 @@ export const config = {
     '/api/chat/:path*',
     '/api/auth/register',
     '/api/auth/register-advisor',
+    '/api/reviews',
     '/api/reviews/:path*',
     '/api/quiz/:path*',
     '/api/consultants/apply',

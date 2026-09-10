@@ -54,12 +54,15 @@ export async function POST(req: NextRequest) {
         data: { verificationStatus: newStatus },
       });
 
+      const auditTag = `[Audited by ${token.email || token.id}]`;
+      const fullNotes = adminNotes ? `${adminNotes} ${auditTag}` : `${action === 'APPROVE' ? 'Verified' : 'Updated'} by Admin ${auditTag}`;
+
       // 2. Also update all domain verifications under this consultant
       await prisma.consultantDomainVerification.updateMany({
         where: { consultantId },
         data: {
           status: newStatus,
-          adminNotes: adminNotes || (action === 'APPROVE' ? 'Verified by Admin' : 'Rejected by Admin'),
+          adminNotes: fullNotes,
           verifiedAt: newStatus === 'VERIFIED' ? new Date() : null,
         },
       });
@@ -82,6 +85,8 @@ export async function POST(req: NextRequest) {
 
     // Case B: Specific Domain Verification
     const { consultantId, domain, status, adminNotes } = data;
+    const auditTag = `[Audited by ${token.email || token.id}]`;
+    const fullNotes = adminNotes ? `${adminNotes} ${auditTag}` : `Domain ${status.toLowerCase()} by Admin ${auditTag}`;
 
     // 1. Update ConsultantDomainVerification in Supabase PostgreSQL
     await prisma.consultantDomainVerification.upsert({
@@ -93,7 +98,7 @@ export async function POST(req: NextRequest) {
       },
       update: {
         status,
-        adminNotes,
+        adminNotes: fullNotes,
         verifiedAt: status === 'VERIFIED' ? new Date() : null,
       },
       create: {
@@ -101,7 +106,7 @@ export async function POST(req: NextRequest) {
         domain,
         status,
         proofDescription: 'Admin evaluation record',
-        adminNotes,
+        adminNotes: fullNotes,
         verifiedAt: status === 'VERIFIED' ? new Date() : null,
       },
     });

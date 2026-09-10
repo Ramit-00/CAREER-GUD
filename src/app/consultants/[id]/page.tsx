@@ -1,16 +1,22 @@
 'use client';
 
-import { ConsultantDomain, ConsultantProfile } from '@/types';
+import { ConsultantDomain, ConsultantProfile, ConsultationBooking } from '@/types';
 import {
+  AlertCircle,
   ArrowLeft,
+  Calendar,
   CheckCircle2,
+  Download,
+  ExternalLink,
   ShieldCheck,
   Star,
+  Video,
 } from 'lucide-react';
 import { useSession } from 'next-auth/react';
 import Link from 'next/link';
 import { useParams, useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
+import { downloadIcsFile, generateGoogleCalendarUrl, generateIcsContent } from '@/lib/calendar';
 
 export default function ConsultantDetailPage() {
   const params = useParams();
@@ -29,6 +35,8 @@ export default function ConsultantDetailPage() {
   const [shareProfile, setShareProfile] = useState(true);
   const [bookingLoading, setBookingLoading] = useState(false);
   const [bookingSuccess, setBookingSuccess] = useState(false);
+  const [bookingError, setBookingError] = useState<string | null>(null);
+  const [confirmedBooking, setConfirmedBooking] = useState<ConsultationBooking | null>(null);
 
   const fetchConsultant = async () => {
     setLoading(true);
@@ -58,13 +66,14 @@ export default function ConsultantDetailPage() {
 
   const handleBooking = async (e: React.FormEvent) => {
     e.preventDefault();
+    setBookingError(null);
     if (!session) {
       router.push(`/login?callbackUrl=/consultants/${id}`);
       return;
     }
 
     if (!selectedDomain) {
-      alert('Please select a verified domain for this consultation.');
+      setBookingError('Please select a verified domain for this consultation.');
       return;
     }
 
@@ -84,12 +93,16 @@ export default function ConsultantDetailPage() {
         }),
       });
 
-      if (!res.ok) throw new Error('Booking failed');
+      const resData = await res.json();
+      if (!res.ok) {
+        throw new Error(resData.error || 'Booking request failed');
+      }
 
+      setConfirmedBooking(resData);
       setBookingSuccess(true);
-    } catch (err) {
+    } catch (err: any) {
       console.error('Booking error:', err);
-      alert('Failed to submit booking. Please try again.');
+      setBookingError(err.message || 'Failed to submit booking. Please try again.');
     } finally {
       setBookingLoading(false);
     }
@@ -228,21 +241,113 @@ export default function ConsultantDetailPage() {
           </div>
 
           {bookingSuccess ? (
-            <div className="mt-6 rounded-2xl bg-emerald-50 border-2 border-emerald-200 p-6 text-center text-xs dark:bg-emerald-950/40 dark:border-emerald-900">
-              <CheckCircle2 className="h-10 w-10 text-emerald-600 mx-auto mb-2.5" />
-              <h4 className="font-black text-emerald-950 dark:text-emerald-200 text-base">Consultation Requested!</h4>
-              <p className="text-emerald-800 dark:text-emerald-300 mt-1.5 font-medium leading-relaxed">
-                Your session request with {consultant.name} has been confirmed. You can view details in your Student Dashboard.
-              </p>
-              <Link
-                href="/dashboard"
-                className="mt-5 inline-block rounded-xl bg-emerald-600 px-5 py-2.5 font-bold text-white hover:bg-emerald-500 shadow-xs"
-              >
-                Go to Dashboard
-              </Link>
+            <div className="mt-6 rounded-2xl bg-emerald-50 border-2 border-emerald-200 p-6 text-xs dark:bg-emerald-950/40 dark:border-emerald-900 text-left">
+              <div className="text-center mb-4">
+                <CheckCircle2 className="h-10 w-10 text-emerald-600 mx-auto mb-2" />
+                <h4 className="font-black text-emerald-950 dark:text-emerald-200 text-base">Consultation Confirmed!</h4>
+                <p className="text-emerald-800 dark:text-emerald-300 mt-1 font-medium leading-relaxed">
+                  Your 1-on-1 session with <strong className="font-bold text-emerald-950 dark:text-white">{consultant.name}</strong> is scheduled.
+                </p>
+              </div>
+
+              {/* Slot & Meeting Details */}
+              <div className="rounded-xl bg-white p-3.5 border border-emerald-200 dark:bg-slate-900 dark:border-emerald-900 flex flex-col gap-2 mb-4">
+                <div className="flex items-center justify-between text-xs">
+                  <span className="text-slate-600 dark:text-slate-400 font-semibold">Date & Time:</span>
+                  <span className="font-black text-slate-950 dark:text-white">{requestedDate} • {timeSlot}</span>
+                </div>
+                <div className="flex items-center justify-between text-xs">
+                  <span className="text-slate-600 dark:text-slate-400 font-semibold">Domain:</span>
+                  <span className="font-bold text-[#0B2A4A] dark:text-blue-300">{selectedDomain}</span>
+                </div>
+                {confirmedBooking?.meetingUrl && (
+                  <div className="pt-2 border-t border-slate-100 dark:border-slate-800">
+                    <span className="text-[11px] uppercase tracking-wider font-black text-slate-600 dark:text-slate-400 block mb-1">
+                      Private Video Meeting Room
+                    </span>
+                    <a
+                      href={confirmedBooking.meetingUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex items-center justify-center gap-2 rounded-xl bg-blue-600 px-4 py-2.5 text-xs font-black text-white hover:bg-blue-700 transition shadow-xs w-full"
+                    >
+                      <Video className="h-4 w-4" />
+                      <span>Join Jitsi Video Room</span>
+                      <ExternalLink className="h-3.5 w-3.5 opacity-80" />
+                    </a>
+                  </div>
+                )}
+              </div>
+
+              {/* Calendar Sync Actions */}
+              <div className="flex flex-col gap-2 mb-4">
+                {confirmedBooking && (
+                  <>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        const ics = generateIcsContent({
+                          title: `CAREER-GUD Consultation with ${consultant.name}`,
+                          description: `Domain: ${selectedDomain}\nNotes: ${studentNotes}`,
+                          date: requestedDate,
+                          timeSlot: timeSlot,
+                          meetingUrl: confirmedBooking.meetingUrl,
+                        });
+                        downloadIcsFile(`consultation-${consultant.name.replace(/\s+/g, '-').toLowerCase()}-${requestedDate}.ics`, ics);
+                      }}
+                      className="flex items-center justify-center gap-2 rounded-xl border-2 border-slate-300 bg-white px-4 py-2 text-xs font-bold text-slate-800 hover:bg-slate-100 dark:border-slate-700 dark:bg-slate-850 dark:text-slate-200 dark:hover:bg-slate-800 transition cursor-pointer"
+                    >
+                      <Download className="h-3.5 w-3.5 text-emerald-600" />
+                      <span>Download .ics Calendar Invite</span>
+                    </button>
+
+                    <a
+                      href={generateGoogleCalendarUrl({
+                        title: `CAREER-GUD Consultation: ${consultant.name} (${selectedDomain})`,
+                        description: `Career Guidance session with ${consultant.name}.\n\nQuestions/Notes: ${studentNotes}`,
+                        date: requestedDate,
+                        timeSlot: timeSlot,
+                        meetingUrl: confirmedBooking.meetingUrl,
+                      })}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex items-center justify-center gap-2 rounded-xl border-2 border-slate-300 bg-white px-4 py-2 text-xs font-bold text-slate-800 hover:bg-slate-100 dark:border-slate-700 dark:bg-slate-850 dark:text-slate-200 dark:hover:bg-slate-800 transition"
+                    >
+                      <Calendar className="h-3.5 w-3.5 text-blue-600" />
+                      <span>Add to Google Calendar</span>
+                      <ExternalLink className="h-3 w-3 opacity-70" />
+                    </a>
+                  </>
+                )}
+              </div>
+
+              <div className="flex items-center justify-between gap-2 pt-2 border-t border-emerald-200 dark:border-emerald-900">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setBookingSuccess(false);
+                    setConfirmedBooking(null);
+                  }}
+                  className="text-xs font-bold text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white"
+                >
+                  ← Book Another
+                </button>
+                <Link
+                  href="/dashboard"
+                  className="rounded-xl bg-[#0B2A4A] px-4 py-2 text-xs font-bold text-white hover:bg-[#071C33] shadow-xs"
+                >
+                  Student Dashboard →
+                </Link>
+              </div>
             </div>
           ) : (
             <form onSubmit={handleBooking} className="mt-6 flex flex-col gap-4 text-xs sm:text-sm">
+              {bookingError && (
+                <div className="flex items-start gap-2.5 rounded-xl border border-red-300 bg-red-50 p-3 text-xs font-semibold text-red-900 dark:border-red-900 dark:bg-red-950 dark:text-red-200">
+                  <AlertCircle className="h-4 w-4 text-red-600 shrink-0 mt-0.5" />
+                  <span>{bookingError}</span>
+                </div>
+              )}
               <div>
                 <label className="block font-black text-slate-900 dark:text-white mb-2">
                   Select Verified Domain

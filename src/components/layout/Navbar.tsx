@@ -290,6 +290,18 @@ export function Navbar() {
           </Link>
 
           <Link
+            href="/tools"
+            className={`flex items-center gap-1.5 px-3 py-2 rounded-xl hover:bg-slate-100 hover:text-slate-950 dark:hover:bg-slate-800 dark:hover:text-white transition-colors ${
+              pathname.startsWith('/tools')
+                ? 'text-[#0B2A4A] dark:text-amber-400 font-extrabold bg-amber-50/70 border-b-2 border-[#D96B00] dark:bg-slate-800'
+                : ''
+            }`}
+          >
+            <Compass className="h-4 w-4 opacity-70" />
+            <span>Tools</span>
+          </Link>
+
+          <Link
             href="/chat"
             className={`flex items-center gap-1.5 px-3 py-2 rounded-xl hover:bg-slate-100 hover:text-slate-950 dark:hover:bg-slate-800 dark:hover:text-white transition-colors ${
               pathname === '/chat'
@@ -432,6 +444,14 @@ export function Navbar() {
             >
               <UserCheck className="h-4 w-4 opacity-70" />
               Verified Mentors
+            </Link>
+            <Link
+              href="/tools"
+              className="flex items-center gap-2 rounded-xl py-2 px-3 text-sm font-semibold text-slate-800 hover:bg-slate-100 dark:text-slate-200 dark:hover:bg-slate-800 transition-colors"
+              onClick={() => setMobileMenuOpen(false)}
+            >
+              <Compass className="h-4 w-4 opacity-70" />
+              Intelligence Tools & Calculators
             </Link>
             <Link
               href="/chat"

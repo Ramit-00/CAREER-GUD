@@ -11,6 +11,7 @@ import {
   VerificationStatus,
 } from '@/types';
 import { SEED_CAREERS, SEED_COLLEGES, SEED_CONSULTANTS, SEED_USERS } from './seedData';
+import { prisma } from '@/lib/prisma';
 
 // Global in-memory mutable store for zero-config graceful degradation
 interface DataStore {
@@ -175,16 +176,41 @@ export const repository = {
     return store.colleges.find((c) => c.slug === slug) || null;
   },
 
-  // Reviews
+  // Reviews - Database persistence with in-memory fallback
   async getReviews(targetType: 'COLLEGE' | 'CAREER', targetId: string): Promise<Review[]> {
     const store = getStore();
+    try {
+      const dbReviews = await prisma.review.findMany({
+        where: { targetType, targetId },
+        include: { user: true },
+        orderBy: { createdAt: 'desc' },
+      });
+
+      if (dbReviews && dbReviews.length > 0) {
+        return dbReviews.map((r) => ({
+          id: r.id,
+          userId: r.userId,
+          userName: r.user.name,
+          userRole: r.user.role as any,
+          targetType: r.targetType as 'COLLEGE' | 'CAREER',
+          targetId: r.targetId,
+          rating: r.rating,
+          title: r.title,
+          comment: r.comment,
+          createdAt: r.createdAt.toISOString(),
+        }));
+      }
+    } catch (err) {
+      console.warn('Database getReviews fallback:', err);
+    }
+
     return store.reviews.filter((r) => r.targetType === targetType && r.targetId === targetId);
   },
 
   async addReview(review: Omit<Review, 'id' | 'createdAt'>): Promise<Review> {
     const store = getStore();
 
-    // Prevent duplicate reviews by the same user
+    // Prevent duplicate reviews by the same user in memory
     const existingIndex = store.reviews.findIndex(
       (r) => r.userId === review.userId && r.targetType === review.targetType && r.targetId === review.targetId
     );
@@ -198,6 +224,24 @@ export const repository = {
       createdAt: new Date().toISOString(),
     };
     store.reviews.unshift(newReview);
+
+    try {
+      const created = await prisma.review.create({
+        data: {
+          userId: review.userId,
+          targetType: review.targetType,
+          targetId: review.targetId,
+          rating: review.rating,
+          title: review.title,
+          comment: review.comment,
+        },
+        include: { user: true },
+      });
+      newReview.id = created.id;
+      newReview.createdAt = created.createdAt.toISOString();
+    } catch (err) {
+      console.warn('Database addReview fallback:', err);
+    }
 
     // Update target aggregate rating
     if (review.targetType === 'COLLEGE') {
@@ -250,6 +294,70 @@ export const repository = {
       reviewCount: 0,
     };
     store.consultants.push(newProfile);
+
+    try {
+      const user = await prisma.user.findFirst({
+        where: { OR: [{ id: data.userId }, { email: data.email }] },
+      });
+
+      if (user) {
+        const profile = await prisma.consultantProfile.upsert({
+          where: { userId: user.id },
+          update: {
+            headline: data.headline,
+            bio: data.bio,
+            experienceYears: data.experienceYears,
+            highestEducation: data.highestEducation,
+            almaMater: data.almaMater,
+            currentRole: data.currentRole,
+            phone: data.phone,
+            linkedinUrl: data.linkedinUrl,
+            feePerSessionINR: data.feePerSessionINR,
+          },
+          create: {
+            userId: user.id,
+            headline: data.headline,
+            bio: data.bio,
+            experienceYears: data.experienceYears,
+            highestEducation: data.highestEducation,
+            almaMater: data.almaMater,
+            currentRole: data.currentRole,
+            phone: data.phone,
+            linkedinUrl: data.linkedinUrl,
+            feePerSessionINR: data.feePerSessionINR,
+            verificationStatus: 'PENDING',
+          },
+        });
+        newProfile.id = profile.id;
+
+        if (data.domainVerifications && data.domainVerifications.length > 0) {
+          for (const dv of data.domainVerifications) {
+            await prisma.consultantDomainVerification.upsert({
+              where: {
+                consultantId_domain: {
+                  consultantId: profile.id,
+                  domain: dv.domain as any,
+                },
+              },
+              update: {
+                proofDescription: dv.proofDescription,
+                proofDocumentUrl: dv.proofDocumentUrl,
+              },
+              create: {
+                consultantId: profile.id,
+                domain: dv.domain as any,
+                proofDescription: dv.proofDescription,
+                proofDocumentUrl: dv.proofDocumentUrl,
+                status: 'PENDING',
+              },
+            });
+          }
+        }
+      }
+    } catch (err) {
+      console.warn('Database applyForConsultant fallback:', err);
+    }
+
     return newProfile;
   },
 
@@ -283,8 +391,10 @@ export const repository = {
     return true;
   },
 
-  // Bookings
-  async createBooking(booking: Omit<ConsultationBooking, 'id' | 'createdAt'>): Promise<ConsultationBooking> {
+  // Bookings - Database persistence with in-memory fallback for Vercel statelessness
+  async createBooking(
+    booking: Omit<ConsultationBooking, 'id' | 'createdAt'> & { meetingUrl?: string }
+  ): Promise<ConsultationBooking> {
     const store = getStore();
     const newBooking: ConsultationBooking = {
       ...booking,
@@ -292,11 +402,87 @@ export const repository = {
       createdAt: new Date().toISOString(),
     };
     store.bookings.unshift(newBooking);
+
+    try {
+      // Find consultant by profile id or user id
+      const dbConsultant = await prisma.consultantProfile.findFirst({
+        where: {
+          OR: [{ id: booking.consultantId }, { userId: booking.consultantId }],
+        },
+      });
+
+      if (dbConsultant) {
+        const meetingUrl =
+          booking.meetingUrl ||
+          `https://meet.jit.si/career-gud-session-${newBooking.id}`;
+
+        const created = await prisma.consultationBooking.create({
+          data: {
+            studentId: booking.studentId,
+            consultantId: dbConsultant.id,
+            domain: booking.domain as any,
+            requestedDate: new Date(booking.requestedDate),
+            timeSlot: booking.timeSlot,
+            status: (booking.status as any) || 'REQUESTED',
+            studentNotes: booking.studentNotes || '',
+            sharedProfileSummary: (booking.sharedProfileSummary as any) || undefined,
+            meetingUrl,
+          },
+        });
+        newBooking.id = created.id;
+        newBooking.createdAt = created.createdAt.toISOString();
+        (newBooking as any).meetingUrl = created.meetingUrl;
+      }
+    } catch (err) {
+      console.warn('Database booking persistence fallback:', err);
+    }
+
     return newBooking;
   },
 
   async getBookings(filter?: { studentId?: string; consultantId?: string }): Promise<ConsultationBooking[]> {
     const store = getStore();
+    try {
+      const whereClause: any = {};
+      if (filter?.studentId) whereClause.studentId = filter.studentId;
+      if (filter?.consultantId) {
+        whereClause.OR = [
+          { consultantId: filter.consultantId },
+          { consultant: { userId: filter.consultantId } },
+        ];
+      }
+
+      const dbBookings = await prisma.consultationBooking.findMany({
+        where: whereClause,
+        include: {
+          student: true,
+          consultant: { include: { user: true } },
+        },
+        orderBy: { createdAt: 'desc' },
+      });
+
+      if (dbBookings && dbBookings.length > 0) {
+        return dbBookings.map((b) => ({
+          id: b.id,
+          studentId: b.studentId,
+          studentName: b.student.name,
+          studentEmail: b.student.email,
+          consultantId: b.consultantId,
+          consultantName: b.consultant.user.name,
+          domain: b.domain as ConsultantDomain,
+          requestedDate: b.requestedDate.toISOString().split('T')[0],
+          timeSlot: b.timeSlot,
+          status: b.status as ConsultationBooking['status'],
+          studentNotes: b.studentNotes,
+          sharedProfileSummary: b.sharedProfileSummary as any,
+          meetingUrl: b.meetingUrl || `https://meet.jit.si/career-gud-session-${b.id}`,
+          createdAt: b.createdAt.toISOString(),
+        }));
+      }
+    } catch (err) {
+      console.warn('Database getBookings fallback:', err);
+    }
+
     let list = store.bookings;
     if (filter?.studentId) {
       list = list.filter((b) => b.studentId === filter.studentId);
@@ -309,23 +495,99 @@ export const repository = {
 
   async updateBookingStatus(
     bookingId: string,
-    status: ConsultationBooking['status']
+    status: ConsultationBooking['status'],
+    meetingUrl?: string
   ): Promise<ConsultationBooking | null> {
     const store = getStore();
     const booking = store.bookings.find((b) => b.id === bookingId);
-    if (!booking) return null;
-    booking.status = status;
-    return booking;
+    if (booking) {
+      booking.status = status;
+      if (meetingUrl) (booking as any).meetingUrl = meetingUrl;
+    }
+
+    try {
+      const updated = await prisma.consultationBooking.update({
+        where: { id: bookingId },
+        data: {
+          status: status as any,
+          ...(meetingUrl ? { meetingUrl } : {}),
+        },
+        include: {
+          student: true,
+          consultant: { include: { user: true } },
+        },
+      });
+
+      return {
+        id: updated.id,
+        studentId: updated.studentId,
+        studentName: updated.student.name,
+        studentEmail: updated.student.email,
+        consultantId: updated.consultantId,
+        consultantName: updated.consultant.user.name,
+        domain: updated.domain as ConsultantDomain,
+        requestedDate: updated.requestedDate.toISOString().split('T')[0],
+        timeSlot: updated.timeSlot,
+        status: updated.status as ConsultationBooking['status'],
+        studentNotes: updated.studentNotes,
+        sharedProfileSummary: updated.sharedProfileSummary as any,
+        meetingUrl: updated.meetingUrl || `https://meet.jit.si/career-gud-session-${updated.id}`,
+        createdAt: updated.createdAt.toISOString(),
+      };
+    } catch (err) {
+      console.warn('Database updateBookingStatus fallback:', err);
+    }
+
+    return booking || null;
   },
 
-  // Quiz Attempts
+  // Quiz Attempts - Database persistence with in-memory fallback
   async saveQuizAttempt(attempt: QuizResult & { userId?: string }): Promise<void> {
     const store = getStore();
     store.quizAttempts.unshift(attempt);
+
+    if (attempt.userId) {
+      try {
+        await prisma.quizAttempt.create({
+          data: {
+            userId: attempt.userId,
+            quizType: (attempt as any).quizType || 'ASSESSMENT',
+            answers: (attempt as any).answers || {},
+            scores: (attempt as any).scores || {},
+            recommendations: attempt.primaryRecommendation as any,
+            realismAnalysis: attempt.realismCheck as any,
+          },
+        });
+      } catch (err) {
+        console.warn('Database saveQuizAttempt fallback:', err);
+      }
+    }
   },
 
   async getQuizAttempts(userId: string): Promise<QuizResult[]> {
     const store = getStore();
+    try {
+      const dbAttempts = await prisma.quizAttempt.findMany({
+        where: { userId },
+        orderBy: { createdAt: 'desc' },
+      });
+
+      if (dbAttempts && dbAttempts.length > 0) {
+        return dbAttempts.map((a) => ({
+          id: a.id,
+          quizType: a.quizType as any,
+          primaryRecommendation: a.recommendations as any,
+          secondaryRecommendations: [],
+          realismCheck: a.realismAnalysis as any,
+          answers: a.answers as any,
+          scores: a.scores as any,
+          createdAt: a.createdAt.toISOString(),
+        }));
+      }
+    } catch (err) {
+      console.warn('Database getQuizAttempts fallback:', err);
+    }
+
     return store.quizAttempts.filter((a) => a.userId === userId);
   },
 

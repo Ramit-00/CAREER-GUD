@@ -32,6 +32,7 @@ export default function CollegeDetailPage() {
   const [reviewTitle, setReviewTitle] = useState('');
   const [reviewComment, setReviewComment] = useState('');
   const [submittingReview, setSubmittingReview] = useState(false);
+  const [reviewStatus, setReviewStatus] = useState<{ type: 'success' | 'error'; message: string } | null>(null);
 
   const fetchCollege = async () => {
     setLoading(true);
@@ -82,6 +83,7 @@ export default function CollegeDetailPage() {
 
   const handleSubmitReview = async (e: React.FormEvent) => {
     e.preventDefault();
+    setReviewStatus(null);
     if (!session) {
       router.push('/login');
       return;
@@ -101,15 +103,18 @@ export default function CollegeDetailPage() {
         }),
       });
 
+      const resData = await res.json();
       if (res.ok) {
-        const newRev = await res.json();
-        setReviews([newRev, ...reviews]);
+        setReviews([resData, ...reviews]);
         setReviewTitle('');
         setReviewComment('');
-        alert('Review posted successfully!');
+        setReviewStatus({ type: 'success', message: 'Review posted successfully!' });
+      } else {
+        setReviewStatus({ type: 'error', message: resData.error || 'Failed to submit review.' });
       }
     } catch (err) {
       console.error('Review submit error:', err);
+      setReviewStatus({ type: 'error', message: 'Failed to post review. Please try again.' });
     } finally {
       setSubmittingReview(false);
     }
@@ -369,10 +374,22 @@ export default function CollegeDetailPage() {
             className="w-full rounded-xl border-2 border-slate-300 bg-white px-3 py-2.5 text-xs sm:text-sm font-medium text-slate-900 focus:border-[#0B2A4A] focus:outline-none dark:border-slate-700 dark:bg-slate-900 dark:text-white mb-3 shadow-xs"
           />
 
+          {reviewStatus && (
+            <div
+              className={`mb-3 rounded-xl p-3 text-xs font-bold border ${
+                reviewStatus.type === 'success'
+                  ? 'bg-emerald-50 text-emerald-900 border-emerald-300 dark:bg-emerald-950 dark:text-emerald-200'
+                  : 'bg-rose-50 text-rose-900 border-rose-300 dark:bg-rose-950 dark:text-rose-200'
+              }`}
+            >
+              {reviewStatus.message}
+            </div>
+          )}
+
           <button
             type="submit"
             disabled={submittingReview}
-            className="rounded-xl bg-[#0B2A4A] px-5 py-2.5 text-xs sm:text-sm font-bold text-white hover:bg-[#071C33] disabled:opacity-50 transition shadow-xs"
+            className="rounded-xl bg-[#0B2A4A] px-5 py-2.5 text-xs sm:text-sm font-bold text-white hover:bg-[#071C33] disabled:opacity-50 transition shadow-xs cursor-pointer"
           >
             {submittingReview ? 'Posting...' : 'Submit Review'}
           </button>

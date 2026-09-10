@@ -25,12 +25,13 @@ export interface ChatCompletionResponse {
 
 export const aiProvider = {
   async generateResponse(req: ChatCompletionRequest): Promise<ChatCompletionResponse> {
-    // Sanitize client-provided messages: strictly enforce user/assistant roles
+    // Sanitize client-provided messages: strictly enforce user/assistant roles, redact PII, clamp history
     const safeMessages = (req.messages || [])
       .filter((m) => m.role === 'user' || m.role === 'assistant')
+      .slice(-10) // Limit conversation memory to last 10 turns for serverless payload efficiency
       .map((m) => ({
         role: m.role as 'user' | 'assistant',
-        content: String(m.content).slice(0, 3000),
+        content: aiGuardrails.sanitizePII(String(m.content)).slice(0, 2000),
       }));
 
     const lastUserMessage = [...safeMessages].reverse().find((m) => m.role === 'user')?.content || '';
@@ -52,8 +53,8 @@ export const aiProvider = {
     const geminiKey = process.env.GEMINI_API_KEY;
     if (geminiKey && geminiKey.trim().length > 0) {
       const candidateModels = [
-        process.env.GEMINI_MODEL || 'gemini-3.5-flash-lite',
-        'gemini-3.6-flash',
+        process.env.GEMINI_MODEL || 'gemini-2.5-flash',
+        'gemini-1.5-flash',
       ];
 
       const systemPrompt = `You are CAREER-GUD's senior academic & career counselor for Indian high school & college students.
@@ -71,7 +72,7 @@ ${ragResult.groundingContext}
       for (const model of candidateModels) {
         try {
           const controller = new AbortController();
-          const timeoutId = setTimeout(() => controller.abort(), 20000);
+          const timeoutId = setTimeout(() => controller.abort(), 12000);
 
           const response = await fetch(
             `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent`,

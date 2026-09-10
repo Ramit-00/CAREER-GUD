@@ -4,8 +4,10 @@ import { ConsultantDomain } from '@/types';
 import {
   ArrowRight,
   CheckCircle2,
+  FileCheck,
   Plus,
   Trash2,
+  Upload,
 } from 'lucide-react';
 import { useSession } from 'next-auth/react';
 import Link from 'next/link';
@@ -28,7 +30,7 @@ export default function ConsultantApplyPage() {
   const [feePerSessionINR, setFeePerSessionINR] = useState(1000);
 
   const [domainApplications, setDomainApplications] = useState<
-    Array<{ domain: ConsultantDomain; proofDescription: string }>
+    Array<{ domain: ConsultantDomain; proofDescription: string; proofDocumentUrl?: string }>
   >([
     {
       domain: 'ENGINEERING',
@@ -36,8 +38,10 @@ export default function ConsultantApplyPage() {
     },
   ]);
 
+  const [uploadingIndex, setUploadingIndex] = useState<number | null>(null);
   const [submitting, setSubmitting] = useState(false);
   const [appliedSuccess, setAppliedSuccess] = useState(false);
+  const [submitError, setSubmitError] = useState<string | null>(null);
 
   const handleAddDomain = () => {
     setDomainApplications([
@@ -62,8 +66,36 @@ export default function ConsultantApplyPage() {
     setDomainApplications(updated);
   };
 
+  const handleFileUpload = async (index: number, file: File) => {
+    setUploadingIndex(index);
+    try {
+      const res = await fetch('/api/consultants/upload-url', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          filename: file.name,
+          contentType: file.type || 'application/pdf',
+          fileSize: file.size,
+          domain: domainApplications[index].domain,
+        }),
+      });
+
+      if (res.ok) {
+        const data = await res.json();
+        const updated = [...domainApplications];
+        updated[index].proofDocumentUrl = data.fileUrl;
+        setDomainApplications(updated);
+      }
+    } catch (err) {
+      console.error('Document upload error:', err);
+    } finally {
+      setUploadingIndex(null);
+    }
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setSubmitError(null);
     if (!session) {
       router.push('/login?callbackUrl=/consultants/apply');
       return;
@@ -87,12 +119,15 @@ export default function ConsultantApplyPage() {
         }),
       });
 
-      if (!res.ok) throw new Error('Application failed');
+      const resData = await res.json();
+      if (!res.ok) {
+        throw new Error(resData.error || 'Failed to submit application. Please check all fields.');
+      }
 
       setAppliedSuccess(true);
-    } catch (err) {
+    } catch (err: any) {
       console.error('Application submit error:', err);
-      alert('Failed to submit application. Please check all fields.');
+      setSubmitError(err.message || 'Failed to submit application. Please check all fields.');
     } finally {
       setSubmitting(false);
     }
@@ -312,15 +347,45 @@ export default function ConsultantApplyPage() {
                     placeholder="E.g. Degree certificate registration number, ICAI member ID, bar council number..."
                     className="w-full rounded-xl border-2 border-slate-300 bg-white p-2.5 text-xs sm:text-sm font-medium text-slate-900 focus:border-blue-600 focus:outline-none dark:border-slate-700 dark:bg-slate-900 dark:text-white shadow-xs"
                   />
+
+                  {/* Document Upload Option */}
+                  <div className="flex items-center justify-between gap-2 pt-1 text-xs">
+                    <label className="flex items-center gap-1.5 cursor-pointer text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white font-semibold">
+                      <Upload className="h-3.5 w-3.5 text-blue-600" />
+                      <span>{uploadingIndex === idx ? 'Uploading Document...' : 'Upload Certificate / ID (PDF/Image)'}</span>
+                      <input
+                        type="file"
+                        accept=".pdf,.jpg,.jpeg,.png,.webp"
+                        className="hidden"
+                        onChange={(e) => {
+                          const file = e.target.files?.[0];
+                          if (file) handleFileUpload(idx, file);
+                        }}
+                      />
+                    </label>
+
+                    {app.proofDocumentUrl && (
+                      <span className="flex items-center gap-1 text-emerald-600 dark:text-emerald-400 font-bold">
+                        <FileCheck className="h-3.5 w-3.5" />
+                        <span>Document Attached</span>
+                      </span>
+                    )}
+                  </div>
                 </div>
               ))}
             </div>
           </div>
 
+          {submitError && (
+            <div className="mt-4 rounded-xl border border-rose-300 bg-rose-50 p-3 text-xs font-bold text-rose-900 dark:border-rose-900 dark:bg-rose-950 dark:text-rose-200">
+              {submitError}
+            </div>
+          )}
+
           <button
             type="submit"
             disabled={submitting}
-            className="mt-6 flex w-full items-center justify-center gap-2 rounded-xl bg-[#0B2A4A] py-3.5 text-sm sm:text-base font-black text-white shadow-xs hover:bg-[#071C33] disabled:opacity-50 transition"
+            className="mt-6 flex w-full items-center justify-center gap-2 rounded-xl bg-[#0B2A4A] py-3.5 text-sm sm:text-base font-black text-white shadow-xs hover:bg-[#071C33] disabled:opacity-50 transition cursor-pointer"
           >
             {submitting ? 'Submitting Application...' : 'Submit Application for Admin Audit'}
             <ArrowRight className="h-4 w-4 text-amber-400" />

@@ -1,22 +1,28 @@
 'use client';
 
 import { ScoreRadarChart } from '@/components/charts/ScoreRadarChart';
+import { ParentReportModal } from '@/components/common/ParentReportModal';
 import { TENTH_GRADE_QUIZ_QUESTIONS } from '@/lib/data/seedData';
 import { QuizResult } from '@/types';
 import {
+  AlertCircle,
   AlertTriangle,
   ArrowLeft,
   ArrowRight,
   BookOpen,
   CheckCircle2,
   Compass,
+  FileText,
   GraduationCap,
   RotateCcw,
+  Share2,
 } from 'lucide-react';
+import { useSession } from 'next-auth/react';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
 
 export default function Post10thQuizPage() {
+  const { data: session } = useSession();
   // Stepper state: 'PROFILE' -> 'QUESTIONS' -> 'RESULT'
   const [step, setStep] = useState<'PROFILE' | 'QUESTIONS' | 'RESULT'>('PROFILE');
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
@@ -29,7 +35,51 @@ export default function Post10thQuizPage() {
   // Quiz answers: questionId -> optionId
   const [answers, setAnswers] = useState<Record<string, string>>({});
   const [submitting, setSubmitting] = useState(false);
+  const [submissionError, setSubmissionError] = useState<string | null>(null);
   const [quizResult, setQuizResult] = useState<QuizResult | null>(null);
+  const [showParentModal, setShowParentModal] = useState(false);
+
+  // Restore draft from sessionStorage
+  useEffect(() => {
+    try {
+      const saved = sessionStorage.getItem('career_gud_draft_10th');
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        if (parsed.answers && Object.keys(parsed.answers).length > 0) {
+          setAnswers(parsed.answers);
+          if (parsed.tenthScore) setTenthScore(parsed.tenthScore);
+          if (parsed.mathScore) setMathScore(parsed.mathScore);
+          if (parsed.scienceScore) setScienceScore(parsed.scienceScore);
+          if (typeof parsed.currentQuestionIndex === 'number') {
+            setCurrentQuestionIndex(parsed.currentQuestionIndex);
+          }
+          setStep('QUESTIONS');
+        }
+      }
+    } catch {
+      // Ignore storage errors
+    }
+  }, []);
+
+  // Persist draft to sessionStorage
+  useEffect(() => {
+    if (Object.keys(answers).length > 0 && step === 'QUESTIONS') {
+      try {
+        sessionStorage.setItem(
+          'career_gud_draft_10th',
+          JSON.stringify({
+            answers,
+            tenthScore,
+            mathScore,
+            scienceScore,
+            currentQuestionIndex,
+          })
+        );
+      } catch {
+        // Ignore storage errors
+      }
+    }
+  }, [answers, tenthScore, mathScore, scienceScore, currentQuestionIndex, step]);
 
   useEffect(() => {
     window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
@@ -41,6 +91,7 @@ export default function Post10thQuizPage() {
   const progressPct = Math.round(((currentQuestionIndex + 1) / TENTH_GRADE_QUIZ_QUESTIONS.length) * 100);
 
   const handleSelectOption = (optId: string) => {
+    setSubmissionError(null);
     const updatedAnswers = { ...answers, [currentQ.id]: optId };
     setAnswers(updatedAnswers);
 
@@ -53,6 +104,7 @@ export default function Post10thQuizPage() {
 
   const handleSubmitQuiz = async (finalAnswers: Record<string, string>) => {
     setSubmitting(true);
+    setSubmissionError(null);
     try {
       const res = await fetch('/api/quiz/submit', {
         method: 'POST',
@@ -68,25 +120,32 @@ export default function Post10thQuizPage() {
         }),
       });
 
+      const result = await res.json();
       if (!res.ok) {
-        throw new Error('Failed to score quiz');
+        throw new Error(result.error || 'Failed to score quiz');
       }
 
-      const result: QuizResult = await res.json();
       setQuizResult(result);
+      try {
+        sessionStorage.removeItem('career_gud_draft_10th');
+      } catch {}
       setStep('RESULT');
-    } catch (err) {
+    } catch (err: any) {
       console.error('Quiz submission error:', err);
-      alert('Could not submit assessment. Please try again.');
+      setSubmissionError(err.message || 'Could not submit assessment. Please try again.');
     } finally {
       setSubmitting(false);
     }
   };
 
   const handleRetake = () => {
+    try {
+      sessionStorage.removeItem('career_gud_draft_10th');
+    } catch {}
     setAnswers({});
     setCurrentQuestionIndex(0);
     setQuizResult(null);
+    setSubmissionError(null);
     setStep('PROFILE');
   };
 
@@ -227,6 +286,13 @@ export default function Post10thQuizPage() {
               );
             })}
           </div>
+
+          {submissionError && (
+            <div className="mt-4 flex items-center gap-2 rounded-xl border border-rose-300 bg-rose-50 p-3 text-xs font-bold text-rose-900 dark:border-rose-900 dark:bg-rose-950 dark:text-rose-200">
+              <AlertCircle className="h-4 w-4 text-rose-600 shrink-0" />
+              <span>{submissionError}</span>
+            </div>
+          )}
 
           {/* Navigation Controls */}
           <div className="mt-8 flex items-center justify-between border-t border-slate-200 dark:border-slate-700 pt-4">
@@ -390,12 +456,36 @@ export default function Post10thQuizPage() {
             </div>
           )}
 
+          {/* Parent Discussion Dossier Card */}
+          <div className="rounded-2xl border-2 border-emerald-300 bg-emerald-50/70 p-6 dark:border-emerald-800 dark:bg-emerald-950/40 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+            <div>
+              <div className="flex items-center gap-2 text-xs font-black uppercase tracking-wider text-emerald-800 dark:text-emerald-300">
+                <FileText className="h-4 w-4" />
+                <span>Family Alignment & Discussion Toolkit</span>
+              </div>
+              <h3 className="text-base font-black text-slate-950 dark:text-white mt-1">
+                Share Assessment Dossier with Parents
+              </h3>
+              <p className="text-xs text-slate-700 dark:text-slate-300 mt-0.5 font-medium max-w-xl">
+                Includes printable 2-page academic profile, 5 data-backed dinner conversation prompts, and 1-click WhatsApp summary for family decision-making.
+              </p>
+            </div>
+            <button
+              type="button"
+              onClick={() => setShowParentModal(true)}
+              className="flex items-center gap-2 rounded-xl bg-emerald-600 px-5 py-2.5 text-xs font-black text-white hover:bg-emerald-700 transition shadow-xs shrink-0 cursor-pointer"
+            >
+              <Share2 className="h-3.5 w-3.5" />
+              <span>Open Parent Dossier</span>
+            </button>
+          </div>
+
           {/* Action Footer */}
           <div className="flex flex-wrap items-center justify-between gap-4 pt-4 border-t-2 border-slate-200 dark:border-slate-700">
             <button
               type="button"
               onClick={handleRetake}
-              className="flex items-center gap-2 rounded-xl border-2 border-slate-300 px-4 py-2.5 text-xs font-bold text-slate-800 hover:bg-slate-100 dark:border-slate-700 dark:text-slate-200 dark:hover:bg-slate-800 transition"
+              className="flex items-center gap-2 rounded-xl border-2 border-slate-300 px-4 py-2.5 text-xs font-bold text-slate-800 hover:bg-slate-100 dark:border-slate-700 dark:text-slate-200 dark:hover:bg-slate-800 transition cursor-pointer"
             >
               <RotateCcw className="h-4 w-4" />
               Retake Assessment
@@ -403,10 +493,10 @@ export default function Post10thQuizPage() {
 
             <div className="flex items-center gap-3">
               <Link
-                href="/careers"
+                href={`/careers?stream=${encodeURIComponent(quizResult.primaryRecommendation.title)}`}
                 className="rounded-xl border-2 border-slate-300 px-4 py-2.5 text-xs font-bold text-slate-900 hover:bg-slate-100 dark:border-slate-700 dark:text-white dark:hover:bg-slate-800"
               >
-                Inspect Careers
+                Explore {quizResult.primaryRecommendation.title} Careers →
               </Link>
               <Link
                 href="/consultants"
@@ -416,6 +506,16 @@ export default function Post10thQuizPage() {
               </Link>
             </div>
           </div>
+
+          {/* Parent Report Modal */}
+          {quizResult && (
+            <ParentReportModal
+              isOpen={showParentModal}
+              onClose={() => setShowParentModal(false)}
+              result={quizResult}
+              studentName={session?.user?.name || 'Secondary Student'}
+            />
+          )}
         </div>
       )}
     </div>

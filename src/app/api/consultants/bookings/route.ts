@@ -1,4 +1,5 @@
 import { getJwtSecret } from '@/lib/auth/jwtSecret';
+import { prisma } from '@/lib/prisma';
 import { repository } from '@/lib/data/repository';
 import { ConsultantDomain } from '@/types';
 import { getToken } from 'next-auth/jwt';
@@ -74,6 +75,29 @@ export async function POST(req: NextRequest) {
       }
     }
 
+    // Double-booking collision prevention
+    try {
+      const conflict = await prisma.consultationBooking.findFirst({
+        where: {
+          consultantId: consultant.id,
+          requestedDate: bookingDate,
+          timeSlot: parsed.data.timeSlot,
+          status: { in: ['REQUESTED', 'CONFIRMED'] },
+        },
+      });
+      if (conflict) {
+        return NextResponse.json(
+          { error: 'This time slot is already reserved for this consultant. Please choose another slot.' },
+          { status: 409 }
+        );
+      }
+    } catch {
+      // Proceed if db check fails
+    }
+
+    const meetingRoomId = `career-gud-meet-${Date.now()}-${Math.random().toString(36).substring(2, 7)}`;
+    const meetingUrl = `https://meet.jit.si/${meetingRoomId}`;
+
     const booking = await repository.createBooking({
       studentId: token.id as string,
       studentName: (token.name as string) || 'Student',
@@ -86,6 +110,7 @@ export async function POST(req: NextRequest) {
       status: 'CONFIRMED', // Instant confirm in verified portal
       studentNotes: cleanNotes,
       sharedProfileSummary,
+      meetingUrl,
     });
 
     return NextResponse.json({ success: true, booking }, { status: 201 });
@@ -124,8 +149,9 @@ export async function PATCH(req: NextRequest) {
       req,
       secret: getJwtSecret(),
     });
-    if (!token?.id || (token.role !== 'CONSULTANT' && token.role !== 'ADMIN')) {
-      return NextResponse.json({ error: 'Unauthorized: Consultant or Admin privileges required' }, { status: 401 });
+
+    if (!token?.id) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
     const raw = await req.json();
@@ -145,25 +171,58 @@ export async function PATCH(req: NextRequest) {
     const { bookingId, status } = parsed.data;
 
     // Security check (BOLA / IDOR protection):
-    // Verify target booking exists and belongs to the authenticated consultant (unless ADMIN)
-    const allBookings = await repository.getBookings();
-    const target = allBookings.find((b) => b.id === bookingId);
+    // 1. Direct Prisma lookup with consultant profile & user relation
+    const target = await prisma.consultationBooking.findUnique({
+      where: { id: bookingId },
+      include: { consultant: true },
+    });
+
     if (!target) {
-      return NextResponse.json({ error: 'Booking not found' }, { status: 404 });
+      // Fallback check in in-memory repository if DB record not found
+      const allBookings = await repository.getBookings();
+      const memTarget = allBookings.find((b) => b.id === bookingId);
+      if (!memTarget) {
+        return NextResponse.json({ error: 'Booking not found' }, { status: 404 });
+      }
+
+      const isMemConsultant = memTarget.consultantId === token.id;
+      const isMemStudent = memTarget.studentId === token.id;
+      const isMemAdmin = token.role === 'ADMIN';
+
+      if (!isMemAdmin && !isMemConsultant && !(isMemStudent && status === 'CANCELLED')) {
+        return NextResponse.json(
+          { error: 'Forbidden: You do not have authorization to modify this booking.' },
+          { status: 403 }
+        );
+      }
+
+      const updated = await repository.updateBookingStatus(bookingId, status);
+      return NextResponse.json({ success: true, booking: updated });
     }
 
-    if (token.role !== 'ADMIN' && target.consultantId !== token.id) {
+    // Ownership check:
+    // Consultant is identified by their User.id (token.id) via target.consultant.userId
+    const isConsultantOwner = target.consultant.userId === token.id || target.consultantId === token.id;
+    const isStudentOwner = target.studentId === token.id;
+    const isAdmin = token.role === 'ADMIN';
+
+    // Students are permitted to cancel their own bookings; consultants & admins can perform full lifecycle updates
+    if (!isAdmin && !isConsultantOwner && !(isStudentOwner && status === 'CANCELLED')) {
       return NextResponse.json(
         { error: 'Forbidden: You do not have authorization to modify this booking.' },
         { status: 403 }
       );
     }
 
-    const updated = await repository.updateBookingStatus(bookingId, status);
+    // Generate meeting URL if confirmed and not yet assigned
+    const meetingUrl =
+      target.meetingUrl ||
+      `https://meet.jit.si/career-gud-meet-${bookingId}`;
+
+    const updated = await repository.updateBookingStatus(bookingId, status, meetingUrl);
     return NextResponse.json({ success: true, booking: updated });
   } catch (error) {
     console.error('Update booking status error:', error);
     return NextResponse.json({ error: 'Failed to update booking status' }, { status: 500 });
   }
 }
-

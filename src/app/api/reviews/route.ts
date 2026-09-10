@@ -1,4 +1,5 @@
 import { getJwtSecret } from '@/lib/auth/jwtSecret';
+import { prisma } from '@/lib/prisma';
 import { repository } from '@/lib/data/repository';
 import { Role } from '@/types';
 import { getToken } from 'next-auth/jwt';
@@ -35,7 +36,25 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'Review text is invalid or contains prohibited markup.' }, { status: 400 });
     }
 
-    // Prevent review bombing and spam: one review per user per target (L5)
+    // Prevent review bombing: check duplicate review in Supabase database
+    try {
+      const existingDbReview = await prisma.review.findFirst({
+        where: {
+          userId: token.id as string,
+          targetType: parsed.data.targetType,
+          targetId: parsed.data.targetId,
+        },
+      });
+      if (existingDbReview) {
+        return NextResponse.json(
+          { error: 'You have already submitted a review for this item.' },
+          { status: 409 }
+        );
+      }
+    } catch {
+      // Fallback to in-memory check below
+    }
+
     const existingReviews = await repository.getReviews(parsed.data.targetType, parsed.data.targetId);
     const hasExistingReview = existingReviews.some((r) => r.userId === token.id);
     if (hasExistingReview) {
@@ -68,13 +87,14 @@ export async function GET(req: NextRequest) {
     const { searchParams } = new URL(req.url);
     const targetType = searchParams.get('targetType') as 'COLLEGE' | 'CAREER' | null;
     const targetId = searchParams.get('targetId');
+    const limit = Math.min(50, Math.max(1, parseInt(searchParams.get('limit') || '20', 10)));
 
     if (!targetType || !targetId) {
       return NextResponse.json({ error: 'targetType and targetId are required' }, { status: 400 });
     }
 
     const reviews = await repository.getReviews(targetType, targetId);
-    return NextResponse.json(reviews);
+    return NextResponse.json(reviews.slice(0, limit));
   } catch (error) {
     console.error('Error fetching reviews:', error);
     return NextResponse.json({ error: 'Failed to fetch reviews' }, { status: 500 });

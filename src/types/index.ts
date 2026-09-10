@@ -238,6 +238,7 @@ export interface ConsultationBooking {
   timeSlot: string;
   status: 'REQUESTED' | 'CONFIRMED' | 'COMPLETED' | 'CANCELLED';
   studentNotes: string;
+  meetingUrl?: string;
   sharedProfileSummary?: {
     currentClass: string;
     stream?: string;

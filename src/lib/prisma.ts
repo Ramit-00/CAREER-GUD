@@ -8,6 +8,7 @@ export const prisma =
     log: process.env.NODE_ENV === 'development' ? ['error', 'warn'] : ['error'],
   });
 
-if (process.env.NODE_ENV !== 'production') {
-  globalForPrisma.prisma = prisma;
-}
+// In Vercel serverless environments, warm lambda containers freeze/thaw.
+// Assigning prisma to globalForPrisma unconditionally prevents multiple client
+// instances from spawning and exhausting the Supabase connection pool.
+globalForPrisma.prisma = prisma;

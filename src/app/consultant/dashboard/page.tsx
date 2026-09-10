@@ -8,18 +8,22 @@ import {
   Calendar,
   CheckCircle2,
   Clock,
+  Download,
+  ExternalLink,
   FileText,
   GraduationCap,
   ShieldAlert,
   ShieldCheck,
   Trash2,
   User,
+  Video,
   XCircle,
 } from 'lucide-react';
 import Link from 'next/link';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
+import { downloadIcsFile, generateIcsContent } from '@/lib/calendar';
 
 interface SavedCareerItem {
   slug: string;
@@ -289,28 +293,76 @@ export default function ConsultantDashboardPage() {
                   </div>
                 )}
 
-                {/* Advisor Status Actions */}
-                <div className="mt-4 flex flex-wrap items-center justify-end gap-2 pt-3 border-t border-slate-200 dark:border-slate-700">
-                  {booking.status !== 'COMPLETED' && (
-                    <button
-                      onClick={() => handleUpdateStatus(booking.id, 'COMPLETED')}
-                      disabled={updatingId === booking.id}
-                      className="flex items-center gap-1.5 rounded-xl bg-emerald-600 px-3.5 py-1.5 text-xs font-bold text-white hover:bg-emerald-700 disabled:opacity-50 transition cursor-pointer"
-                    >
-                      <CheckCircle2 className="h-3.5 w-3.5" />
-                      <span>{updatingId === booking.id ? 'Updating...' : 'Mark Consultation Completed'}</span>
-                    </button>
-                  )}
-                  {booking.status !== 'CANCELLED' && booking.status !== 'COMPLETED' && (
-                    <button
-                      onClick={() => handleUpdateStatus(booking.id, 'CANCELLED')}
-                      disabled={updatingId === booking.id}
-                      className="flex items-center gap-1.5 rounded-xl border border-red-300 bg-white px-3.5 py-1.5 text-xs font-bold text-red-600 hover:bg-red-50 disabled:opacity-50 transition cursor-pointer dark:bg-slate-900 dark:border-red-900 dark:hover:bg-red-950/40"
-                    >
-                      <XCircle className="h-3.5 w-3.5" />
-                      <span>Cancel</span>
-                    </button>
-                  )}
+                {/* Advisor Status Actions & Meeting Room */}
+                <div className="mt-4 flex flex-wrap items-center justify-between gap-3 pt-3 border-t border-slate-200 dark:border-slate-700">
+                  <div className="flex items-center gap-2 flex-wrap">
+                    {booking.meetingUrl && booking.status !== 'CANCELLED' && (
+                      <a
+                        href={booking.meetingUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="flex items-center gap-1.5 rounded-xl bg-blue-600 px-3.5 py-1.5 text-xs font-black text-white hover:bg-blue-700 transition shadow-xs"
+                      >
+                        <Video className="h-3.5 w-3.5" />
+                        <span>Join Video Room</span>
+                        <ExternalLink className="h-3 w-3 opacity-75" />
+                      </a>
+                    )}
+
+                    {booking.status !== 'CANCELLED' && (
+                      <button
+                        type="button"
+                        onClick={() => {
+                          const ics = generateIcsContent({
+                            title: `CAREER-GUD Consultation with ${booking.studentName}`,
+                            description: `Domain: ${booking.domain}\nStudent Notes: ${booking.studentNotes || ''}`,
+                            date: booking.requestedDate,
+                            timeSlot: booking.timeSlot,
+                            meetingUrl: booking.meetingUrl,
+                          });
+                          downloadIcsFile(`consultation-${booking.requestedDate}.ics`, ics);
+                        }}
+                        className="flex items-center gap-1.5 rounded-xl border border-slate-300 bg-white px-3 py-1.5 text-xs font-bold text-slate-700 hover:bg-slate-100 dark:border-slate-700 dark:bg-slate-850 dark:text-slate-200 transition cursor-pointer"
+                        title="Download .ics Calendar Invite"
+                      >
+                        <Download className="h-3.5 w-3.5 text-emerald-600" />
+                        <span>Calendar Invite</span>
+                      </button>
+                    )}
+                  </div>
+
+                  <div className="flex items-center gap-2 flex-wrap ml-auto">
+                    {booking.status === 'REQUESTED' && (
+                      <button
+                        onClick={() => handleUpdateStatus(booking.id, 'CONFIRMED')}
+                        disabled={updatingId === booking.id}
+                        className="flex items-center gap-1.5 rounded-xl bg-[#0B2A4A] px-3.5 py-1.5 text-xs font-bold text-white hover:bg-[#071C33] disabled:opacity-50 transition cursor-pointer"
+                      >
+                        <CheckCircle2 className="h-3.5 w-3.5 text-emerald-400" />
+                        <span>{updatingId === booking.id ? 'Confirming...' : 'Confirm Appointment'}</span>
+                      </button>
+                    )}
+                    {booking.status === 'CONFIRMED' && (
+                      <button
+                        onClick={() => handleUpdateStatus(booking.id, 'COMPLETED')}
+                        disabled={updatingId === booking.id}
+                        className="flex items-center gap-1.5 rounded-xl bg-emerald-600 px-3.5 py-1.5 text-xs font-bold text-white hover:bg-emerald-700 disabled:opacity-50 transition cursor-pointer"
+                      >
+                        <CheckCircle2 className="h-3.5 w-3.5" />
+                        <span>{updatingId === booking.id ? 'Updating...' : 'Mark Completed'}</span>
+                      </button>
+                    )}
+                    {booking.status !== 'CANCELLED' && booking.status !== 'COMPLETED' && (
+                      <button
+                        onClick={() => handleUpdateStatus(booking.id, 'CANCELLED')}
+                        disabled={updatingId === booking.id}
+                        className="flex items-center gap-1.5 rounded-xl border border-red-300 bg-white px-3 py-1.5 text-xs font-bold text-red-600 hover:bg-red-50 disabled:opacity-50 transition cursor-pointer dark:bg-slate-900 dark:border-red-900 dark:hover:bg-red-950/40"
+                      >
+                        <XCircle className="h-3.5 w-3.5" />
+                        <span>Cancel</span>
+                      </button>
+                    )}
+                  </div>
                 </div>
               </div>
             ))}

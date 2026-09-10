@@ -2,13 +2,16 @@ import { aiProvider } from '@/lib/ai/provider';
 import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
 
+// Vercel serverless execution timeout override (up to 60s)
+export const maxDuration = 60;
+
 const ChatMessageSchema = z.object({
   role: z.enum(['user', 'assistant', 'system']),
-  content: z.string().min(1).max(30000),
+  content: z.string().min(1).max(2000),
 });
 
 const ChatBodySchema = z.object({
-  messages: z.array(ChatMessageSchema).min(1).max(50),
+  messages: z.array(ChatMessageSchema).min(1).max(15),
   userProfile: z
     .object({
       currentClass: z.string().optional(),

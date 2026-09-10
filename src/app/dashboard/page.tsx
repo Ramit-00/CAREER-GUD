@@ -9,19 +9,27 @@ import {
   Building,
   Calendar,
   CheckCircle2,
+  Clock,
+  Compass,
+  Download,
   Edit3,
+  ExternalLink,
   GraduationCap,
   MapPin,
   Save,
   School,
   Sparkles,
+  Target,
   Trash2,
+  Video,
   X,
+  XCircle,
 } from 'lucide-react';
 import { useSession } from 'next-auth/react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
+import { downloadIcsFile, generateGoogleCalendarUrl, generateIcsContent } from '@/lib/calendar';
 
 interface StudentProfileData {
   id?: string;
@@ -77,6 +85,30 @@ export default function StudentDashboardPage() {
   const [savedCareersList, setSavedCareersList] = useState<SavedCareerItem[]>([]);
   const [savedCollegesList, setSavedCollegesList] = useState<SavedCollegeItem[]>([]);
   const [removingBookmark, setRemovingBookmark] = useState<string | null>(null);
+  const [cancellingBookingId, setCancellingBookingId] = useState<string | null>(null);
+
+  const handleCancelBooking = async (bookingId: string) => {
+    if (!window.confirm('Are you sure you want to cancel this consultation appointment?')) {
+      return;
+    }
+    setCancellingBookingId(bookingId);
+    try {
+      const res = await fetch('/api/consultants/bookings', {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ bookingId, status: 'CANCELLED' }),
+      });
+      if (res.ok) {
+        setBookings((prev) =>
+          prev.map((b) => (b.id === bookingId ? { ...b, status: 'CANCELLED' } : b))
+        );
+      }
+    } catch (err) {
+      console.error('Failed to cancel booking:', err);
+    } finally {
+      setCancellingBookingId(null);
+    }
+  };
 
   // Edit Profile modal/form states
   const [isEditing, setIsEditing] = useState(false);
@@ -626,6 +658,169 @@ export default function StudentDashboardPage() {
         )}
       </div>
 
+      {/* Academic Milestone Tracker */}
+      {(() => {
+        const milestone1Complete = Boolean(
+          profile?.tenthPercentage != null || quizHistory.some((q) => q.quizType?.includes('10'))
+        );
+        const milestone2Complete = Boolean(profile?.currentStream || quizHistory.length > 0);
+        const milestone3Complete = Boolean(savedCareersList.length > 0 || savedCollegesList.length > 0);
+        const milestone4Complete = Boolean(bookings.length > 0);
+
+        const completedCount = [
+          milestone1Complete,
+          milestone2Complete,
+          milestone3Complete,
+          milestone4Complete,
+        ].filter(Boolean).length;
+        const progressPct = Math.round((completedCount / 4) * 100);
+
+        const milestones = [
+          {
+            step: 1,
+            title: 'Class 10 Diagnostic',
+            subtitle: 'Baseline & Aptitude Calibration',
+            description: 'Provide 10th standard scores or complete the stream aptitude evaluation.',
+            isDone: milestone1Complete,
+            href: '/quiz/post-10th',
+            actionText: milestone1Complete ? 'Retake Diagnostic' : 'Start Diagnostic',
+            badge: milestone1Complete ? 'Completed' : 'Recommended Next',
+          },
+          {
+            step: 2,
+            title: 'Stream Decider & Alignment',
+            subtitle: 'PCM • PCB • Commerce • Arts',
+            description: 'Evaluate course workloads, subject difficulty curves, and career matches.',
+            isDone: milestone2Complete,
+            href: '/tools/stream-pivot',
+            actionText: milestone2Complete ? 'Explore Stream Pivots' : 'Decide Stream',
+            badge: milestone2Complete ? 'Completed' : milestone1Complete ? 'Current Focus' : 'Upcoming',
+          },
+          {
+            step: 3,
+            title: 'Entrance & College Calibration',
+            subtitle: 'JEE • NEET • CUET • CLAT',
+            description: 'Estimate entrance ranks, analyze NIRF cutoffs, and shortlist target institutions.',
+            isDone: milestone3Complete,
+            href: '/tools/rank-estimator',
+            actionText: milestone3Complete ? 'Calibrate Ranks' : 'Estimate Cutoffs',
+            badge: milestone3Complete ? 'Completed' : milestone2Complete ? 'Current Focus' : 'Upcoming',
+          },
+          {
+            step: 4,
+            title: 'Verified 1-on-1 Mentorship',
+            subtitle: 'IIT / IIM / AIIMS Domain Mentors',
+            description: 'Schedule a strategic counseling session with vetted professionals.',
+            isDone: milestone4Complete,
+            href: '/consultants',
+            actionText: milestone4Complete ? 'View Sessions' : 'Book Counselor',
+            badge: milestone4Complete ? 'Completed' : milestone3Complete ? 'Current Focus' : 'Upcoming',
+          },
+        ];
+
+        return (
+          <div className="rounded-3xl border-2 border-slate-200 bg-white p-6 sm:p-8 shadow-sm dark:border-slate-800 dark:bg-slate-900">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b-2 border-slate-100 dark:border-slate-800">
+              <div>
+                <div className="flex items-center gap-2">
+                  <Compass className="h-5 w-5 text-[#0B2A4A] dark:text-amber-400" />
+                  <h2 className="text-xl font-black text-[#0B2A4A] dark:text-white">
+                    Academic Milestone Tracker
+                  </h2>
+                  <span className="rounded-full bg-amber-50 border border-amber-300 px-3 py-0.5 text-xs font-black text-[#D96B00] dark:bg-amber-950 dark:border-amber-800 dark:text-amber-300">
+                    {completedCount}/4 Stages Achieved
+                  </span>
+                </div>
+                <p className="text-xs sm:text-sm font-semibold text-slate-600 dark:text-slate-400 mt-1">
+                  Step-by-step roadmap from 10th standard diagnostic to college admission and mentor strategy.
+                </p>
+              </div>
+
+              {/* Progress gauge bar */}
+              <div className="flex flex-col gap-1.5 min-w-[200px]">
+                <div className="flex justify-between text-xs font-black text-slate-800 dark:text-slate-200">
+                  <span>Journey Progress</span>
+                  <span className="text-[#0B2A4A] dark:text-amber-400">{progressPct}%</span>
+                </div>
+                <div className="h-2.5 w-full rounded-full bg-slate-100 dark:bg-slate-800 overflow-hidden border border-slate-200 dark:border-slate-700">
+                  <div
+                    className="h-full bg-gradient-to-r from-amber-500 to-[#0B2A4A] transition-all duration-500 rounded-full"
+                    style={{ width: `${progressPct}%` }}
+                  />
+                </div>
+              </div>
+            </div>
+
+            {/* 4 Timeline Stage Cards */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mt-6">
+              {milestones.map((m) => (
+                <div
+                  key={m.step}
+                  className={`flex flex-col justify-between rounded-2xl border-2 p-5 transition shadow-xs ${
+                    m.isDone
+                      ? 'border-emerald-200 bg-emerald-50/40 dark:border-emerald-900/60 dark:bg-emerald-950/20'
+                      : 'border-slate-200 bg-[#F8F9FA] hover:border-slate-300 dark:border-slate-800 dark:bg-slate-800/40'
+                  }`}
+                >
+                  <div>
+                    <div className="flex items-center justify-between gap-2 mb-3">
+                      <span className="flex h-7 w-7 items-center justify-center rounded-xl bg-[#0B2A4A] text-xs font-black text-white dark:bg-slate-800">
+                        0{m.step}
+                      </span>
+                      <span
+                        className={`rounded-full px-2.5 py-0.5 text-[10px] font-black uppercase tracking-wider ${
+                          m.isDone
+                            ? 'bg-emerald-100 text-emerald-800 border border-emerald-300 dark:bg-emerald-950 dark:text-emerald-300 dark:border-emerald-800'
+                            : m.badge === 'Recommended Next' || m.badge === 'Current Focus'
+                            ? 'bg-amber-100 text-amber-800 border border-amber-300 dark:bg-amber-950 dark:text-amber-300 dark:border-amber-800'
+                            : 'bg-slate-200 text-slate-700 dark:bg-slate-800 dark:text-slate-400'
+                        }`}
+                      >
+                        {m.badge}
+                      </span>
+                    </div>
+
+                    <h3 className="font-black text-slate-900 dark:text-white text-sm">
+                      {m.title}
+                    </h3>
+                    <p className="text-[11px] font-bold text-[#D96B00] dark:text-amber-400 mt-0.5">
+                      {m.subtitle}
+                    </p>
+                    <p className="text-xs text-slate-600 dark:text-slate-400 mt-2 font-medium leading-relaxed">
+                      {m.description}
+                    </p>
+                  </div>
+
+                  <div className="pt-4 mt-3 border-t border-slate-200 dark:border-slate-800 flex items-center justify-between">
+                    <div className="flex items-center gap-1.5 text-xs font-bold">
+                      {m.isDone ? (
+                        <CheckCircle2 className="h-4 w-4 text-emerald-600 dark:text-emerald-400 shrink-0" />
+                      ) : (
+                        <Clock className="h-4 w-4 text-slate-400 shrink-0" />
+                      )}
+                      <span className={m.isDone ? 'text-emerald-700 dark:text-emerald-300' : 'text-slate-500'}>
+                        {m.isDone ? 'Verified' : 'Pending'}
+                      </span>
+                    </div>
+                    <Link
+                      href={m.href}
+                      className={`inline-flex items-center gap-1 rounded-lg px-2.5 py-1 text-xs font-black transition ${
+                        m.isDone
+                          ? 'text-slate-700 hover:text-slate-950 dark:text-slate-300 dark:hover:text-white'
+                          : 'bg-[#0B2A4A] text-white hover:bg-[#071C33]'
+                      }`}
+                    >
+                      <span>{m.actionText}</span>
+                      <ArrowRight className="h-3 w-3" />
+                    </Link>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        );
+      })()}
+
       {/* Quiz Assessment History */}
       <div className="rounded-3xl border-2 border-slate-200 bg-white p-6 sm:p-8 shadow-sm dark:border-slate-800 dark:bg-slate-900">
         <div className="flex items-center justify-between mb-5">
@@ -714,23 +909,87 @@ export default function StudentDashboardPage() {
             {bookings.map((b) => (
               <div
                 key={b.id}
-                className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 rounded-2xl border-2 border-slate-200 bg-[#F8F9FA] p-5 dark:border-slate-800 dark:bg-slate-800/60"
+                className="flex flex-col md:flex-row md:items-center justify-between gap-4 rounded-2xl border-2 border-slate-200 bg-[#F8F9FA] p-5 dark:border-slate-800 dark:bg-slate-800/60"
               >
                 <div>
-                  <div className="flex items-center gap-2.5">
+                  <div className="flex items-center gap-2.5 flex-wrap">
                     <span className="font-black text-[#0B2A4A] dark:text-white text-base">{b.consultantName}</span>
                     <span className="rounded-full bg-blue-50 border border-blue-200 px-2.5 py-0.5 text-xs font-black text-[#0B2A4A] dark:bg-teal-950 dark:text-teal-200 dark:border-teal-800">
                       {b.domain}
                     </span>
+                    <span
+                      className={`rounded-full px-3 py-0.5 text-xs font-black border ${
+                        b.status === 'CONFIRMED'
+                          ? 'bg-emerald-50 text-[#138808] border-emerald-300 dark:bg-emerald-950 dark:text-emerald-200'
+                          : b.status === 'COMPLETED'
+                          ? 'bg-purple-50 text-purple-800 border-purple-200 dark:bg-purple-950 dark:text-purple-200'
+                          : b.status === 'CANCELLED'
+                          ? 'bg-rose-50 text-rose-800 border-rose-200 dark:bg-rose-950 dark:text-rose-200'
+                          : 'bg-amber-50 text-amber-800 border-amber-300 dark:bg-amber-950 dark:text-amber-200'
+                      }`}
+                    >
+                      {b.status}
+                    </span>
                   </div>
-                  <div className="flex items-center gap-4 text-slate-700 dark:text-slate-300 mt-2 text-xs font-bold">
+                  <div className="flex items-center gap-4 text-slate-700 dark:text-slate-300 mt-2 text-xs font-bold flex-wrap">
                     <span>Date: <strong className="text-slate-950 dark:text-white">{b.requestedDate}</strong></span>
                     <span>Slot: <strong className="text-slate-950 dark:text-white">{b.timeSlot}</strong></span>
                   </div>
+                  {b.studentNotes && (
+                    <p className="text-xs text-slate-600 dark:text-slate-400 mt-1 line-clamp-1 italic">
+                      &quot;{b.studentNotes}&quot;
+                    </p>
+                  )}
                 </div>
-                <span className="rounded-full bg-emerald-50 border border-emerald-300 px-3 py-1 text-xs font-black text-[#138808] dark:bg-emerald-950 dark:text-emerald-200 dark:border-emerald-800 shrink-0 self-start sm:self-auto">
-                  {b.status}
-                </span>
+
+                {/* Actions */}
+                <div className="flex items-center gap-2 shrink-0 flex-wrap">
+                  {b.meetingUrl && b.status !== 'CANCELLED' && (
+                    <a
+                      href={b.meetingUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex items-center gap-1.5 rounded-xl bg-blue-600 px-3.5 py-1.5 text-xs font-black text-white hover:bg-blue-700 shadow-xs transition"
+                    >
+                      <Video className="h-3.5 w-3.5" />
+                      <span>Join Video Room</span>
+                      <ExternalLink className="h-3 w-3 opacity-75" />
+                    </a>
+                  )}
+
+                  {b.status !== 'CANCELLED' && (
+                    <button
+                      type="button"
+                      onClick={() => {
+                        const ics = generateIcsContent({
+                          title: `CAREER-GUD Consultation with ${b.consultantName}`,
+                          description: `Domain: ${b.domain}\nStudent Notes: ${b.studentNotes || ''}`,
+                          date: b.requestedDate,
+                          timeSlot: b.timeSlot,
+                          meetingUrl: b.meetingUrl,
+                        });
+                        downloadIcsFile(`consultation-${b.requestedDate}.ics`, ics);
+                      }}
+                      className="flex items-center gap-1.5 rounded-xl border border-slate-300 bg-white px-3 py-1.5 text-xs font-bold text-slate-700 hover:bg-slate-100 dark:border-slate-700 dark:bg-slate-850 dark:text-slate-200 transition"
+                      title="Download .ics Calendar Invite"
+                    >
+                      <Download className="h-3.5 w-3.5 text-emerald-600" />
+                      <span>Calendar</span>
+                    </button>
+                  )}
+
+                  {(b.status === 'REQUESTED' || b.status === 'CONFIRMED') && (
+                    <button
+                      type="button"
+                      onClick={() => handleCancelBooking(b.id)}
+                      disabled={cancellingBookingId === b.id}
+                      className="flex items-center gap-1 rounded-xl border border-rose-200 bg-white px-3 py-1.5 text-xs font-bold text-rose-700 hover:bg-rose-50 disabled:opacity-50 dark:border-rose-900 dark:bg-slate-855 dark:text-rose-300 transition cursor-pointer"
+                    >
+                      <XCircle className="h-3.5 w-3.5" />
+                      <span>{cancellingBookingId === b.id ? 'Cancelling...' : 'Cancel'}</span>
+                    </button>
+                  )}
+                </div>
               </div>
             ))}
           </div>

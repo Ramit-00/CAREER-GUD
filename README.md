@@ -94,12 +94,17 @@ GOOGLE_CLIENT_SECRET=
 
 # Google Gemini API (AI Counselor)
 GEMINI_API_KEY=
-GEMINI_MODEL=gemini-3.6-flash
+GEMINI_MODEL=gemini-2.5-flash
+
+# Cache & Edge Rate Limiting (Upstash Redis REST API)
+UPSTASH_REDIS_REST_URL=
+UPSTASH_REDIS_REST_TOKEN=
 ```
 
 > **Note on Graceful Degradation:**
 > - If `DATABASE_URL` is empty, the platform automatically runs using its high-performance in-memory repository pre-seeded with NIRF colleges, 30+ careers, and mentors.
 > - If `GEMINI_API_KEY` is empty, the AI Chatbot runs the built-in Grounded Heuristic Counselor without crashing.
+> - All environment credentials in `.env` are strictly protected and never committed to version control.
 
 ---
 
@@ -112,16 +117,21 @@ GEMINI_MODEL=gemini-3.6-flash
 - `/careers/[slug]` — Deep-dive Career Profile, Roadmap, Day in the life, and adjacent similarities
 - `/colleges` — NIRF Indian Colleges Directory (IITs, AIIMS, SRCC, NLSIU, BITS) with placement stats
 - `/colleges/[slug]` — College Profile with degree programs, fees per year, and student reviews
+- `/tools` — Central Decision Intelligence & Calculators Directory
+- `/tools/rank-estimator` — Indian Entrance Cutoff & Category Rank Estimator (JEE, NEET, CUET, CLAT, IPMAT)
+- `/tools/roi-calculator` — Higher Education Degree ROI, CSIS Moratorium Waiver & Loan EMI Calculator
+- `/tools/stream-pivot` — NEP 2020 Stream Switch & Alternate Trajectory Simulator
+- `/tools/drop-year` — Drop Year Statistical Diagnostic & Burnout Evaluation
 - `/consultants` — Verified Mentors Directory (filtered strictly by verified domain)
-- `/consultants/[id]` — Consultant Booking Page with assessment profile sharing
-- `/consultants/apply` — Consultant Application Page with domain credential proofs
+- `/consultants/[id]` — Consultant Booking Page with assessment profile sharing & Jitsi video links
+- `/consultants/apply` — Consultant Application Page with direct-to-storage credential uploads
 - `/consultant/dashboard` — Private portal for mentors to review student session requests
 - `/consultant/pending` — Status portal for consultants awaiting administrative approval
 - `/admin/portal-login` — Multi-factor administrator authentication gateway
 - `/admin/hub` — Unified Administrator Verification Hub for advisor approvals
 - `/admin/overview` — Administrative analytics and student directory
-- `/chat` — Dedicated 24/7 AI Career Counselor with RAG citations
-- `/dashboard` — Student Personal Dashboard (history, bookmarks, bookings)
+- `/chat` — Dedicated 24/7 AI Career Counselor with RAG citations, transcript export, and persistence
+- `/dashboard` — Student Personal Dashboard (Milestone Tracker, history, bookmarks, bookings)
 
 ---
 

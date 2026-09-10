@@ -1,4 +1,5 @@
 import { getJwtSecret } from '@/lib/auth/jwtSecret';
+import { prisma } from '@/lib/prisma';
 import { repository } from '@/lib/data/repository';
 import { scoringEngine } from '@/lib/recommendation/scoringEngine';
 import { StreamType } from '@/types';
@@ -64,6 +65,25 @@ export async function POST(req: NextRequest) {
 
     // If user is logged in, also update their student profile with extracted signals
     if (userId) {
+      try {
+        await prisma.studentProfile.upsert({
+          where: { userId },
+          update: {
+            currentClass: quizType === 'STREAM_10TH' ? 'CLASS_10' : 'CLASS_12',
+            ...(quizType === 'STREAM_10TH' ? { currentStream: result.primaryRecommendation.streamCategory as any } : {}),
+            ...(userProfile?.tenthPercentage ? { tenthPercentage: userProfile.tenthPercentage } : {}),
+          },
+          create: {
+            userId,
+            currentClass: quizType === 'STREAM_10TH' ? 'CLASS_10' : 'CLASS_12',
+            currentStream: quizType === 'STREAM_10TH' ? (result.primaryRecommendation.streamCategory as any) : undefined,
+            tenthPercentage: userProfile?.tenthPercentage,
+          },
+        });
+      } catch (err) {
+        console.warn('StudentProfile upsert fallback:', err);
+      }
+
       const existing = await repository.getStudentProfile(userId);
       if (existing) {
         existing.currentClass = quizType === 'STREAM_10TH' ? 'CLASS_10' : 'CLASS_12';

@@ -75,4 +75,15 @@ export const aiGuardrails = {
     }
     return { passed: true };
   },
+
+  sanitizePII(text: string): string {
+    if (!text) return text;
+    return text
+      // Redact 12-digit Indian Aadhaar card numbers (with or without spaces/hyphens)
+      .replace(/\b\d{4}[ -]?\d{4}[ -]?\d{4}\b/g, '[AADHAAR_REDACTED]')
+      // Redact 10-digit Indian mobile numbers starting with 6, 7, 8, 9
+      .replace(/(?:(?:\+?91|0)?[ -]?)(\b[6-9]\d{9}\b)/g, '[PHONE_REDACTED]')
+      // Redact personal email addresses
+      .replace(/[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+/g, '[EMAIL_REDACTED]');
+  },
 };

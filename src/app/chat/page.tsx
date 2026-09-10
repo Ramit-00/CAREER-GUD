@@ -5,26 +5,19 @@ import { ChatMessage } from '@/types';
 import {
   ArrowUpRight,
   Compass,
+  Download,
   Send,
   Trash2,
 } from 'lucide-react';
 import Link from 'next/link';
 import { useEffect, useRef, useState } from 'react';
 
-const SUGGESTED_QUESTIONS = [
-  'Should I take PCM or PCB for Class 11? My 10th Math is 84% and Science is 88%.',
-  'What is the real career future and salary of Computer Science vs AI Engineering in India?',
-  'Can I do MBBS without taking Biology in +2?',
-  'What are the entrance exams and average packages for SRCC B.Com (Hons)?',
-  'How hard is the CA examination compared to B.Tech?',
-];
+const STORAGE_KEY = 'career_gud_chat_history_v1';
 
-export default function ChatPage() {
-  const [messages, setMessages] = useState<ChatMessage[]>([
-    {
-      id: 'welcome_1',
-      role: 'assistant',
-      content: `### Welcome to CAREER-GUD's AI Career Counselor
+const DEFAULT_WELCOME_MESSAGE: ChatMessage = {
+  id: 'welcome_1',
+  role: 'assistant',
+  content: `### Welcome to CAREER-GUD's AI Career Counselor
 
 I am grounded directly in verified Indian educational data, NIRF college placement metrics, and future career outlooks.
 
@@ -35,14 +28,51 @@ I am grounded directly in verified Indian educational data, NIRF college placeme
 4. **Honest Reality Checks**: Transparent facts on entrance exam competition ratios (JEE, NEET, CUET, CLAT).
 
 Tell me about your current class, your marks, or what career field you are curious about!`,
-      timestamp: '2025-01-01T00:00:00.000Z',
-    },
-  ]);
+  timestamp: '2025-01-01T00:00:00.000Z',
+};
+
+const SUGGESTED_QUESTIONS = [
+  'Should I take PCM or PCB for Class 11? My 10th Math is 84% and Science is 88%.',
+  'What is the real career future and salary of Computer Science vs AI Engineering in India?',
+  'Can I do MBBS without taking Biology in +2?',
+  'What are the entrance exams and average packages for SRCC B.Com (Hons)?',
+  'How hard is the CA examination compared to B.Tech?',
+];
+
+export default function ChatPage() {
+  const [messages, setMessages] = useState<ChatMessage[]>([DEFAULT_WELCOME_MESSAGE]);
   const [inputValue, setInputValue] = useState('');
   const [loading, setLoading] = useState(false);
   const chatContainerRef = useRef<HTMLDivElement>(null);
   const isInitialMount = useRef(true);
   const isNearBottomRef = useRef(true);
+
+  // Restore chat history from localStorage after client hydration
+  useEffect(() => {
+    try {
+      const saved = localStorage.getItem(STORAGE_KEY);
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        if (Array.isArray(parsed) && parsed.length > 0) {
+          setMessages(parsed);
+        }
+      }
+    } catch {
+      // Ignore localStorage errors
+    }
+  }, []);
+
+  // Save chat history to localStorage on message changes
+  useEffect(() => {
+    if (isInitialMount.current) {
+      return;
+    }
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(messages));
+    } catch {
+      // Ignore storage limit/access issues
+    }
+  }, [messages]);
 
   const handleScroll = () => {
     if (!chatContainerRef.current) return;
@@ -132,7 +162,49 @@ Tell me about your current class, your marks, or what career field you are curio
     }
   };
 
+  const handleExportChat = () => {
+    const exportTime = new Date().toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' });
+    let transcript = `# CAREER-GUD AI Counselor - Academic & Career Counseling Transcript\n\n`;
+    transcript += `**Exported On:** ${exportTime} (IST)\n`;
+    transcript += `**System Grounding:** NIRF Statutory Data & Career Framework\n\n`;
+    transcript += `---\n\n`;
+
+    messages.forEach((m) => {
+      const isUser = m.role === 'user';
+      const sender = isUser ? 'Student' : 'CAREER-GUD AI Counselor';
+      const timestamp = m.timestamp
+        ? new Date(m.timestamp).toLocaleTimeString('en-IN')
+        : 'Session';
+      transcript += `### ${sender} [${timestamp}]\n\n`;
+      transcript += `${m.content.trim()}\n\n`;
+
+      if (m.citations && m.citations.length > 0) {
+        transcript += `**Institutional Citations & Knowledge Base:**\n`;
+        m.citations.forEach((c) => {
+          transcript += `- [${c.title}](${c.link})\n`;
+        });
+        transcript += `\n`;
+      }
+      transcript += `---\n\n`;
+    });
+
+    const blob = new Blob([transcript], { type: 'text/markdown;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = `career-gud-counseling-transcript-${new Date().toISOString().slice(0, 10)}.md`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+  };
+
   const handleClearHistory = () => {
+    try {
+      localStorage.removeItem(STORAGE_KEY);
+    } catch {
+      // Ignore
+    }
     setMessages([
       {
         id: `reset_${Date.now()}`,
@@ -146,9 +218,9 @@ Tell me about your current class, your marks, or what career field you are curio
   return (
     <div className="mx-auto max-w-5xl px-4 py-8 sm:px-6 lg:px-8 flex flex-col h-[calc(100vh-5rem)]">
       {/* Top Header Bar */}
-      <div className="flex items-center justify-between pb-4 border-b-2 border-slate-200 dark:border-slate-800">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-4 border-b-2 border-slate-200 dark:border-slate-800 gap-3">
         <div className="flex items-center gap-3">
-          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#0B2A4A] text-white shadow-xs">
+          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#0B2A4A] text-white shadow-xs shrink-0">
             <Compass className="h-5 w-5 text-amber-400" />
           </div>
           <div>
@@ -164,13 +236,23 @@ Tell me about your current class, your marks, or what career field you are curio
           </div>
         </div>
 
-        <button
-          onClick={handleClearHistory}
-          className="flex items-center gap-1.5 rounded-xl border-2 border-slate-300 bg-white px-3.5 py-2 text-xs font-bold text-slate-800 hover:bg-slate-100 hover:text-slate-950 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200 dark:hover:bg-slate-800 dark:hover:text-white transition shadow-xs"
-        >
-          <Trash2 className="h-4 w-4 text-slate-500" />
-          <span>Clear Console</span>
-        </button>
+        <div className="flex items-center gap-2 shrink-0 self-end sm:self-auto">
+          <button
+            onClick={handleExportChat}
+            className="flex items-center gap-1.5 rounded-xl border-2 border-slate-300 bg-white px-3.5 py-2 text-xs font-bold text-slate-800 hover:bg-slate-100 hover:text-slate-950 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200 dark:hover:bg-slate-800 dark:hover:text-white transition shadow-xs"
+            title="Export conversation as Markdown transcript"
+          >
+            <Download className="h-4 w-4 text-[#0B2A4A] dark:text-amber-400" />
+            <span>Export Transcript</span>
+          </button>
+          <button
+            onClick={handleClearHistory}
+            className="flex items-center gap-1.5 rounded-xl border-2 border-slate-300 bg-white px-3.5 py-2 text-xs font-bold text-slate-800 hover:bg-slate-100 hover:text-slate-950 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200 dark:hover:bg-slate-800 dark:hover:text-white transition shadow-xs"
+          >
+            <Trash2 className="h-4 w-4 text-slate-500" />
+            <span>Clear Console</span>
+          </button>
+        </div>
       </div>
 
       {/* Messages Scroll Area */}

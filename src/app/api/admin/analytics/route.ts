@@ -20,8 +20,8 @@ export async function GET(req: NextRequest) {
       pendingConsultants,
       totalBookings,
       totalQuizzes,
-      careers,
-      colleges,
+      totalCareers,
+      totalColleges,
       streamCounts,
     ] = await Promise.all([
       prisma.user.count({ where: { role: 'STUDENT' } }),
@@ -29,8 +29,8 @@ export async function GET(req: NextRequest) {
       prisma.consultantProfile.count({ where: { verificationStatus: 'PENDING' } }),
       prisma.consultationBooking.count(),
       prisma.quizAttempt.count(),
-      repository.getCareers(),
-      repository.getColleges(),
+      prisma.career.count().then(async (c) => (c > 0 ? c : (await repository.getCareers()).length)),
+      prisma.college.count().then(async (c) => (c > 0 ? c : (await repository.getColleges()).length)),
       prisma.studentProfile.groupBy({
         by: ['currentStream'],
         _count: { currentStream: true },
@@ -130,17 +130,24 @@ export async function GET(req: NextRequest) {
       },
     ];
 
-    return NextResponse.json({
-      totalStudents,
-      totalConsultants,
-      pendingConsultants,
-      totalBookings,
-      totalQuizzes,
-      totalCareers: careers.length,
-      totalColleges: colleges.length,
-      streamDistribution,
-      trendingCareers,
-    });
+    return NextResponse.json(
+      {
+        totalStudents,
+        totalConsultants,
+        pendingConsultants,
+        totalBookings,
+        totalQuizzes,
+        totalCareers,
+        totalColleges,
+        streamDistribution,
+        trendingCareers,
+      },
+      {
+        headers: {
+          'Cache-Control': 's-maxage=300, stale-while-revalidate=600',
+        },
+      }
+    );
   } catch (error) {
     console.error('Analytics error:', error);
     return NextResponse.json({ error: 'Failed to retrieve analytics' }, { status: 500 });

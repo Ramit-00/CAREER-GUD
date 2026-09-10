@@ -128,27 +128,30 @@ export const authOptions: NextAuthOptions = {
               return `/register?error=NoAccountFound&email=${encodeURIComponent(normalizedEmail)}`;
             }
 
-            // ONLY if initiated from /register: create the new student account in Supabase
-            dbUser = await prisma.user.create({
-              data: {
-                name: user.name || 'Student',
-                email: normalizedEmail,
-                role: 'STUDENT',
-                image: user.image || undefined,
-              },
-            });
+            // ONLY if initiated from /register: create the new student account in Supabase atomically
+            dbUser = await prisma.$transaction(async (tx) => {
+              const createdUser = await tx.user.create({
+                data: {
+                  name: user.name || 'Student',
+                  email: normalizedEmail,
+                  role: 'STUDENT',
+                  image: user.image || undefined,
+                },
+              });
 
-            // Initialize default student profile
-            await prisma.studentProfile.create({
-              data: {
-                userId: dbUser.id,
-                currentClass: 'CLASS_10',
-                board: 'CBSE',
-                interests: [],
-                strengths: [],
-                savedCareers: [],
-                savedColleges: [],
-              },
+              await tx.studentProfile.create({
+                data: {
+                  userId: createdUser.id,
+                  currentClass: 'CLASS_10',
+                  board: 'CBSE',
+                  interests: [],
+                  strengths: [],
+                  savedCareers: [],
+                  savedColleges: [],
+                },
+              });
+
+              return createdUser;
             });
           }
 
@@ -161,7 +164,7 @@ export const authOptions: NextAuthOptions = {
       }
       return true;
     },
-    async jwt({ token, user }) {
+    async jwt({ token, user, trigger, session }) {
       if (user) {
         token.id = user.id;
         token.role = (user as unknown as { role: string }).role || 'STUDENT';
@@ -169,6 +172,29 @@ export const authOptions: NextAuthOptions = {
           user as unknown as { verificationStatus?: string }
         ).verificationStatus;
       }
+
+      // Dynamic claim refresh for consultant verification or profile updates
+      if (trigger === 'update' && session) {
+        if (session.verificationStatus) {
+          token.verificationStatus = session.verificationStatus;
+        }
+        if (session.name) {
+          token.name = session.name;
+        }
+      } else if (token.id && token.role === 'CONSULTANT' && !token.verificationStatus) {
+        try {
+          const profile = await prisma.consultantProfile.findUnique({
+            where: { userId: token.id as string },
+            select: { verificationStatus: true },
+          });
+          if (profile) {
+            token.verificationStatus = profile.verificationStatus;
+          }
+        } catch {
+          // Keep existing token claims on lookup error
+        }
+      }
+
       return token;
     },
     async session({ session, token }) {
@@ -186,6 +212,7 @@ export const authOptions: NextAuthOptions = {
   },
   session: {
     strategy: 'jwt',
+    maxAge: 7 * 24 * 60 * 60, // 7 days
   },
   secret: getJwtSecret(),
 };

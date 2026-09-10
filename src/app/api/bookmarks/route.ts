@@ -149,74 +149,75 @@ export async function POST(req: NextRequest) {
       },
     });
 
-    let isSaved = false;
-
-    if (existing) {
-      // Remove bookmark
-      await prisma.userBookmark.delete({
-        where: { id: existing.id },
-      });
-      isSaved = false;
+    let title = slug;
+    let subtitle = '';
+    if (type === 'CAREER') {
+      const car = await repository.getCareerBySlug(slug);
+      if (car) {
+        title = car.title;
+        subtitle = car.streamLabel;
+      }
     } else {
-      // Fetch title & subtitle
-      let title = slug;
-      let subtitle = '';
-      if (type === 'CAREER') {
-        const car = await repository.getCareerBySlug(slug);
-        if (car) {
-          title = car.title;
-          subtitle = car.streamLabel;
-        }
+      const col = await repository.getCollegeBySlug(slug);
+      if (col) {
+        title = col.name;
+        subtitle = `${col.city}, ${col.state}`;
+      }
+    }
+
+    const isSaved = await prisma.$transaction(async (tx) => {
+      let saved = false;
+      if (existing) {
+        await tx.userBookmark.delete({
+          where: { id: existing.id },
+        });
+        saved = false;
       } else {
-        const col = await repository.getCollegeBySlug(slug);
-        if (col) {
-          title = col.name;
-          subtitle = `${col.city}, ${col.state}`;
-        }
+        await tx.userBookmark.create({
+          data: {
+            userId,
+            itemType: type,
+            itemSlug: slug,
+            title,
+            subtitle,
+          },
+        });
+        saved = true;
       }
 
-      await prisma.userBookmark.create({
-        data: {
-          userId,
-          itemType: type,
-          itemSlug: slug,
-          title,
-          subtitle,
-        },
+      // Synchronize StudentProfile if exists
+      const studentProf = await tx.studentProfile.findUnique({
+        where: { userId },
       });
-      isSaved = true;
-    }
 
-    // Synchronize StudentProfile if exists
-    const studentProf = await prisma.studentProfile.findUnique({
-      where: { userId },
-    });
-
-    if (studentProf) {
-      if (type === 'CAREER') {
-        let updatedList = studentProf.savedCareers || [];
-        if (isSaved) {
-          if (!updatedList.includes(slug)) updatedList = [...updatedList, slug];
+      if (studentProf) {
+        if (type === 'CAREER') {
+          let updatedList = studentProf.savedCareers || [];
+          if (saved) {
+            if (!updatedList.includes(slug)) updatedList = [...updatedList, slug];
+          } else {
+            updatedList = updatedList.filter((s) => s !== slug);
+          }
+          await tx.studentProfile.update({
+            where: { userId },
+            data: { savedCareers: updatedList },
+          });
         } else {
-          updatedList = updatedList.filter((s) => s !== slug);
+          let updatedList = studentProf.savedColleges || [];
+          if (saved) {
+            if (!updatedList.includes(slug)) updatedList = [...updatedList, slug];
+          } else {
+            updatedList = updatedList.filter((s) => s !== slug);
+          }
+          await tx.studentProfile.update({
+            where: { userId },
+            data: { savedColleges: updatedList },
+          });
         }
-        await prisma.studentProfile.update({
-          where: { userId },
-          data: { savedCareers: updatedList },
-        });
-      } else {
-        let updatedList = studentProf.savedColleges || [];
-        if (isSaved) {
-          if (!updatedList.includes(slug)) updatedList = [...updatedList, slug];
-        } else {
-          updatedList = updatedList.filter((s) => s !== slug);
-        }
-        await prisma.studentProfile.update({
-          where: { userId },
-          data: { savedColleges: updatedList },
-        });
       }
-    }
+
+      return saved;
+    });
 
     // Sync in-memory store
     await repository.toggleSavedItem(userId, type, slug);

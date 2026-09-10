@@ -1,6 +1,7 @@
 'use client';
 
 import { ExamBadge } from '@/components/common/ExamBadgeModal';
+import { ParentReportModal } from '@/components/common/ParentReportModal';
 import { QuizResult, StreamType } from '@/types';
 import {
   AlertCircle,
@@ -8,12 +9,15 @@ import {
   BarChart3,
   BookOpen,
   Cpu,
+  FileText,
   GraduationCap,
   Microscope,
   RotateCcw,
   Scale,
+  Share2,
   Stethoscope,
 } from 'lucide-react';
+import { useSession } from 'next-auth/react';
 import Link from 'next/link';
 import React, { useEffect, useState } from 'react';
 
@@ -84,13 +88,51 @@ const TRAJECTORY_OPTIONS = [
 ];
 
 export default function Post12thQuizPage() {
+  const { data: session } = useSession();
   const [selectedStream, setSelectedStream] = useState<StreamType>('SCIENCE_PCM');
   const [targetTrajectory, setTargetTrajectory] = useState<string>('CORE');
   const [twelfthPercentage, setTwelfthPercentage] = useState<number>(82);
   const [mathScore, setMathScore] = useState<number>(80);
   const [scienceScore, setScienceScore] = useState<number>(80);
   const [submitting, setSubmitting] = useState(false);
+  const [submissionError, setSubmissionError] = useState<string | null>(null);
   const [quizResult, setQuizResult] = useState<QuizResult | null>(null);
+  const [showParentModal, setShowParentModal] = useState(false);
+
+  // Restore draft from sessionStorage
+  useEffect(() => {
+    try {
+      const saved = sessionStorage.getItem('career_gud_draft_12th');
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        if (parsed.selectedStream) setSelectedStream(parsed.selectedStream);
+        if (parsed.targetTrajectory) setTargetTrajectory(parsed.targetTrajectory);
+        if (parsed.twelfthPercentage) setTwelfthPercentage(parsed.twelfthPercentage);
+        if (parsed.mathScore) setMathScore(parsed.mathScore);
+        if (parsed.scienceScore) setScienceScore(parsed.scienceScore);
+      }
+    } catch {
+      // Ignore storage errors
+    }
+  }, []);
+
+  // Save draft to sessionStorage
+  useEffect(() => {
+    try {
+      sessionStorage.setItem(
+        'career_gud_draft_12th',
+        JSON.stringify({
+          selectedStream,
+          targetTrajectory,
+          twelfthPercentage,
+          mathScore,
+          scienceScore,
+        })
+      );
+    } catch {
+      // Ignore storage errors
+    }
+  }, [selectedStream, targetTrajectory, twelfthPercentage, mathScore, scienceScore]);
 
   useEffect(() => {
     window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
@@ -100,6 +142,7 @@ export default function Post12thQuizPage() {
 
   const handleSubmit = async () => {
     setSubmitting(true);
+    setSubmissionError(null);
     try {
       const res = await fetch('/api/quiz/submit', {
         method: 'POST',
@@ -123,13 +166,18 @@ export default function Post12thQuizPage() {
         }),
       });
 
-      if (!res.ok) throw new Error('Failed to score assessment');
+      const data = await res.json();
+      if (!res.ok) {
+        throw new Error(data.error || 'Failed to score assessment');
+      }
 
-      const data: QuizResult = await res.json();
       setQuizResult(data);
-    } catch (err) {
+      try {
+        sessionStorage.removeItem('career_gud_draft_12th');
+      } catch {}
+    } catch (err: any) {
       console.error('Quiz submission error:', err);
-      alert('Could not submit assessment. Please try again.');
+      setSubmissionError(err.message || 'Could not submit assessment. Please try again.');
     } finally {
       setSubmitting(false);
     }
@@ -276,11 +324,18 @@ export default function Post12thQuizPage() {
             </div>
           </div>
 
+          {submissionError && (
+            <div className="mt-4 flex items-center gap-2 rounded-xl border border-rose-300 bg-rose-50 p-3 text-xs font-bold text-rose-900 dark:border-rose-900 dark:bg-rose-950 dark:text-rose-200">
+              <AlertCircle className="h-4 w-4 text-rose-600 shrink-0" />
+              <span>{submissionError}</span>
+            </div>
+          )}
+
           <button
             type="button"
             onClick={handleSubmit}
             disabled={submitting}
-            className="mt-8 flex w-full items-center justify-center gap-2 rounded-xl bg-[#0B2A4A] py-3.5 text-xs font-bold text-white hover:bg-[#071C33] border border-[#071C33] disabled:opacity-50 transition shadow-sm"
+            className="mt-8 flex w-full items-center justify-center gap-2 rounded-xl bg-[#0B2A4A] py-3.5 text-xs font-bold text-white hover:bg-[#071C33] border border-[#071C33] disabled:opacity-50 transition shadow-sm cursor-pointer"
           >
             {submitting ? (
               <span>Mapping Statutory Eligibility & Cutoffs...</span>
@@ -410,12 +465,36 @@ export default function Post12thQuizPage() {
             </div>
           </div>
 
+          {/* Parent Discussion Dossier Card */}
+          <div className="rounded-2xl border-2 border-emerald-300 bg-emerald-50/70 p-6 dark:border-emerald-800 dark:bg-emerald-950/40 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+            <div>
+              <div className="flex items-center gap-2 text-xs font-black uppercase tracking-wider text-emerald-800 dark:text-emerald-300">
+                <FileText className="h-4 w-4" />
+                <span>Family Alignment & Higher Ed Discussion</span>
+              </div>
+              <h3 className="text-base font-black text-slate-950 dark:text-white mt-1">
+                Share Degree & Career Strategy with Parents
+              </h3>
+              <p className="text-xs text-slate-700 dark:text-slate-300 mt-0.5 font-medium max-w-xl">
+                Includes printable 2-page academic roadmap, 5 data-backed conversation prompts on entrance exams vs degrees, and 1-click WhatsApp summary.
+              </p>
+            </div>
+            <button
+              type="button"
+              onClick={() => setShowParentModal(true)}
+              className="flex items-center gap-2 rounded-xl bg-emerald-600 px-5 py-2.5 text-xs font-black text-white hover:bg-emerald-700 transition shadow-xs shrink-0 cursor-pointer"
+            >
+              <Share2 className="h-3.5 w-3.5" />
+              <span>Open Parent Dossier</span>
+            </button>
+          </div>
+
           {/* Action Links */}
           <div className="flex flex-wrap items-center justify-between gap-4 pt-4 border-t-2 border-slate-200 dark:border-slate-700">
             <button
               type="button"
               onClick={() => setQuizResult(null)}
-              className="flex items-center gap-2 rounded-xl border-2 border-slate-300 px-4 py-2.5 text-xs font-bold text-slate-800 hover:bg-slate-100 dark:border-slate-700 dark:text-slate-200 dark:hover:bg-slate-800 transition"
+              className="flex items-center gap-2 rounded-xl border-2 border-slate-300 px-4 py-2.5 text-xs font-bold text-slate-800 hover:bg-slate-100 dark:border-slate-700 dark:text-slate-200 dark:hover:bg-slate-800 transition cursor-pointer"
             >
               <RotateCcw className="h-4 w-4" />
               Retake / Select Another Stream
@@ -423,10 +502,10 @@ export default function Post12thQuizPage() {
 
             <div className="flex items-center gap-3">
               <Link
-                href="/careers"
+                href={`/careers?stream=${encodeURIComponent(quizResult.primaryRecommendation.title)}`}
                 className="rounded-xl border-2 border-slate-300 px-4 py-2.5 text-xs font-bold text-[#0B2A4A] hover:bg-slate-100 dark:border-slate-700 dark:text-white dark:hover:bg-slate-800"
               >
-                Explore Careers Directory
+                Explore {quizResult.primaryRecommendation.title} Careers →
               </Link>
               <Link
                 href="/colleges"
@@ -436,6 +515,16 @@ export default function Post12thQuizPage() {
               </Link>
             </div>
           </div>
+
+          {/* Parent Report Modal */}
+          {quizResult && (
+            <ParentReportModal
+              isOpen={showParentModal}
+              onClose={() => setShowParentModal(false)}
+              result={quizResult}
+              studentName={session?.user?.name || 'Class 12 Student'}
+            />
+          )}
         </div>
       )}
     </div>
