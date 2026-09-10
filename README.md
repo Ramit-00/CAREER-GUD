@@ -29,10 +29,10 @@ This project is built natively with **Next.js (App Router)** integrating the fro
 - **Frontend**: React 19, TypeScript, Tailwind CSS v4, Lucide Icons, Canvas Confetti
 - **Authentication**: NextAuth.js (Auth.js) with Google OAuth, Credentials with bcrypt, and 1-Click Demo accounts
 - **Database Layer**: Prisma ORM with PostgreSQL + `pgvector` ready schema
-- **Zero-Config Fallback Engine**: Thread-safe in-memory repository layer with 30+ careers, 20+ colleges, verified mentors, and student assessment profiles (runs instantly with blank `.env.local` keys!)
+- **Zero-Config Fallback Engine**: Thread-safe in-memory repository layer with 30+ careers, 20+ colleges, verified mentors, and student assessment profiles (runs instantly even with blank `.env` keys!)
 - **AI / LLM Integration**:
-  - **Primary**: Anthropic Claude API (`@anthropic-ai/sdk`)
-  - **Secondary**: OpenAI (`gpt-4o` / `gpt-4o-mini`)
+  - **Primary**: Google Gemini API (`@google/genai` / Gemini 2.5 Flash)
+  - **Secondary**: Anthropic Claude & OpenAI
   - **Fallback**: Intelligent Local Heuristic Counselor engine that delivers realistic, grounded answers with citations even when API keys are blank.
 
 ---
@@ -137,8 +137,21 @@ This verifies:
 - `scoringEngine`: 10th & 12th weighted scoring algorithms
 - `realismValidator`: Red/Amber alert generation for low-math/science scores
 - `similarityEngine`: Vector cosine similarity matching adjacent careers
-- `aiGuardrails`: Distress detection (Tele-MANAS redirect) and romantic roleplay interception
+- `aiGuardrails`: Distress detection (Tele-MANAS redirect), romantic roleplay interception, and prompt injection defense
 - `repository`: Strict domain verification enforcement for consultants
+- `security`: Password hashing, admin auth, input sanitization, and session boundaries
+
+To run the 18-point platform security audit check:
+
+```bash
+npm run security:check
+```
+
+To run the entire end-to-end verification pipeline (security audit + test suite + quiet linter + Next.js production build):
+
+```bash
+npm run verify
+```
 
 To build for production:
 

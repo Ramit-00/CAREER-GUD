@@ -24,20 +24,28 @@ Because many users are 15-18 year olds:
   - **Tele-MANAS** (Ministry of Health, Govt. of India): `14416` / `1800-891-4416`
   - **AASRA**: `+91-9820466726`
 - **Inappropriate Roleplay Prohibition**: Romance, dating, or intimate roleplay is rejected immediately.
-- **Anti-Hallucination Grounding (RAG)**: The chatbot retrieves verified platform knowledge base chunks before answering questions regarding entrance cutoffs, college fees, or salaries.
+- **Anti-Hallucination Grounding (RAG)**: The chatbot retrieves verified platform knowledge base chunks inside `<verified_institutional_data>` XML delimiters before answering questions regarding entrance cutoffs, college fees, or salaries.
+- **Prompt Injection & Jailbreak Defense**: Multi-pattern regex engine (`PROMPT_INJECTION_PATTERNS`) scans conversation histories for instruction override attempts, DAN/Developer mode activations, or attempts to leak system prompts and keys, returning safe, counselor-aligned intercepts.
 
 ---
 
 ## 3. Rate Limiting & Denial-of-Service Defense
 
-- **In-Memory Sliding Window**: Sensitive API routes (specifically `/api/chat` and `/api/auth/*`) are guarded by an IP-based sliding window rate limiter in `src/middleware.ts` to protect LLM API costs and prevent brute-force attacks.
+- **Session-Aware Sliding Window**: Sensitive API routes (`/api/chat`, `/api/auth/*`, `/api/consultants/bookings`, `/api/reviews`) are guarded by rate limiting in `src/middleware.ts`.
+- **Anti-Spoofing IP Resolution**: Inspects verified reverse-proxy headers (`x-real-ip`, `cf-connecting-ip`, client entry of `x-forwarded-for`).
+- **Session-Based Rate Limiting**: Authenticated users are bound to `user:${userId}` instead of IP, neutralizing proxy-rotation bypasses.
+- **Tiered Endpoint Protection**:
+  - `/api/chat`: 10 req/min for anonymous callers (preventing token exhaustion/DDoS), 30 req/min for logged-in students and advisors.
+  - `/api/consultants/bookings`: 15 req/min POST limit preventing booking spam and race conditions.
 
 ---
 
 ## 4. Input Validation & Data Sanitization
 
-- **Zod Schemas**: Every API route (`/api/quiz/submit`, `/api/reviews`, `/api/consultants/apply`, `/api/consultants/bookings`, `/api/chat`, `/api/users/me`) validates the incoming request payload with strict Zod schemas before database execution.
-- **SQL / NoSQL Injection Prevention**: Prisma ORM executes parameterized queries for PostgreSQL, preventing SQL injection vulnerabilities.
+- **Zod Schemas**: Every API route validates the incoming request payload with strict Zod schemas before database execution.
+- **Stored XSS Neutralization**: User-contributed profile fields (`name`, `aboutMe`, `board`, `interests`, `strengths`) have HTML markup stripped before database persistence.
+- **Mathematical Scoring Integrity**: Academic scores (`mathScore`, `scienceScore`, etc.) undergo finite-number and boundary validation (`0` to `100`), preventing `NaN` comparison bypasses in stream matching algorithms.
+- **SQL Injection Prevention**: Prisma ORM executes parameterized queries for PostgreSQL, preventing SQL injection vulnerabilities.
 
 ---
 
@@ -48,7 +56,17 @@ Because many users are 15-18 year olds:
 
 ---
 
-## 6. Secret Hygiene
+## 6. Secret Hygiene & Authentication Hardening
 
-- No production passwords, database URIs, OAuth client secrets, or AI API keys are committed to source control.
-- `.env*` files are strictly included in `.gitignore`, with `.env.example` committed with blank values as a reference template.
+- **Decoupled Admin Password**: Administrative passwords are never persisted to the database and are compared directly from `.env` using constant-time buffers (`crypto.timingSafeEqual`).
+- **Zero Secrets in Git**: No production passwords, database URIs, OAuth client secrets, or AI API keys are committed to source control.
+- **Gitignore Strictness**: `.env*` files are strictly included in `.gitignore`, with `.env.example` committed with blank values as a reference template.
+
+---
+
+## 7. Automated Pre-Commit Security Gate
+
+To guarantee security policies are enforced permanently:
+- **`scripts/security-check.ts`**: Runs 18 automated security verifications covering secret scanning, `.gitignore` validation, security headers (`CSP`, `HSTS`, `X-Frame-Options`), rate limit coverage, AI guardrails, and `npm audit`.
+- **`.githooks/pre-commit`**: Automatically runs before every `git commit`. Commits containing hardcoded secrets or unignored environment files are rejected at the source.
+
