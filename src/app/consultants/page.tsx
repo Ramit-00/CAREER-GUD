@@ -26,10 +26,6 @@ export default function ConsultantsDirectoryPage() {
   const [loading, setLoading] = useState(true);
   const [selectedFilter, setSelectedFilter] = useState('ALL');
 
-  useEffect(() => {
-    fetchConsultants();
-  }, [selectedFilter]);
-
   const fetchConsultants = async () => {
     setLoading(true);
     try {
@@ -50,6 +46,10 @@ export default function ConsultantsDirectoryPage() {
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    fetchConsultants();
+  }, [selectedFilter]);
 
   return (
     <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">

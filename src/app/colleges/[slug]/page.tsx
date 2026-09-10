@@ -33,13 +33,6 @@ export default function CollegeDetailPage() {
   const [reviewComment, setReviewComment] = useState('');
   const [submittingReview, setSubmittingReview] = useState(false);
 
-  useEffect(() => {
-    window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
-    if (document.documentElement) document.documentElement.scrollTop = 0;
-    if (document.body) document.body.scrollTop = 0;
-    fetchCollege();
-  }, [slug]);
-
   const fetchCollege = async () => {
     setLoading(true);
     try {
@@ -58,6 +51,13 @@ export default function CollegeDetailPage() {
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
+    if (document.documentElement) document.documentElement.scrollTop = 0;
+    if (document.body) document.body.scrollTop = 0;
+    fetchCollege();
+  }, [slug]);
 
   const handleToggleBookmark = async () => {
     if (!session) {

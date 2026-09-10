@@ -30,13 +30,6 @@ export default function ConsultantDetailPage() {
   const [bookingLoading, setBookingLoading] = useState(false);
   const [bookingSuccess, setBookingSuccess] = useState(false);
 
-  useEffect(() => {
-    window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
-    if (document.documentElement) document.documentElement.scrollTop = 0;
-    if (document.body) document.body.scrollTop = 0;
-    fetchConsultant();
-  }, [id]);
-
   const fetchConsultant = async () => {
     setLoading(true);
     try {
@@ -55,6 +48,13 @@ export default function ConsultantDetailPage() {
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
+    if (document.documentElement) document.documentElement.scrollTop = 0;
+    if (document.body) document.body.scrollTop = 0;
+    fetchConsultant();
+  }, [id]);
 
   const handleBooking = async (e: React.FormEvent) => {
     e.preventDefault();

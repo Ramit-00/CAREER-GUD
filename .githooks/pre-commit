@@ -1,0 +1,9 @@
+#!/bin/sh
+# CAREER-GUD Security Gate: Verifies zero secrets, security headers, guardrails, and audit status before committing
+echo "🔒 CAREER-GUD Security Gate: Verifying security before commit..."
+npm run security:check
+STATUS=$?
+if [ $STATUS -ne 0 ]; then
+  echo "❌ Pre-commit hook blocked: Repository security check failed! Please resolve all security violations before committing."
+  exit 1
+fi

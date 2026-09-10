@@ -48,24 +48,6 @@ export default function ConsultantDashboardPage() {
   const [loading, setLoading] = useState(true);
   const [updatingId, setUpdatingId] = useState<string | null>(null);
 
-  // Role and session check
-  useEffect(() => {
-    if (status === 'unauthenticated') {
-      router.replace('/login');
-      return;
-    }
-    if (status === 'authenticated') {
-      const userRole = (session?.user as any)?.role;
-      if (userRole === 'STUDENT') {
-        router.replace('/dashboard');
-      } else if (userRole === 'ADMIN') {
-        router.replace('/admin/overview');
-      } else {
-        fetchDashboardData();
-      }
-    }
-  }, [status, session, router]);
-
   const fetchDashboardData = async () => {
     setLoading(true);
     try {
@@ -90,6 +72,24 @@ export default function ConsultantDashboardPage() {
       setLoading(false);
     }
   };
+
+  // Role and session check
+  useEffect(() => {
+    if (status === 'unauthenticated') {
+      router.replace('/login');
+      return;
+    }
+    if (status === 'authenticated') {
+      const userRole = (session?.user as any)?.role;
+      if (userRole === 'STUDENT') {
+        router.replace('/dashboard');
+      } else if (userRole === 'ADMIN') {
+        router.replace('/admin/overview');
+      } else {
+        fetchDashboardData();
+      }
+    }
+  }, [status, session, router]);
 
   const handleRemoveBookmark = async (type: 'CAREER' | 'COLLEGE', slug: string) => {
     setRemovingBookmark(slug);

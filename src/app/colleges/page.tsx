@@ -15,10 +15,6 @@ export default function CollegesPage() {
   const [selectedType, setSelectedType] = useState('ALL');
   const [searchQuery, setSearchQuery] = useState('');
 
-  useEffect(() => {
-    fetchColleges();
-  }, [selectedState, selectedType]);
-
   const fetchColleges = async () => {
     setLoading(true);
     try {
@@ -38,6 +34,10 @@ export default function CollegesPage() {
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    fetchColleges();
+  }, [selectedState, selectedType]);
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();

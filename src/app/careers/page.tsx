@@ -20,10 +20,6 @@ export default function CareersPage() {
   const [selectedStream, setSelectedStream] = useState('ALL');
   const [searchQuery, setSearchQuery] = useState('');
 
-  useEffect(() => {
-    fetchCareers();
-  }, [selectedStream]);
-
   const fetchCareers = async () => {
     setLoading(true);
     try {
@@ -42,6 +38,10 @@ export default function CareersPage() {
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    fetchCareers();
+  }, [selectedStream]);
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();

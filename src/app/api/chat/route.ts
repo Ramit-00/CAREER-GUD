@@ -3,7 +3,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
 
 const ChatMessageSchema = z.object({
-  role: z.enum(['user', 'assistant', 'system']).or(z.string()),
+  role: z.enum(['user', 'assistant', 'system']),
   content: z.string().min(1).max(30000),
 });
 

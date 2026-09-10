@@ -34,13 +34,6 @@ export default function CareerDetailPage() {
   const [reviewComment, setReviewComment] = useState('');
   const [submittingReview, setSubmittingReview] = useState(false);
 
-  useEffect(() => {
-    window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
-    if (document.documentElement) document.documentElement.scrollTop = 0;
-    if (document.body) document.body.scrollTop = 0;
-    fetchDetail();
-  }, [slug]);
-
   const fetchDetail = async () => {
     setLoading(true);
     try {
@@ -60,6 +53,13 @@ export default function CareerDetailPage() {
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
+    if (document.documentElement) document.documentElement.scrollTop = 0;
+    if (document.body) document.body.scrollTop = 0;
+    fetchDetail();
+  }, [slug]);
 
   const handleToggleBookmark = async () => {
     if (!session) {
