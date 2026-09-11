@@ -13,7 +13,7 @@ interface RateRule {
 }
 
 const RATE_RULES: Record<string, RateRule> = {
-  '/api/chat': { limit: 30, unauthLimit: 10, windowMs: 60 * 1000 },
+  '/api/chat': { limit: 30, unauthLimit: 10, windowMs: 60 * 1000, postOnly: true },
   '/api/auth/register': { limit: 10, windowMs: 60 * 1000, postOnly: true },
   '/api/auth/register-advisor': { limit: 10, windowMs: 60 * 1000, postOnly: true },
   '/api/reviews': { limit: 15, windowMs: 60 * 1000, postOnly: true },

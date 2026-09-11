@@ -7,6 +7,7 @@ import {
   cacheDelete,
   cacheGetOrSet,
   cacheFlushPattern,
+  getRedisHealth,
 } from '../lib/redis';
 
 test('redis: client initializes when environment variables are present', async () => {
@@ -95,4 +96,12 @@ test('redis: cacheFlushPattern evicts keys matching wildcard', async () => {
 test('redis: handles non-existent keys gracefully without error', async () => {
   const nonExistent = await cacheGet('completely:non:existent:key:999999');
   assert.equal(nonExistent, null, 'Non-existent key should return null without throwing');
+});
+
+test('redis: getRedisHealth confirms live connectivity, ping latency, and key statistics', async () => {
+  const health = await getRedisHealth();
+  assert.strictEqual(health.ok, true, 'Redis health check must report ok: true');
+  assert.strictEqual(health.configured, true, 'Redis health check must report configured: true');
+  assert.ok(health.pingMs >= 0, 'Ping latency must be a non-negative number');
+  assert.ok(health.activeKeys >= 0, 'Active key count must be a non-negative number');
 });
