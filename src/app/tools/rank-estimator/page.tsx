@@ -126,18 +126,18 @@ export default function RankEstimatorPage() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 py-10 dark:bg-slate-950">
+    <div className="min-h-screen bg-white py-10">
       <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
-        {/* Header */}
-        <div className="text-center max-w-3xl mx-auto mb-10">
-          <span className="inline-flex items-center gap-1.5 rounded-full border border-amber-200 bg-amber-50 px-3 py-1 text-xs font-bold text-amber-900 dark:border-amber-900/60 dark:bg-amber-950/40 dark:text-amber-300 mb-3">
-            <Award className="h-3.5 w-3.5 text-amber-600 dark:text-amber-400" />
+        {/* Header Hero Container */}
+        <div className="rounded-3xl border-2 border-slate-300 bg-[#EAEFF5] p-6 sm:p-10 shadow-xs mb-10 text-center max-w-4xl mx-auto">
+          <span className="inline-flex items-center gap-1.5 rounded-lg border border-amber-300 bg-white px-3.5 py-1.5 text-xs font-bold text-[#D96B00] mb-3 shadow-2xs">
+            <Award className="h-3.5 w-3.5 text-[#D96B00]" />
             National Entrance Intelligence
           </span>
-          <h1 className="text-3xl sm:text-4xl font-black text-slate-900 dark:text-white tracking-tight">
-            Indian Entrance Cutoff & Category Rank Estimator
+          <h1 className="text-3xl sm:text-4xl font-black text-[#0B2A4A] tracking-tight">
+            Indian Entrance Cutoff &amp; Category Rank Estimator
           </h1>
-          <p className="mt-3 text-sm sm:text-base font-medium text-slate-600 dark:text-slate-300 leading-relaxed">
+          <p className="mt-3 text-sm sm:text-base font-medium text-slate-700 leading-relaxed max-w-2xl mx-auto">
             Eliminate misleading coaching predictions. Map your estimated marks or percentile against verified JoSAA, MCC, and Consortium of NLUs category cutoffs (OPEN, OBC-NCL, EWS, SC, ST, PwD).
           </p>
         </div>
@@ -147,25 +147,25 @@ export default function RankEstimatorPage() {
           {/* Left Column: Form & Inputs */}
           <div className="lg:col-span-5 flex flex-col gap-6">
             {/* Exam Selector */}
-            <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-800 dark:bg-slate-900">
-              <label className="block text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-3">
+            <div className="rounded-2xl border-2 border-slate-300 bg-[#EAEFF5] p-6 shadow-xs">
+              <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-3">
                 1. Select National Examination
               </label>
-              <div className="grid grid-cols-1 gap-2">
+              <div className="grid grid-cols-1 gap-2.5">
                 {EXAMS.map((exam) => (
                   <button
                     key={exam.id}
                     onClick={() => handleExamChange(exam.id)}
-                    className={`flex flex-col items-start p-3 rounded-xl border text-left transition-all ${
+                    className={`flex flex-col items-start p-3.5 rounded-xl border-2 text-left transition-all cursor-pointer shadow-2xs ${
                       selectedExam === exam.id
-                        ? 'border-[#0B2A4A] bg-[#0B2A4A]/5 dark:border-amber-400 dark:bg-amber-400/10'
-                        : 'border-slate-200 hover:border-slate-300 dark:border-slate-800 dark:hover:border-slate-700'
+                        ? 'border-[#0B2A4A] bg-[#0B2A4A] text-white shadow-xs'
+                        : 'border-slate-300 hover:border-[#0B2A4A] bg-white'
                     }`}
                   >
-                    <span className="text-sm font-bold text-slate-900 dark:text-white">
+                    <span className={`text-sm font-bold ${selectedExam === exam.id ? 'text-white' : 'text-slate-900'}`}>
                       {exam.name}
                     </span>
-                    <span className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
+                    <span className={`text-xs mt-0.5 ${selectedExam === exam.id ? 'text-slate-200' : 'text-slate-600'}`}>
                       {exam.description}
                     </span>
                   </button>
@@ -174,12 +174,12 @@ export default function RankEstimatorPage() {
             </div>
 
             {/* Score / Percentile Slider */}
-            <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-800 dark:bg-slate-900">
-              <div className="flex justify-between items-center mb-2">
-                <label className="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">
+            <div className="rounded-2xl border-2 border-slate-300 bg-[#EAEFF5] p-6 shadow-xs">
+              <div className="flex justify-between items-center mb-3">
+                <label className="text-xs font-bold uppercase tracking-wider text-slate-700">
                   2. {currentExamConfig.maxScoreLabel}
                 </label>
-                <span className="text-xl font-black text-[#0B2A4A] dark:text-amber-400">
+                <span className="text-xl font-black text-[#0B2A4A] rounded-xl bg-white px-3 py-1 border border-slate-200 shadow-2xs">
                   {score}
                 </span>
               </div>
@@ -190,24 +190,24 @@ export default function RankEstimatorPage() {
                 step={currentExamConfig.step}
                 value={score}
                 onChange={(e) => setScore(Number(e.target.value))}
-                className="w-full accent-[#0B2A4A] dark:accent-amber-400 cursor-pointer h-2 bg-slate-200 rounded-lg dark:bg-slate-700"
+                className="w-full accent-[#0B2A4A] cursor-pointer h-2 bg-slate-200 rounded-lg"
               />
-              <div className="flex justify-between text-[11px] font-semibold text-slate-400 mt-2">
+              <div className="flex justify-between text-[11px] font-bold text-slate-500 mt-2">
                 <span>Min: {currentExamConfig.min}</span>
                 <span>Max: {currentExamConfig.max}</span>
               </div>
             </div>
 
             {/* Category & State Selector */}
-            <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-800 dark:bg-slate-900 flex flex-col gap-4">
+            <div className="rounded-2xl border-2 border-slate-300 bg-[#EAEFF5] p-6 shadow-xs flex flex-col gap-4">
               <div>
-                <label className="block text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-2">
+                <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-2">
                   3. Indian Reservation Category
                 </label>
                 <select
                   value={category}
                   onChange={(e) => setCategory(e.target.value as IndianCategory)}
-                  className="w-full rounded-xl border border-slate-300 bg-white p-3 text-sm font-semibold text-slate-800 dark:border-slate-700 dark:bg-slate-800 dark:text-white"
+                  className="w-full rounded-xl border-2 border-slate-300 bg-white p-3 text-sm font-semibold text-slate-900 shadow-2xs focus:border-[#0B2A4A] focus:outline-none"
                 >
                   {CATEGORIES.map((c) => (
                     <option key={c.id} value={c.id}>
@@ -218,13 +218,13 @@ export default function RankEstimatorPage() {
               </div>
 
               <div>
-                <label className="block text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-2">
+                <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-2">
                   4. Home State (for State Quotas)
                 </label>
                 <select
                   value={state}
                   onChange={(e) => setState(e.target.value)}
-                  className="w-full rounded-xl border border-slate-300 bg-white p-3 text-sm font-semibold text-slate-800 dark:border-slate-700 dark:bg-slate-800 dark:text-white"
+                  className="w-full rounded-xl border-2 border-slate-300 bg-white p-3 text-sm font-semibold text-slate-900 shadow-2xs focus:border-[#0B2A4A] focus:outline-none"
                 >
                   {STATES.map((s) => (
                     <option key={s} value={s}>
@@ -239,46 +239,46 @@ export default function RankEstimatorPage() {
           {/* Right Column: Calculated Intelligence & Benchmarks */}
           <div className="lg:col-span-7 flex flex-col gap-6">
             {/* Rank Projection Cards */}
-            <div className="rounded-2xl border-2 border-[#0B2A4A]/20 bg-white p-6 shadow-sm dark:border-amber-400/30 dark:bg-slate-900">
-              <div className="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-4 mb-5">
+            <div className="rounded-2xl border-2 border-slate-300 bg-[#EAEFF5] p-6 sm:p-8 shadow-xs">
+              <div className="flex items-center justify-between border-b-2 border-slate-200 pb-4 mb-5">
                 <div>
-                  <span className="text-xs font-bold uppercase tracking-wider text-slate-400">
+                  <span className="text-xs font-bold uppercase tracking-wider text-slate-500">
                     Estimated National Rank Standing
                   </span>
-                  <h3 className="text-lg font-black text-slate-900 dark:text-white">
+                  <h3 className="text-lg font-black text-slate-900">
                     {currentExamConfig.name} Projection
                   </h3>
                 </div>
                 <div className="text-right">
-                  <span className="text-xs font-semibold text-slate-400 block">Percentile</span>
-                  <span className="inline-block font-black text-emerald-600 dark:text-emerald-400 text-sm">
+                  <span className="text-xs font-semibold text-slate-500 block">Percentile</span>
+                  <span className="inline-block font-black text-[#138808] text-sm">
                     {estimate.percentileEquivalent}%ile
                   </span>
                 </div>
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div className="rounded-xl bg-slate-50 p-4 border border-slate-100 dark:bg-slate-800/60 dark:border-slate-800">
-                  <span className="text-xs font-bold text-slate-500 dark:text-slate-400 block mb-1">
+                <div className="rounded-2xl bg-white p-5 border border-slate-200 shadow-2xs">
+                  <span className="text-xs font-bold text-slate-600 block mb-1">
                     All-India Rank (AIR)
                   </span>
-                  <div className="text-2xl font-black text-[#0B2A4A] dark:text-white">
+                  <div className="text-2xl font-black text-[#0B2A4A]">
                     ~{estimate.estimatedAllIndiaRank.midpoint.toLocaleString('en-IN')}
                   </div>
-                  <span className="text-[11px] font-medium text-slate-500 mt-1 block">
+                  <span className="text-[11px] font-medium text-slate-600 mt-1 block">
                     Range: {estimate.estimatedAllIndiaRank.min.toLocaleString('en-IN')} -{' '}
                     {estimate.estimatedAllIndiaRank.max.toLocaleString('en-IN')}
                   </span>
                 </div>
 
-                <div className="rounded-xl bg-amber-50/50 p-4 border border-amber-100 dark:bg-amber-950/20 dark:border-amber-900/40">
-                  <span className="text-xs font-bold text-amber-900 dark:text-amber-300 block mb-1">
+                <div className="rounded-2xl bg-white p-5 border border-amber-200 shadow-2xs">
+                  <span className="text-xs font-bold text-[#D96B00] block mb-1">
                     Estimated Category Rank ({category})
                   </span>
-                  <div className="text-2xl font-black text-amber-700 dark:text-amber-400">
+                  <div className="text-2xl font-black text-[#D96B00]">
                     ~{estimate.estimatedCategoryRank.midpoint.toLocaleString('en-IN')}
                   </div>
-                  <span className="text-[11px] font-medium text-amber-800/80 dark:text-amber-300/80 mt-1 block">
+                  <span className="text-[11px] font-medium text-amber-900/80 mt-1 block">
                     Range: {estimate.estimatedCategoryRank.min.toLocaleString('en-IN')} -{' '}
                     {estimate.estimatedCategoryRank.max.toLocaleString('en-IN')}
                   </span>
@@ -286,24 +286,24 @@ export default function RankEstimatorPage() {
               </div>
 
               {/* Guidance Note */}
-              <div className="mt-5 rounded-xl bg-blue-50/70 p-3.5 border border-blue-100 text-xs font-medium text-blue-900 dark:bg-blue-950/30 dark:border-blue-900/50 dark:text-blue-200 leading-relaxed flex items-start gap-2">
-                <Compass className="h-4 w-4 text-blue-600 dark:text-blue-400 shrink-0 mt-0.5" />
+              <div className="mt-5 rounded-xl bg-white p-4 border border-blue-200 text-xs font-medium text-[#0B2A4A] leading-relaxed flex items-start gap-2 shadow-2xs">
+                <Compass className="h-4 w-4 text-[#0B2A4A] shrink-0 mt-0.5" />
                 <span>{estimate.guidanceNote}</span>
               </div>
             </div>
 
             {/* Institution Closing Benchmarks */}
-            <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-800 dark:bg-slate-900">
+            <div className="rounded-2xl border-2 border-slate-300 bg-[#EAEFF5] p-6 sm:p-8 shadow-xs">
               <div className="flex items-center justify-between mb-4">
                 <div>
-                  <h3 className="text-base font-black text-slate-900 dark:text-white">
+                  <h3 className="text-base font-black text-slate-900">
                     Eligible National Flagship Institutions
                   </h3>
-                  <p className="text-xs text-slate-500 dark:text-slate-400">
+                  <p className="text-xs text-slate-600">
                     Based on verified 2024 closing ranks under your selected quota
                   </p>
                 </div>
-                <span className="text-xs font-bold text-slate-400">
+                <span className="text-xs font-bold text-slate-500">
                   {estimate.eligibleInstitutions.length} Benchmarks
                 </span>
               </div>
@@ -312,33 +312,33 @@ export default function RankEstimatorPage() {
                 {estimate.eligibleInstitutions.map((item, idx) => (
                   <div
                     key={idx}
-                    className="flex flex-col sm:flex-row sm:items-center justify-between p-4 rounded-xl border border-slate-100 bg-slate-50/50 hover:bg-slate-50 transition dark:border-slate-800 dark:bg-slate-800/40 dark:hover:bg-slate-800/70 gap-3"
+                    className="flex flex-col sm:flex-row sm:items-center justify-between p-4 rounded-xl border border-slate-200 bg-white hover:border-[#0B2A4A] transition gap-3 shadow-2xs"
                   >
                     <div>
                       <div className="flex items-center gap-2">
-                        <span className="text-sm font-black text-slate-900 dark:text-white">
+                        <span className="text-sm font-black text-slate-900">
                           {item.institution}
                         </span>
-                        <span className="rounded bg-slate-200 px-1.5 py-0.5 text-[10px] font-bold text-slate-700 dark:bg-slate-700 dark:text-slate-300">
+                        <span className="rounded-md bg-slate-100 border border-slate-200 px-1.5 py-0.5 text-[10px] font-bold text-slate-800">
                           {item.location}
                         </span>
                       </div>
-                      <p className="text-xs font-medium text-slate-600 dark:text-slate-400 mt-0.5">
+                      <p className="text-xs font-medium text-slate-700 mt-0.5">
                         {item.program}
                       </p>
-                      <span className="text-[11px] font-semibold text-slate-400">
+                      <span className="text-[11px] font-semibold text-slate-500">
                         Counseling: {item.counselingBody} | Prev. Closing Rank: ~{item.previousClosingRank.toLocaleString('en-IN')}
                       </span>
                     </div>
 
                     <div className="sm:text-right shrink-0">
                       <span
-                        className={`inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-xs font-bold ${
+                        className={`inline-flex items-center gap-1 rounded-lg border px-2.5 py-1 text-xs font-bold shadow-2xs ${
                           item.admissionProbability === 'HIGH'
-                            ? 'bg-emerald-100 text-emerald-800 dark:bg-emerald-950/60 dark:text-emerald-300'
+                            ? 'border-emerald-300 bg-emerald-50 text-[#138808]'
                             : item.admissionProbability === 'MODERATE'
-                            ? 'bg-amber-100 text-amber-800 dark:bg-amber-950/60 dark:text-amber-300'
-                            : 'bg-rose-100 text-rose-800 dark:bg-rose-950/60 dark:text-rose-300'
+                            ? 'border-amber-300 bg-amber-50 text-[#D96B00]'
+                            : 'border-rose-300 bg-rose-50 text-rose-800'
                         }`}
                       >
                         {item.admissionProbability === 'HIGH' ? (
@@ -354,16 +354,16 @@ export default function RankEstimatorPage() {
               </div>
 
               {/* Action Links */}
-              <div className="mt-6 pt-4 border-t border-slate-100 dark:border-slate-800 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs font-bold">
+              <div className="mt-6 pt-4 border-t-2 border-slate-200 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs font-bold">
                 <Link
                   href="/colleges"
-                  className="text-[#0B2A4A] dark:text-amber-400 hover:underline inline-flex items-center gap-1"
+                  className="text-[#0B2A4A] hover:text-[#D96B00] hover:underline inline-flex items-center gap-1"
                 >
                   Browse Detailed College Catalogs <ArrowRight className="h-3.5 w-3.5" />
                 </Link>
                 <Link
                   href="/consultants"
-                  className="rounded-xl bg-[#0B2A4A] px-4 py-2 text-white hover:bg-[#081f37] dark:bg-amber-400 dark:text-slate-950 dark:hover:bg-amber-300 transition"
+                  className="rounded-xl bg-[#0B2A4A] px-4 py-2.5 text-white hover:bg-[#153e6b] transition shadow-xs"
                 >
                   Consult a Verified Mentor
                 </Link>

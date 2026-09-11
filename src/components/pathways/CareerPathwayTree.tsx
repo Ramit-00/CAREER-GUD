@@ -158,33 +158,33 @@ export function CareerPathwayTree() {
   const currentPathway = PATHWAYS.find((p) => p.id === activeTab) || PATHWAYS[0];
 
   return (
-    <div className="flex flex-col gap-8 rounded-2xl border-2 border-slate-200 bg-white p-6 sm:p-10 shadow-sm dark:border-slate-800 dark:bg-slate-900">
+    <div className="flex flex-col gap-8 rounded-3xl border-2 border-slate-300 bg-[#EAEFF5] p-6 sm:p-10 shadow-xs">
       {/* Header section with breathing room */}
-      <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 border-b border-slate-200 dark:border-slate-800 pb-6">
+      <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 border-b-2 border-slate-200 pb-6">
         <div className="max-w-2xl">
           <div className="flex items-center gap-2">
-            <span className="rounded-md bg-[#FFF8EE] px-3 py-1 text-xs font-bold text-[#D96B00] dark:bg-amber-950/80 dark:text-amber-300 border border-amber-200 dark:border-amber-900">
+            <span className="rounded-lg bg-white px-3 py-1 text-xs font-bold text-[#D96B00] border border-amber-200 shadow-2xs">
               Interactive Educational Roadmaps
             </span>
-            <span className="text-xs font-semibold text-slate-500 dark:text-slate-400">Class 10 → +2 → Exams → Degrees</span>
+            <span className="text-xs font-semibold text-slate-600">Class 10 → +2 → Exams → Degrees</span>
           </div>
-          <h3 className="mt-3 text-2xl sm:text-3xl font-black text-[#071C33] dark:text-white tracking-tight">
+          <h3 className="mt-3 text-2xl sm:text-3xl font-black text-[#0B2A4A] tracking-tight">
             Non-Linear Career Pathways in India
           </h3>
-          <p className="text-sm sm:text-base text-slate-600 dark:text-slate-300 mt-2 leading-relaxed">
+          <p className="text-sm sm:text-base text-slate-700 mt-2 leading-relaxed">
             Taking PCM or PCB does not limit you to only Engineering or MBBS. Explore both core professional routes and high-growth alternative trajectories.
           </p>
         </div>
 
-        <div className="inline-flex items-center gap-2 text-xs font-semibold text-slate-700 dark:text-slate-300 bg-slate-50 dark:bg-slate-800/80 px-4 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 self-start md:self-auto">
-          <Compass className="h-4 w-4 text-[#D96B00] dark:text-amber-400 shrink-0" />
+        <div className="inline-flex items-center gap-2 text-xs font-semibold text-slate-800 bg-white px-4 py-2.5 rounded-xl border border-slate-300 self-start md:self-auto shadow-2xs">
+          <Compass className="h-4 w-4 text-[#D96B00] shrink-0" />
           <span>Click any exam badge to open official portals</span>
         </div>
       </div>
 
       {/* Filter Categories: All, Core, Cross-Stream */}
       <div className="flex flex-wrap items-center gap-2">
-        <span className="text-xs font-bold text-slate-600 dark:text-slate-400 mr-1">Filter Tracks:</span>
+        <span className="text-xs font-bold text-slate-700 mr-1">Filter Tracks:</span>
         <button
           type="button"
           onClick={() => {
@@ -193,10 +193,10 @@ export function CareerPathwayTree() {
               setActiveTab(PATHWAYS[0].id);
             }
           }}
-          className={`rounded-xl px-3.5 py-1.5 text-xs font-bold transition-colors ${
+          className={`rounded-xl px-3.5 py-1.5 text-xs font-bold transition-colors cursor-pointer ${
             selectedCategory === 'ALL'
               ? 'bg-[#0B2A4A] text-white shadow-xs'
-              : 'bg-slate-100 text-slate-700 hover:bg-slate-200 hover:text-slate-950 dark:bg-slate-800 dark:text-slate-300 dark:hover:bg-slate-700 dark:hover:text-white'
+              : 'bg-white border border-slate-300 text-slate-800 hover:bg-slate-100 hover:text-slate-950'
           }`}
         >
           All Pathways ({PATHWAYS.length})
@@ -208,10 +208,10 @@ export function CareerPathwayTree() {
             const firstCore = PATHWAYS.find((p) => p.category === 'CORE');
             if (firstCore) setActiveTab(firstCore.id);
           }}
-          className={`rounded-xl px-3.5 py-1.5 text-xs font-bold transition-colors ${
+          className={`rounded-xl px-3.5 py-1.5 text-xs font-bold transition-colors cursor-pointer ${
             selectedCategory === 'CORE'
               ? 'bg-[#0B2A4A] text-white shadow-xs'
-              : 'bg-slate-100 text-slate-700 hover:bg-slate-200 hover:text-slate-950 dark:bg-slate-800 dark:text-slate-300 dark:hover:bg-slate-700 dark:hover:text-white'
+              : 'bg-white border border-slate-300 text-slate-800 hover:bg-slate-100 hover:text-slate-950'
           }`}
         >
           Core Discipline Tracks (PCM / PCB / Commerce)
@@ -223,13 +223,13 @@ export function CareerPathwayTree() {
             const firstCross = PATHWAYS.find((p) => p.category === 'CROSS_STREAM');
             if (firstCross) setActiveTab(firstCross.id);
           }}
-          className={`rounded-xl px-3.5 py-1.5 text-xs font-bold transition-colors ${
+          className={`rounded-xl px-3.5 py-1.5 text-xs font-bold transition-colors cursor-pointer ${
             selectedCategory === 'CROSS_STREAM'
               ? 'bg-[#D96B00] text-white shadow-xs'
-              : 'bg-amber-50 text-[#D96B00] hover:bg-amber-100 border border-amber-200 dark:bg-amber-950/50 dark:text-amber-300 dark:border-amber-800 dark:hover:bg-amber-900/60 dark:hover:text-amber-200'
+              : 'bg-white text-[#D96B00] hover:bg-amber-50 border border-amber-300'
           }`}
         >
-          ✨ Cross-Stream Alternatives (IIMs, Law, Design, Biotech)
+          Cross-Stream Alternatives (IIMs, Law, Design, Biotech)
         </button>
       </div>
 
@@ -240,10 +240,10 @@ export function CareerPathwayTree() {
             key={p.id}
             type="button"
             onClick={() => setActiveTab(p.id)}
-            className={`inline-flex items-center gap-2 rounded-xl px-4 py-2.5 text-xs sm:text-sm font-bold transition-all ${
+            className={`inline-flex items-center gap-2 rounded-xl px-4 py-2.5 text-xs sm:text-sm font-bold transition-all cursor-pointer shadow-2xs ${
               activeTab === p.id
                 ? 'bg-[#0B2A4A] text-white shadow-md border border-[#071C33]'
-                : 'border border-slate-300 bg-white text-slate-700 hover:bg-slate-100 hover:border-slate-400 hover:text-slate-950 dark:border-slate-700 dark:bg-slate-800/90 dark:text-slate-200 dark:hover:bg-slate-700 dark:hover:text-white'
+                : 'border border-slate-300 bg-white text-slate-800 hover:bg-slate-100 hover:border-slate-400 hover:text-slate-950'
             }`}
           >
             <span>{p.name}</span>
@@ -251,8 +251,8 @@ export function CareerPathwayTree() {
               <span
                 className={`rounded-md px-2 py-0.5 text-xs font-bold uppercase tracking-wider ${
                   activeTab === p.id
-                    ? 'bg-amber-500 text-[#071C33]'
-                    : 'bg-amber-100 text-[#D96B00] dark:bg-amber-950 dark:text-amber-300'
+                    ? 'bg-amber-400 text-slate-950'
+                    : 'bg-amber-100 text-[#D96B00]'
                 }`}
               >
                 Flexible
@@ -263,12 +263,12 @@ export function CareerPathwayTree() {
       </div>
 
       {/* Track Metadata Bar */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 rounded-xl border border-slate-200 bg-slate-50/90 px-6 py-3.5 text-sm dark:border-slate-700 dark:bg-slate-800/60">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 rounded-2xl border border-slate-300 bg-white px-6 py-3.5 text-sm shadow-2xs">
         <div className="flex items-center gap-2">
-          <span className="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">Stream Prerequisite:</span>
-          <span className="font-bold text-slate-900 dark:text-white">{currentPathway.stream}</span>
+          <span className="text-xs font-bold uppercase tracking-wider text-slate-600">Stream Prerequisite:</span>
+          <span className="font-bold text-slate-950">{currentPathway.stream}</span>
         </div>
-        <span className="text-xs font-semibold text-[#0B2A4A] dark:text-amber-400">
+        <span className="text-xs font-bold text-[#0B2A4A]">
           5 Sequential Career Milestones
         </span>
       </div>
@@ -278,7 +278,7 @@ export function CareerPathwayTree() {
         {currentPathway.steps.map((step, idx) => (
           <div
             key={idx}
-            className="flex flex-col justify-between gap-4 rounded-xl border-2 border-slate-200 bg-white p-5 dark:border-slate-700 dark:bg-slate-800/80 shadow-xs hover:border-[#0B2A4A] hover:shadow-sm dark:hover:border-slate-600 transition-all"
+            className="flex flex-col justify-between gap-4 rounded-2xl border-2 border-slate-300/80 bg-white p-5 shadow-2xs hover:border-[#0B2A4A] hover:shadow-md transition-all group"
           >
             <div>
               <div className="flex items-center justify-between">
@@ -286,24 +286,24 @@ export function CareerPathwayTree() {
                   {idx + 1}
                 </span>
                 {step.badge && (
-                  <span className="rounded-md border border-slate-200 bg-slate-50 px-2 py-0.5 text-xs font-bold text-slate-700 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300">
+                  <span className="rounded-md border border-slate-200 bg-slate-50 px-2 py-0.5 text-xs font-bold text-slate-800">
                     {step.badge}
                   </span>
                 )}
               </div>
 
-              <h4 className="text-sm font-bold text-slate-900 dark:text-white mt-3 leading-snug">
+              <h4 className="text-sm font-bold text-slate-950 mt-3 leading-snug">
                 {step.title}
               </h4>
-              <p className="text-xs font-medium text-slate-600 dark:text-slate-300 leading-relaxed mt-1.5">
+              <p className="text-xs font-medium text-slate-700 leading-relaxed mt-1.5">
                 {step.description}
               </p>
             </div>
 
             {/* Clickable Exam Badges */}
             {step.exams && step.exams.length > 0 && (
-              <div className="mt-2 pt-3 border-t border-slate-100 dark:border-slate-700 flex flex-col gap-1.5">
-                <span className="text-xs font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500">
+              <div className="mt-2 pt-3 border-t border-slate-100 flex flex-col gap-1.5">
+                <span className="text-xs font-bold uppercase tracking-wider text-slate-500">
                   Examinations:
                 </span>
                 <div className="flex flex-wrap gap-1.5">

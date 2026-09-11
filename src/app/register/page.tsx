@@ -89,28 +89,28 @@ function RegisterForm() {
 
   return (
     <div className="mx-auto flex min-h-[85vh] max-w-lg flex-col justify-center px-4 py-12">
-      <div className="rounded-3xl border border-slate-200/90 bg-white p-8 sm:p-10 shadow-lg dark:border-slate-800 dark:bg-slate-900">
+      <div className="rounded-3xl border border-slate-200 bg-white p-8 sm:p-10 shadow-md">
         <div className="text-center">
-          <div className="inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-[#0B2A4A] text-amber-400 shadow-sm mb-3">
+          <div className="inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-[#0B2A4A] text-amber-400 shadow-xs mb-3">
             <GraduationCap className="h-6 w-6" />
           </div>
-          <h1 className="text-2xl sm:text-3xl font-extrabold text-[#0B2A4A] dark:text-white tracking-tight">
+          <h1 className="text-2xl sm:text-3xl font-extrabold text-[#0B2A4A] tracking-tight">
             Create Your Account
           </h1>
-          <p className="mt-1.5 text-xs sm:text-sm font-medium text-slate-600 dark:text-slate-300">
+          <p className="mt-1.5 text-xs sm:text-sm font-medium text-slate-600">
             Select your account profile type to get started
           </p>
         </div>
 
         {/* Role Selector Tabs */}
-        <div className="mt-6 grid grid-cols-2 gap-3 p-1.5 rounded-2xl bg-slate-100 dark:bg-slate-800">
+        <div className="mt-6 grid grid-cols-2 gap-3 p-1.5 rounded-2xl bg-slate-100">
           <button
             type="button"
             onClick={() => setAccountType('STUDENT')}
             className={`flex items-center justify-center gap-2 rounded-xl py-2.5 text-xs sm:text-sm font-extrabold transition cursor-pointer ${
               accountType === 'STUDENT'
-                ? 'bg-white text-[#0B2A4A] shadow-sm dark:bg-slate-900 dark:text-white'
-                : 'text-slate-600 hover:text-slate-950 hover:bg-slate-200/70 dark:text-slate-400 dark:hover:text-white dark:hover:bg-slate-700/60'
+                ? 'bg-white text-[#0B2A4A] shadow-xs'
+                : 'text-slate-600 hover:text-slate-950 hover:bg-slate-200/70'
             }`}
           >
             <User className="h-4 w-4" />
@@ -122,8 +122,8 @@ function RegisterForm() {
             onClick={() => setAccountType('ADVISOR')}
             className={`flex items-center justify-center gap-2 rounded-xl py-2.5 text-xs sm:text-sm font-extrabold transition cursor-pointer ${
               accountType === 'ADVISOR'
-                ? 'bg-white text-emerald-800 shadow-sm dark:bg-slate-900 dark:text-emerald-400'
-                : 'text-slate-600 hover:text-slate-950 hover:bg-slate-200/70 dark:text-slate-400 dark:hover:text-white dark:hover:bg-slate-700/60'
+                ? 'bg-white text-emerald-800 shadow-xs'
+                : 'text-slate-600 hover:text-slate-950 hover:bg-slate-200/70'
             }`}
           >
             <Briefcase className="h-4 w-4" />
@@ -133,7 +133,7 @@ function RegisterForm() {
 
         {/* Notice if redirected from sign-in because account was not found */}
         {urlError === 'NoAccountFound' && (
-          <div className="mt-5 flex items-start gap-2.5 rounded-xl bg-amber-50 border border-amber-300 p-3.5 text-xs font-bold text-[#994500] dark:bg-amber-950/40 dark:border-amber-800 dark:text-amber-200">
+          <div className="mt-5 flex items-start gap-2.5 rounded-xl bg-amber-50 border border-amber-300 p-3.5 text-xs font-bold text-[#994500]">
             <Info className="h-4 w-4 shrink-0 mt-0.5" />
             <div>
               <span>Account Not Found:</span>
@@ -152,7 +152,7 @@ function RegisterForm() {
               <button
                 type="button"
                 onClick={handleGoogleRegister}
-                className="flex w-full items-center justify-center gap-3 rounded-xl border border-slate-200 bg-white py-3 text-xs sm:text-sm font-bold text-slate-800 hover:bg-slate-100 hover:text-slate-950 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100 dark:hover:bg-slate-700 dark:hover:text-white transition shadow-xs cursor-pointer"
+                className="flex w-full items-center justify-center gap-3 rounded-xl border border-slate-300 bg-white py-3 text-xs sm:text-sm font-bold text-slate-800 hover:bg-slate-100 hover:text-slate-950 transition shadow-xs cursor-pointer"
               >
                 <svg className="h-5 w-5" viewBox="0 0 24 24">
                   <path
@@ -178,15 +178,15 @@ function RegisterForm() {
 
             <div className="relative my-6 text-center">
               <div className="absolute inset-0 flex items-center">
-                <div className="w-full border-t border-slate-200 dark:border-slate-800" />
+                <div className="w-full border-t border-slate-200" />
               </div>
-              <span className="relative bg-white px-3 text-xs font-bold uppercase tracking-wider text-slate-400 dark:bg-slate-900 dark:text-slate-500">
+              <span className="relative bg-white px-3 text-xs font-bold uppercase tracking-wider text-slate-500">
                 or register with email
               </span>
             </div>
 
             {error && !urlError && (
-              <div className="mb-4 flex items-center gap-2 rounded-xl bg-rose-50 border border-rose-200 p-3.5 text-xs font-bold text-rose-800 dark:bg-rose-950/60 dark:border-rose-900 dark:text-rose-200">
+              <div className="mb-4 flex items-center gap-2 rounded-xl bg-rose-50 border border-rose-200 p-3.5 text-xs font-bold text-rose-800">
                 <AlertCircle className="h-4 w-4 shrink-0" />
                 <span>{error}</span>
               </div>
@@ -194,45 +194,45 @@ function RegisterForm() {
 
             <form onSubmit={handleStudentSubmit} className="flex flex-col gap-4">
               <div>
-                <label className="block text-xs font-bold uppercase text-slate-700 dark:text-slate-300 mb-1.5">
+                <label className="block text-xs font-bold uppercase text-slate-700 mb-1.5">
                   Student Name
                 </label>
                 <div className="relative">
-                  <User className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
+                  <User className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-500" />
                   <input
                     type="text"
                     required
                     value={name}
                     onChange={(e) => setName(e.target.value)}
                     placeholder="Aarav Sharma"
-                    className="w-full rounded-xl border border-slate-300 bg-white py-3 pl-11 pr-3.5 text-xs sm:text-sm font-medium text-slate-900 focus:border-[#0B2A4A] focus:outline-none dark:border-slate-700 dark:bg-slate-800 dark:text-white shadow-xs"
+                    className="w-full rounded-xl border border-slate-300 bg-white py-3 pl-11 pr-3.5 text-xs sm:text-sm font-medium text-slate-900 focus:border-[#0B2A4A] focus:outline-none shadow-xs"
                   />
                 </div>
               </div>
 
               <div>
-                <label className="block text-xs font-bold uppercase text-slate-700 dark:text-slate-300 mb-1.5">
+                <label className="block text-xs font-bold uppercase text-slate-700 mb-1.5">
                   Email Address
                 </label>
                 <div className="relative">
-                  <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
+                  <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-500" />
                   <input
                     type="email"
                     required
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     placeholder="student@example.com"
-                    className="w-full rounded-xl border border-slate-300 bg-white py-3 pl-11 pr-3.5 text-xs sm:text-sm font-medium text-slate-900 focus:border-[#0B2A4A] focus:outline-none dark:border-slate-700 dark:bg-slate-800 dark:text-white shadow-xs"
+                    className="w-full rounded-xl border border-slate-300 bg-white py-3 pl-11 pr-3.5 text-xs sm:text-sm font-medium text-slate-900 focus:border-[#0B2A4A] focus:outline-none shadow-xs"
                   />
                 </div>
               </div>
 
               <div>
-                <label className="block text-xs font-bold uppercase text-slate-700 dark:text-slate-300 mb-1.5">
+                <label className="block text-xs font-bold uppercase text-slate-700 mb-1.5">
                   Create Password
                 </label>
                 <div className="relative">
-                  <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
+                  <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-500" />
                   <input
                     type="password"
                     required
@@ -240,7 +240,7 @@ function RegisterForm() {
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     placeholder="••••••••"
-                    className="w-full rounded-xl border border-slate-300 bg-white py-3 pl-11 pr-3.5 text-xs sm:text-sm font-medium text-slate-900 focus:border-[#0B2A4A] focus:outline-none dark:border-slate-700 dark:bg-slate-800 dark:text-white shadow-xs"
+                    className="w-full rounded-xl border border-slate-300 bg-white py-3 pl-11 pr-3.5 text-xs sm:text-sm font-medium text-slate-900 focus:border-[#0B2A4A] focus:outline-none shadow-xs"
                   />
                 </div>
               </div>
@@ -257,14 +257,14 @@ function RegisterForm() {
           </div>
         ) : (
           /* Tab 2: Career Advisor Gateway Callout */
-          <div className="mt-6 rounded-2xl border border-emerald-200 bg-emerald-50/70 p-6 dark:border-emerald-900/60 dark:bg-emerald-950/30 text-center">
-            <div className="inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-emerald-700 text-amber-300 shadow-sm mb-3">
+          <div className="mt-6 rounded-2xl border border-emerald-200 bg-emerald-50/80 p-6 text-center">
+            <div className="inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-emerald-700 text-amber-300 shadow-xs mb-3">
               <Briefcase className="h-6 w-6" />
             </div>
-            <h2 className="text-lg font-extrabold text-emerald-950 dark:text-emerald-100">
+            <h2 className="text-lg font-extrabold text-emerald-950">
               Career Advisor & Mentor Registration
             </h2>
-            <p className="mt-2 text-xs sm:text-sm text-slate-600 dark:text-slate-300 leading-relaxed">
+            <p className="mt-2 text-xs sm:text-sm text-slate-700 leading-relaxed">
               Advisors must provide verified academic credentials, years of counseling experience, alma mater records, and proof documentation for administrative review before advisory status is granted.
             </p>
 
@@ -278,11 +278,11 @@ function RegisterForm() {
           </div>
         )}
 
-        <p className="mt-6 text-center text-xs sm:text-sm font-medium text-slate-600 dark:text-slate-300">
+        <p className="mt-6 text-center text-xs sm:text-sm font-medium text-slate-700">
           Already have an account?{' '}
           <Link
             href="/login"
-            className="font-bold text-[#0B2A4A] hover:underline dark:text-amber-400"
+            className="font-bold text-[#0B2A4A] hover:underline"
           >
             Sign in
           </Link>

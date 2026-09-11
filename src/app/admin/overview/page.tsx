@@ -277,36 +277,36 @@ export default function AdminOverviewPage() {
 
       {/* KPI Overview Grid */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-        <div className="rounded-2xl border-2 border-slate-200 bg-white p-5 shadow-xs dark:border-slate-800 dark:bg-slate-900">
-          <GraduationCap className="h-6 w-6 text-[#0B2A4A] dark:text-blue-400 mb-2" />
-          <span className="text-xs uppercase font-black text-slate-600 dark:text-slate-400 block">Registered Students</span>
-          <span className="text-3xl font-black text-slate-950 dark:text-white">{stats?.totalStudents ?? 0}</span>
+        <div className="rounded-2xl border-2 border-slate-200 bg-white p-5 shadow-xs">
+          <GraduationCap className="h-6 w-6 text-[#0B2A4A] mb-2" />
+          <span className="text-xs uppercase font-black text-slate-600 block">Registered Students</span>
+          <span className="text-3xl font-black text-slate-950">{stats?.totalStudents ?? 0}</span>
         </div>
 
-        <div className="rounded-2xl border-2 border-slate-200 bg-white p-5 shadow-xs dark:border-slate-800 dark:bg-slate-900">
+        <div className="rounded-2xl border-2 border-slate-200 bg-white p-5 shadow-xs">
           <Briefcase className="h-6 w-6 text-emerald-600 mb-2" />
-          <span className="text-xs uppercase font-black text-slate-600 dark:text-slate-400 block">Active Advisors</span>
-          <span className="text-3xl font-black text-slate-950 dark:text-white">{stats?.totalConsultants ?? 0}</span>
+          <span className="text-xs uppercase font-black text-slate-600 block">Active Advisors</span>
+          <span className="text-3xl font-black text-slate-950">{stats?.totalConsultants ?? 0}</span>
         </div>
 
         <Link
           href="/admin/hub"
-          className="rounded-2xl border-2 border-amber-300 bg-amber-50/70 p-5 shadow-xs dark:border-amber-800 dark:bg-amber-950/30 hover:border-amber-400 transition block group"
+          className="rounded-2xl border-2 border-amber-300 bg-amber-50/70 p-5 shadow-xs hover:border-amber-400 transition block group"
         >
           <div className="flex items-center justify-between mb-2">
-            <Clock className="h-6 w-6 text-amber-600 dark:text-amber-400" />
-            <span className="text-[11px] font-bold text-amber-800 dark:text-amber-300 group-hover:underline flex items-center gap-0.5">
+            <Clock className="h-6 w-6 text-amber-600" />
+            <span className="text-[11px] font-bold text-amber-800 group-hover:underline flex items-center gap-0.5">
               Review in Hub →
             </span>
           </div>
-          <span className="text-xs uppercase font-black text-slate-600 dark:text-slate-400 block">Pending Audits</span>
-          <span className="text-3xl font-black text-amber-600 dark:text-amber-400">{stats?.pendingConsultants ?? 0}</span>
+          <span className="text-xs uppercase font-black text-slate-600 block">Pending Audits</span>
+          <span className="text-3xl font-black text-amber-600">{stats?.pendingConsultants ?? 0}</span>
         </Link>
 
-        <div className="rounded-2xl border-2 border-slate-200 bg-white p-5 shadow-xs dark:border-slate-800 dark:bg-slate-900">
+        <div className="rounded-2xl border-2 border-slate-200 bg-white p-5 shadow-xs">
           <BarChart3 className="h-6 w-6 text-blue-600 mb-2" />
-          <span className="text-xs uppercase font-black text-slate-600 dark:text-slate-400 block">Quiz Assessments</span>
-          <span className="text-3xl font-black text-slate-950 dark:text-white">{stats?.totalQuizzes ?? 0}</span>
+          <span className="text-xs uppercase font-black text-slate-600 block">Quiz Assessments</span>
+          <span className="text-3xl font-black text-slate-950">{stats?.totalQuizzes ?? 0}</span>
         </div>
       </div>
 
@@ -314,14 +314,14 @@ export default function AdminOverviewPage() {
       {activeTab === 'trends' && (
         <div className="flex flex-col gap-8 animate-in fade-in duration-200">
           {/* Trending Hype Careers with interactive filters */}
-          <div className="rounded-3xl border-2 border-slate-200 bg-white p-6 sm:p-8 shadow-xs dark:border-slate-800 dark:bg-slate-900">
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6 pb-4 border-b border-slate-200 dark:border-slate-800">
+          <div className="rounded-3xl border-2 border-slate-200 bg-white p-6 sm:p-8 shadow-xs">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6 pb-4 border-b border-slate-200">
               <div>
-                <h3 className="text-xl font-black text-[#0B2A4A] dark:text-white flex items-center gap-2">
+                <h3 className="text-xl font-black text-[#0B2A4A] flex items-center gap-2">
                   <Flame className="h-5 w-5 text-red-500 animate-pulse" />
                   High-Demand & Surging Careers (Interactive Hype Index)
                 </h3>
-                <p className="text-xs text-slate-600 dark:text-slate-400 mt-1 font-medium">
+                <p className="text-xs text-slate-600 mt-1 font-medium">
                   Real-time Indian industry demand, entry remuneration, and growth projections
                 </p>
               </div>
@@ -335,14 +335,14 @@ export default function AdminOverviewPage() {
                     placeholder="Search career or skill..."
                     value={trendSearch}
                     onChange={(e) => setTrendSearch(e.target.value)}
-                    className="rounded-xl border border-slate-300 bg-slate-50 py-1.5 pl-9 pr-3 text-xs font-bold text-slate-900 focus:border-[#0B2A4A] focus:outline-none dark:border-slate-700 dark:bg-slate-800 dark:text-white"
+                    className="rounded-xl border border-slate-300 bg-slate-50 py-1.5 pl-9 pr-3 text-xs font-bold text-slate-900 focus:border-[#0B2A4A] focus:outline-none"
                   />
                 </div>
 
                 <select
                   value={trendSortBy}
                   onChange={(e) => setTrendSortBy(e.target.value as any)}
-                  className="rounded-xl border border-slate-300 bg-slate-50 px-3 py-1.5 text-xs font-bold text-slate-900 focus:border-[#0B2A4A] focus:outline-none dark:border-slate-700 dark:bg-slate-800 dark:text-white"
+                  className="rounded-xl border border-slate-300 bg-slate-50 px-3 py-1.5 text-xs font-bold text-slate-900 focus:border-[#0B2A4A] focus:outline-none"
                 >
                   <option value="hype">Sort: Highest Hype</option>
                   <option value="growth">Sort: Fastest Growth</option>
@@ -368,8 +368,8 @@ export default function AdminOverviewPage() {
                     onClick={() => setTrendDomainFilter(chip.id)}
                     className={`rounded-xl px-3.5 py-1.5 text-xs font-bold transition cursor-pointer ${
                       isActive
-                        ? 'bg-[#0B2A4A] text-white shadow-xs dark:bg-amber-400 dark:text-slate-950 font-black'
-                        : 'border border-slate-300 bg-white text-slate-700 hover:bg-slate-100 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200 dark:hover:bg-slate-700'
+                        ? 'bg-[#0B2A4A] text-white shadow-xs font-black'
+                        : 'border border-slate-300 bg-white text-slate-700 hover:bg-slate-100'
                     }`}
                   >
                     {chip.label}
@@ -383,19 +383,19 @@ export default function AdminOverviewPage() {
               {filteredCareers.map((career, idx) => (
                 <div
                   key={idx}
-                  className="rounded-2xl border-2 border-slate-200 bg-slate-50/70 p-5 dark:border-slate-800 dark:bg-slate-800/50 flex flex-col justify-between hover:border-slate-300 dark:hover:border-slate-700 transition"
+                  className="rounded-2xl border-2 border-slate-200 bg-slate-50/70 p-5 flex flex-col justify-between hover:border-slate-300 transition"
                 >
                   <div>
                     <div className="flex items-center justify-between gap-2 mb-2">
-                      <span className="rounded-full bg-blue-100 px-2.5 py-0.5 text-[10px] font-black text-[#0B2A4A] dark:bg-blue-950 dark:text-blue-200">
+                      <span className="rounded-md bg-blue-100 px-2.5 py-0.5 text-[10px] font-black text-[#0B2A4A]">
                         {career.domain}
                       </span>
-                      <span className="rounded-full bg-red-100 border border-red-300 px-2.5 py-0.5 text-[10px] font-black text-red-800 dark:bg-red-950 dark:border-red-800 dark:text-red-200">
+                      <span className="rounded-md bg-red-100 border border-red-300 px-2.5 py-0.5 text-[10px] font-black text-red-800">
                         Hype {career.hypeScore}/100
                       </span>
                     </div>
 
-                    <h4 className="font-black text-slate-950 dark:text-white text-base leading-snug">
+                    <h4 className="font-black text-slate-950 text-base leading-snug">
                       {career.title}
                     </h4>
 
@@ -405,7 +405,7 @@ export default function AdminOverviewPage() {
                         <span>Market Momentum</span>
                         <span>{career.hypeScore}%</span>
                       </div>
-                      <div className="h-1.5 w-full overflow-hidden rounded-full bg-slate-200 dark:bg-slate-700">
+                      <div className="h-1.5 w-full overflow-hidden rounded-full bg-slate-200">
                         <div
                           className="h-full bg-gradient-to-r from-amber-500 to-red-500 transition-all duration-500"
                           style={{ width: `${career.hypeScore}%` }}
@@ -413,14 +413,14 @@ export default function AdminOverviewPage() {
                       </div>
                     </div>
 
-                    <p className="text-xs font-bold text-emerald-700 dark:text-emerald-400 mt-2.5">
+                    <p className="text-xs font-bold text-emerald-700 mt-2.5">
                       Growth: {career.growthRate}
                     </p>
                   </div>
 
-                  <div className="mt-4 pt-3 border-t border-slate-200 dark:border-slate-700 flex items-center justify-between text-xs">
-                    <span className="text-slate-500 dark:text-slate-400 font-medium">Salary Band</span>
-                    <strong className="font-extrabold text-slate-950 dark:text-white">{career.avgSalary}</strong>
+                  <div className="mt-4 pt-3 border-t border-slate-200 flex items-center justify-between text-xs">
+                    <span className="text-slate-500 font-medium">Salary Band</span>
+                    <strong className="font-extrabold text-slate-950">{career.avgSalary}</strong>
                   </div>
                 </div>
               ))}
@@ -428,49 +428,49 @@ export default function AdminOverviewPage() {
           </div>
 
           {/* Academic Stream Popularity Breakdown */}
-          <div className="rounded-3xl border-2 border-slate-200 bg-white p-6 sm:p-8 shadow-xs dark:border-slate-800 dark:bg-slate-900">
-            <h3 className="text-lg sm:text-xl font-black text-[#0B2A4A] dark:text-white mb-4">
+          <div className="rounded-3xl border-2 border-slate-200 bg-white p-6 sm:p-8 shadow-xs">
+            <h3 className="text-lg sm:text-xl font-black text-[#0B2A4A] mb-4">
               Student Stream Distribution in Database
             </h3>
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 text-xs sm:text-sm">
-              <div className="rounded-2xl bg-blue-50 p-4 border border-blue-200 dark:bg-blue-950/40 dark:border-blue-900">
-                <span className="font-black text-[#0B2A4A] dark:text-blue-200 block text-xs uppercase tracking-wider">
+              <div className="rounded-2xl bg-blue-50 p-4 border border-blue-200">
+                <span className="font-black text-[#0B2A4A] block text-xs uppercase tracking-wider">
                   Science (PCM)
                 </span>
-                <span className="text-2xl font-black text-[#0B2A4A] dark:text-blue-400 mt-1 block">
+                <span className="text-2xl font-black text-[#0B2A4A] mt-1 block">
                   {stats?.streamDistribution?.SCIENCE_PCM ?? 0} Students
                 </span>
-                <p className="text-[11px] text-slate-600 dark:text-slate-400 mt-1">CS, AI, Robotics, Aerospace</p>
+                <p className="text-[11px] text-slate-600 mt-1">CS, AI, Robotics, Aerospace</p>
               </div>
 
-              <div className="rounded-2xl bg-emerald-50 p-4 border border-emerald-200 dark:bg-emerald-950/40 dark:border-emerald-900">
-                <span className="font-black text-[#138808] dark:text-emerald-200 block text-xs uppercase tracking-wider">
+              <div className="rounded-2xl bg-emerald-50 p-4 border border-emerald-200">
+                <span className="font-black text-[#138808] block text-xs uppercase tracking-wider">
                   Science (PCB)
                 </span>
-                <span className="text-2xl font-black text-[#138808] dark:text-emerald-400 mt-1 block">
+                <span className="text-2xl font-black text-[#138808] mt-1 block">
                   {stats?.streamDistribution?.SCIENCE_PCB ?? 0} Students
                 </span>
-                <p className="text-[11px] text-slate-600 dark:text-slate-400 mt-1">MBBS, Biotech, Genomics</p>
+                <p className="text-[11px] text-slate-600 mt-1">MBBS, Biotech, Genomics</p>
               </div>
 
-              <div className="rounded-2xl bg-amber-50 p-4 border border-amber-200 dark:bg-amber-950/40 dark:border-amber-900">
-                <span className="font-black text-[#D96B00] dark:text-amber-200 block text-xs uppercase tracking-wider">
+              <div className="rounded-2xl bg-amber-50 p-4 border border-amber-200">
+                <span className="font-black text-[#D96B00] block text-xs uppercase tracking-wider">
                   Commerce
                 </span>
-                <span className="text-2xl font-black text-[#D96B00] dark:text-amber-400 mt-1 block">
+                <span className="text-2xl font-black text-[#D96B00] mt-1 block">
                   {(stats?.streamDistribution?.COMMERCE_MATHS ?? 0) + (stats?.streamDistribution?.COMMERCE_NO_MATHS ?? 0)} Students
                 </span>
-                <p className="text-[11px] text-slate-600 dark:text-slate-400 mt-1">Finance, CA, IPMAT</p>
+                <p className="text-[11px] text-slate-600 mt-1">Finance, CA, IPMAT</p>
               </div>
 
-              <div className="rounded-2xl bg-purple-50 p-4 border border-purple-200 dark:bg-purple-950/40 dark:border-purple-900">
-                <span className="font-black text-purple-900 dark:text-purple-200 block text-xs uppercase tracking-wider">
-                  Arts & Humanities
+              <div className="rounded-xl bg-slate-100 p-4 border border-slate-200">
+                <span className="font-black text-slate-800 block text-xs uppercase tracking-wider">
+                  Arts &amp; Humanities
                 </span>
-                <span className="text-2xl font-black text-purple-900 dark:text-purple-300 mt-1 block">
+                <span className="text-2xl font-black text-slate-900 mt-1 block">
                   {stats?.streamDistribution?.ARTS ?? 0} Students
                 </span>
-                <p className="text-[11px] text-slate-600 dark:text-slate-400 mt-1">Design, Law, Public Policy</p>
+                <p className="text-[11px] text-slate-600 mt-1">Design, Law, Public Policy</p>
               </div>
             </div>
           </div>
@@ -479,14 +479,14 @@ export default function AdminOverviewPage() {
 
       {/* TAB 2: FULL STUDENT DIRECTORY & OVERSIGHT */}
       {activeTab === 'students' && (
-        <div className="rounded-3xl border-2 border-slate-200 bg-white p-6 sm:p-8 shadow-xs dark:border-slate-800 dark:bg-slate-900 flex flex-col gap-6">
+        <div className="rounded-3xl border-2 border-slate-200 bg-white p-6 sm:p-8 shadow-xs flex flex-col gap-6">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
             <div>
-              <h3 className="text-xl font-black text-[#0B2A4A] dark:text-white flex items-center gap-2">
-                <GraduationCap className="h-6 w-6 text-[#0B2A4A] dark:text-amber-400" />
+              <h3 className="text-xl font-black text-[#0B2A4A] flex items-center gap-2">
+                <GraduationCap className="h-6 w-6 text-[#0B2A4A]" />
                 Live Student Directory & Academic Roster
               </h3>
-              <p className="text-xs text-slate-600 dark:text-slate-400 mt-1 font-medium">
+              <p className="text-xs text-slate-600 mt-1 font-medium">
                 Direct access to every student enrolled in Supabase PostgreSQL
               </p>
             </div>
@@ -500,7 +500,7 @@ export default function AdminOverviewPage() {
                   onChange={(e) => setStudentSearch(e.target.value)}
                   onKeyDown={(e) => e.key === 'Enter' && fetchStudents()}
                   placeholder="Search name or email..."
-                  className="rounded-xl border border-slate-300 bg-slate-50 py-2 pl-9 pr-3 text-xs font-bold text-slate-900 focus:border-[#0B2A4A] focus:outline-none dark:border-slate-700 dark:bg-slate-800 dark:text-white"
+                  className="rounded-xl border border-slate-300 bg-slate-50 py-2 pl-9 pr-3 text-xs font-bold text-slate-900 focus:border-[#0B2A4A] focus:outline-none"
                 />
               </div>
 
@@ -510,7 +510,7 @@ export default function AdminOverviewPage() {
                   setClassFilter(e.target.value);
                   setTimeout(fetchStudents, 50);
                 }}
-                className="rounded-xl border border-slate-300 bg-slate-50 py-2 px-3 text-xs font-bold text-slate-900 focus:border-[#0B2A4A] focus:outline-none dark:border-slate-700 dark:bg-slate-800 dark:text-white"
+                className="rounded-xl border border-slate-300 bg-slate-50 py-2 px-3 text-xs font-bold text-slate-900 focus:border-[#0B2A4A] focus:outline-none"
               >
                 <option value="ALL">All Classes</option>
                 <option value="CLASS_9">Class 9</option>
@@ -532,19 +532,19 @@ export default function AdminOverviewPage() {
 
           {/* Student Table */}
           {loadingStudents ? (
-            <div className="py-16 text-center text-sm font-bold text-slate-700 dark:text-slate-300">
+            <div className="py-16 text-center text-sm font-bold text-slate-700">
               <span className="animate-spin inline-block h-6 w-6 border-3 border-blue-600 border-t-transparent rounded-full mb-3" />
               <p>Querying Supabase student records...</p>
             </div>
           ) : students.length === 0 ? (
-            <div className="py-16 text-center text-sm font-bold text-slate-700 dark:text-slate-300 rounded-2xl border-2 border-dashed border-slate-200 dark:border-slate-800">
+            <div className="py-16 text-center text-sm font-bold text-slate-700 rounded-2xl border-2 border-dashed border-slate-200">
               <p>No students match your query.</p>
               <p className="text-xs text-slate-500 mt-1">Students will appear here as soon as they complete registration on /register.</p>
             </div>
           ) : (
-            <div className="overflow-x-auto rounded-2xl border border-slate-200 dark:border-slate-800">
+            <div className="overflow-x-auto rounded-2xl border border-slate-200">
               <table className="w-full text-left text-xs">
-                <thead className="bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-300 font-black uppercase tracking-wider">
+                <thead className="bg-slate-100 text-slate-700 font-black uppercase tracking-wider">
                   <tr>
                     <th className="p-3.5">Student Name & Email</th>
                     <th className="p-3.5">Class / Board</th>
@@ -555,26 +555,26 @@ export default function AdminOverviewPage() {
                     <th className="p-3.5 text-right">Actions</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-slate-200 dark:divide-slate-800 font-medium">
+                <tbody className="divide-y divide-slate-200 font-medium">
                   {students.map((s) => (
-                    <tr key={s.id} className="hover:bg-slate-50 dark:hover:bg-slate-800/40">
+                    <tr key={s.id} className="hover:bg-slate-50">
                       <td className="p-3.5">
-                        <strong className="block text-slate-950 dark:text-white font-bold text-xs sm:text-sm">
+                        <strong className="block text-slate-950 font-bold text-xs sm:text-sm">
                           {s.name}
                         </strong>
-                        <span className="text-slate-500 dark:text-slate-400 text-[11px]">{s.email}</span>
+                        <span className="text-slate-500 text-[11px]">{s.email}</span>
                       </td>
                       <td className="p-3.5">
-                        <span className="rounded-md bg-blue-50 border border-blue-200 px-2 py-0.5 font-bold text-blue-900 dark:bg-blue-950 dark:border-blue-800 dark:text-blue-200">
+                        <span className="rounded-md bg-blue-50 border border-blue-200 px-2 py-0.5 font-bold text-blue-900">
                           {formatClassLabel(s.profile?.currentClass)}
                         </span>
-                        <span className="block text-slate-500 dark:text-slate-400 text-[11px] mt-1">
+                        <span className="block text-slate-500 text-[11px] mt-1">
                           {s.profile?.board || 'Board: N/A'}
                         </span>
                       </td>
                       <td className="p-3.5">
                         {s.profile?.tenthPercentage != null ? (
-                          <span className="font-extrabold text-[#0B2A4A] dark:text-blue-400">
+                          <span className="font-extrabold text-[#0B2A4A]">
                             {s.profile.tenthPercentage}%
                           </span>
                         ) : (
@@ -583,7 +583,7 @@ export default function AdminOverviewPage() {
                       </td>
                       <td className="p-3.5">
                         {s.profile?.twelfthPercentage != null ? (
-                          <span className="font-extrabold text-[#0B2A4A] dark:text-blue-400">
+                          <span className="font-extrabold text-[#0B2A4A]">
                             {s.profile.twelfthPercentage}%
                           </span>
                         ) : (
@@ -591,17 +591,17 @@ export default function AdminOverviewPage() {
                         )}
                       </td>
                       <td className="p-3.5">
-                        <span className="font-bold text-slate-800 dark:text-slate-200">
+                        <span className="font-bold text-slate-800">
                           {s.stats.quizAttempts} Completed
                         </span>
                       </td>
-                      <td className="p-3.5 text-slate-500 dark:text-slate-400">
+                      <td className="p-3.5 text-slate-500">
                         {new Date(s.createdAt).toLocaleDateString()}
                       </td>
                       <td className="p-3.5 text-right">
                         <button
                           onClick={() => setSelectedStudent(s)}
-                          className="rounded-lg bg-slate-100 hover:bg-slate-200 px-3 py-1.5 font-black text-[11px] text-slate-800 dark:bg-slate-800 dark:hover:bg-slate-700 dark:text-slate-200 cursor-pointer"
+                          className="rounded-lg bg-slate-100 hover:bg-slate-200 px-3 py-1.5 font-black text-[11px] text-slate-800 cursor-pointer"
                         >
                           Inspect File
                         </button>
@@ -616,20 +616,20 @@ export default function AdminOverviewPage() {
           {/* Student Detailed File Modal */}
           {selectedStudent && (
             <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/60 backdrop-blur-xs p-4 animate-in fade-in">
-              <div className="w-full max-w-xl rounded-3xl border-2 border-slate-200 bg-white p-6 sm:p-8 shadow-2xl dark:border-slate-800 dark:bg-slate-900 flex flex-col gap-5 max-h-[90vh] overflow-y-auto">
-                <div className="flex items-center justify-between border-b border-slate-200 pb-4 dark:border-slate-800">
+              <div className="w-full max-w-xl rounded-3xl border-2 border-slate-200 bg-white p-6 sm:p-8 shadow-2xl flex flex-col gap-5 max-h-[90vh] overflow-y-auto">
+                <div className="flex items-center justify-between border-b border-slate-200 pb-4">
                   <div className="flex items-center gap-3">
                     <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-[#0B2A4A] text-amber-400 font-black text-xl">
                       {selectedStudent.name[0]}
                     </div>
                     <div>
-                      <h4 className="font-black text-lg text-slate-950 dark:text-white">{selectedStudent.name}</h4>
-                      <p className="text-xs text-slate-500 dark:text-slate-400">{selectedStudent.email}</p>
+                      <h4 className="font-black text-lg text-slate-950">{selectedStudent.name}</h4>
+                      <p className="text-xs text-slate-500">{selectedStudent.email}</p>
                     </div>
                   </div>
                   <button
                     onClick={() => setSelectedStudent(null)}
-                    className="p-1 rounded-lg text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 cursor-pointer"
+                    className="p-1 rounded-lg text-slate-400 hover:text-slate-700 cursor-pointer"
                   >
                     <X className="h-5 w-5" />
                   </button>
@@ -637,11 +637,11 @@ export default function AdminOverviewPage() {
 
                 {/* About Me */}
                 {selectedStudent.profile?.aboutMe && (
-                  <div className="rounded-2xl border border-amber-200 bg-amber-50 p-4 dark:border-amber-900/50 dark:bg-amber-950/30">
-                    <span className="text-[11px] font-black uppercase text-amber-800 dark:text-amber-300 block mb-1">
+                  <div className="rounded-2xl border border-amber-200 bg-amber-50 p-4">
+                    <span className="text-[11px] font-black uppercase text-amber-800 block mb-1">
                       Student Bio / Aspirations:
                     </span>
-                    <p className="text-xs text-slate-800 dark:text-slate-200 italic">
+                    <p className="text-xs text-slate-800 italic">
                       &ldquo;{selectedStudent.profile.aboutMe}&rdquo;
                     </p>
                   </div>
@@ -649,27 +649,27 @@ export default function AdminOverviewPage() {
 
                 {/* Academic Record Grid */}
                 <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 text-xs">
-                  <div className="rounded-xl bg-slate-100 p-3 dark:bg-slate-800">
+                  <div className="rounded-xl bg-slate-100 p-3">
                     <span className="text-slate-500 block text-[10px] uppercase font-bold">Class</span>
-                    <strong className="text-slate-950 dark:text-white font-black">
+                    <strong className="text-slate-950 font-black">
                       {formatClassLabel(selectedStudent.profile?.currentClass)}
                     </strong>
                   </div>
-                  <div className="rounded-xl bg-slate-100 p-3 dark:bg-slate-800">
+                  <div className="rounded-xl bg-slate-100 p-3">
                     <span className="text-slate-500 block text-[10px] uppercase font-bold">Board</span>
-                    <strong className="text-slate-950 dark:text-white font-black">
+                    <strong className="text-slate-950 font-black">
                       {selectedStudent.profile?.board || 'Not set'}
                     </strong>
                   </div>
-                  <div className="rounded-xl bg-slate-100 p-3 dark:bg-slate-800">
+                  <div className="rounded-xl bg-slate-100 p-3">
                     <span className="text-slate-500 block text-[10px] uppercase font-bold">10th Score</span>
-                    <strong className="text-blue-600 dark:text-blue-400 font-black">
+                    <strong className="text-blue-600 font-black">
                       {selectedStudent.profile?.tenthPercentage != null ? `${selectedStudent.profile.tenthPercentage}%` : 'N/A'}
                     </strong>
                   </div>
-                  <div className="rounded-xl bg-slate-100 p-3 dark:bg-slate-800">
+                  <div className="rounded-xl bg-slate-100 p-3">
                     <span className="text-slate-500 block text-[10px] uppercase font-bold">12th Score</span>
-                    <strong className="text-blue-600 dark:text-blue-400 font-black">
+                    <strong className="text-blue-600 font-black">
                       {selectedStudent.profile?.twelfthPercentage != null ? `${selectedStudent.profile.twelfthPercentage}%` : 'N/A'}
                     </strong>
                   </div>
@@ -677,11 +677,11 @@ export default function AdminOverviewPage() {
 
                 {/* Interests & Strengths */}
                 <div className="flex flex-col gap-2 text-xs">
-                  <span className="font-bold text-slate-700 dark:text-slate-300">Declared Interests:</span>
+                  <span className="font-bold text-slate-700">Declared Interests:</span>
                   <div className="flex flex-wrap gap-1.5">
                     {selectedStudent.profile?.interests && selectedStudent.profile.interests.length > 0 ? (
                       selectedStudent.profile.interests.map((it, i) => (
-                        <span key={i} className="rounded-lg bg-blue-100 px-2.5 py-1 font-bold text-blue-900 text-[11px] dark:bg-blue-950 dark:text-blue-200">
+                        <span key={i} className="rounded-lg bg-blue-100 px-2.5 py-1 font-bold text-blue-900 text-[11px]">
                           {it}
                         </span>
                       ))
@@ -691,7 +691,7 @@ export default function AdminOverviewPage() {
                   </div>
                 </div>
 
-                <div className="flex justify-end pt-2 border-t border-slate-200 dark:border-slate-800">
+                <div className="flex justify-end pt-2 border-t border-slate-200">
                   <button
                     onClick={() => setSelectedStudent(null)}
                     className="rounded-xl bg-[#0B2A4A] px-5 py-2 text-xs font-bold text-white hover:bg-[#071C33] cursor-pointer"
@@ -706,14 +706,14 @@ export default function AdminOverviewPage() {
       )}
 
       {/* Quick Action Footer to Admin Hub */}
-      <div className="rounded-2xl border border-amber-300 bg-amber-50/60 p-5 dark:border-amber-900/60 dark:bg-amber-950/20 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+      <div className="rounded-2xl border border-amber-300 bg-amber-50/60 p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div className="flex items-center gap-3">
           <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-amber-500 text-slate-950 font-black shadow-xs shrink-0">
             <ShieldCheck className="h-5 w-5" />
           </div>
           <div>
-            <h4 className="text-sm font-black text-slate-900 dark:text-white">Looking for Advisor Applications & Credential Audits?</h4>
-            <p className="text-xs text-slate-600 dark:text-slate-400 font-medium">Head over to the dedicated Admin Hub portal to review, approve, or reject candidate mentors.</p>
+            <h4 className="text-sm font-black text-slate-900">Looking for Advisor Applications & Credential Audits?</h4>
+            <p className="text-xs text-slate-600 font-medium">Head over to the dedicated Admin Hub portal to review, approve, or reject candidate mentors.</p>
           </div>
         </div>
         <Link

@@ -113,13 +113,13 @@ export default function ChatPage() {
     setLoading(true);
 
     try {
-      // Exclude static UI greeting and error notices; send last 15 messages max
+      // Exclude static UI greeting and error notices; send last 20 messages max
       const safeHistory = [...messages, userMessage]
-        .filter((m) => m.id !== 'welcome_1' && !m.id.startsWith('bot_err_') && m.content.trim().length > 0)
-        .slice(-15)
+        .filter((m) => m.id !== 'welcome_1' && m.id !== 'init_msg' && !m.id.startsWith('bot_err_') && m.content.trim().length > 0)
+        .slice(-20)
         .map((m) => ({
           role: m.role,
-          content: m.content.slice(0, 5000),
+          content: m.content.slice(0, 8000),
         }));
 
       const res = await fetch('/api/chat', {
@@ -153,7 +153,9 @@ export default function ChatPage() {
           id: `bot_err_${Date.now()}`,
           role: 'assistant',
           content:
-            "I ran into a temporary connection issue with the counseling provider. Please try sending your query again in a moment.",
+            err?.message && !err.message.includes('status')
+              ? `Note: ${err.message}. Please feel free to rephrase or try again in a moment.`
+              : "I ran into a temporary connection issue with the counseling provider. Please try sending your query again in a moment.",
           timestamp: new Date().toISOString(),
         },
       ]);
@@ -218,19 +220,19 @@ export default function ChatPage() {
   return (
     <div className="mx-auto max-w-5xl px-4 py-8 sm:px-6 lg:px-8 flex flex-col h-[calc(100vh-5rem)]">
       {/* Top Header Bar */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-4 border-b-2 border-slate-200 dark:border-slate-800 gap-3">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-4 border-b-2 border-slate-200 gap-3">
         <div className="flex items-center gap-3">
           <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#0B2A4A] text-white shadow-xs shrink-0">
-            <Compass className="h-5 w-5 text-amber-400" />
+            <Compass className="h-5 w-5 text-amber-300" />
           </div>
           <div>
-            <h1 className="text-lg font-black text-[#0B2A4A] dark:text-white flex items-center gap-2">
-              Academic & Secondary Counseling Console
-              <span className="rounded-lg border border-amber-300 bg-[#FFF8EE] px-2.5 py-0.5 text-xs font-black text-[#D96B00] dark:bg-blue-950 dark:text-blue-200">
-                NIRF & Statutory Grounded
+            <h1 className="text-lg font-black text-[#0B2A4A] flex items-center gap-2">
+              Academic &amp; Secondary Counseling Console
+              <span className="rounded-md border border-amber-300 bg-[#FFF8EE] px-2.5 py-0.5 text-xs font-black text-[#D96B00]">
+                NIRF &amp; Statutory Grounded
               </span>
             </h1>
-            <p className="text-xs sm:text-sm font-semibold text-slate-700 dark:text-slate-300">
+            <p className="text-xs sm:text-sm font-semibold text-slate-700">
               Evidence-based analytics • Indian Secondary Education System • Objective Counseling
             </p>
           </div>
@@ -239,15 +241,15 @@ export default function ChatPage() {
         <div className="flex items-center gap-2 shrink-0 self-end sm:self-auto">
           <button
             onClick={handleExportChat}
-            className="flex items-center gap-1.5 rounded-xl border-2 border-slate-300 bg-white px-3.5 py-2 text-xs font-bold text-slate-800 hover:bg-slate-100 hover:text-slate-950 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200 dark:hover:bg-slate-800 dark:hover:text-white transition shadow-xs"
+            className="flex items-center gap-1.5 rounded-xl border-2 border-slate-300 bg-white px-3.5 py-2 text-xs font-bold text-slate-800 hover:bg-slate-100 hover:text-slate-950 transition shadow-xs cursor-pointer"
             title="Export conversation as Markdown transcript"
           >
-            <Download className="h-4 w-4 text-[#0B2A4A] dark:text-amber-400" />
+            <Download className="h-4 w-4 text-[#0B2A4A]" />
             <span>Export Transcript</span>
           </button>
           <button
             onClick={handleClearHistory}
-            className="flex items-center gap-1.5 rounded-xl border-2 border-slate-300 bg-white px-3.5 py-2 text-xs font-bold text-slate-800 hover:bg-slate-100 hover:text-slate-950 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200 dark:hover:bg-slate-800 dark:hover:text-white transition shadow-xs"
+            className="flex items-center gap-1.5 rounded-xl border-2 border-slate-300 bg-white px-3.5 py-2 text-xs font-bold text-slate-800 hover:bg-slate-100 hover:text-slate-950 transition shadow-xs cursor-pointer"
           >
             <Trash2 className="h-4 w-4 text-slate-500" />
             <span>Clear Console</span>
@@ -272,10 +274,10 @@ export default function ChatPage() {
               className={`max-w-[88%] sm:max-w-[80%] rounded-2xl p-5 text-xs sm:text-sm leading-relaxed ${
                 msg.role === 'user'
                   ? 'bg-[#0B2A4A] text-white rounded-br-none shadow-xs font-medium'
-                  : 'bg-white border-2 border-slate-200 text-slate-950 rounded-bl-none shadow-xs dark:bg-slate-900 dark:border-slate-800 dark:text-slate-100 font-normal'
+                  : 'bg-white border-2 border-slate-200 text-slate-950 rounded-bl-none shadow-xs font-normal'
               }`}
             >
-              <div className="prose prose-sm dark:prose-invert max-w-none whitespace-pre-wrap">
+              <div className="prose prose-sm max-w-none whitespace-pre-wrap">
                 {msg.content}
               </div>
             </div>
@@ -283,18 +285,18 @@ export default function ChatPage() {
             {/* Citations List */}
             {msg.citations && msg.citations.length > 0 && (
               <div className="mt-2.5 flex flex-col gap-1.5 max-w-[85%]">
-                <span className="text-xs font-black uppercase tracking-wider text-slate-700 dark:text-slate-300">
-                  Institutional Citations & Knowledge Base:
+                <span className="text-xs font-black uppercase tracking-wider text-slate-700">
+                  Institutional Citations &amp; Knowledge Base:
                 </span>
                 <div className="flex flex-wrap gap-2">
                   {msg.citations.map((c, i) => (
                     <Link
                       key={i}
                       href={sanitizeSafeUrl(c.link)}
-                      className="flex items-center gap-1.5 rounded-lg border border-amber-300 bg-[#FFF8EE] px-3 py-1.5 text-xs font-black text-[#D96B00] hover:bg-[#FFF2DE] dark:border-blue-900 dark:bg-blue-950/80 dark:text-blue-200 shadow-2xs"
+                      className="flex items-center gap-1.5 rounded-lg border border-amber-300 bg-[#FFF8EE] px-3 py-1.5 text-xs font-black text-[#D96B00] hover:bg-[#FFF2DE] shadow-2xs"
                     >
                       <span>{c.title}</span>
-                      <ArrowUpRight className="h-3.5 w-3.5 text-[#D96B00] dark:text-blue-400" />
+                      <ArrowUpRight className="h-3.5 w-3.5 text-[#D96B00]" />
                     </Link>
                   ))}
                 </div>
@@ -304,8 +306,8 @@ export default function ChatPage() {
         ))}
 
         {loading && (
-          <div className="flex items-center gap-3 rounded-xl bg-white border-2 border-slate-200 p-4 text-xs sm:text-sm font-bold text-slate-800 shadow-xs dark:bg-slate-900 dark:border-slate-800 dark:text-slate-200 w-fit">
-            <span className="animate-spin inline-block h-4 w-4 border-2 border-blue-600 border-t-transparent rounded-full" />
+          <div className="flex items-center gap-3 rounded-xl bg-white border-2 border-slate-200 p-4 text-xs sm:text-sm font-bold text-slate-800 shadow-xs w-fit">
+            <span className="animate-spin inline-block h-4 w-4 border-2 border-[#0B2A4A] border-t-transparent rounded-full" />
             <span>Consulting statutory databases and entrance statistics...</span>
           </div>
         )}
@@ -314,7 +316,7 @@ export default function ChatPage() {
       {/* Suggested Questions */}
       {messages.length <= 2 && (
         <div className="pb-3">
-          <span className="text-xs font-black uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-2 block">
+          <span className="text-xs font-black uppercase tracking-wider text-slate-700 mb-2 block">
             Suggested inquiry topics:
           </span>
           <div className="flex flex-wrap gap-2">
@@ -322,7 +324,7 @@ export default function ChatPage() {
               <button
                 key={idx}
                 onClick={() => handleSendMessage(q)}
-                className="rounded-xl border-2 border-slate-300 bg-white px-3 py-1.5 text-xs sm:text-sm font-semibold text-slate-800 hover:border-[#0B2A4A] hover:text-[#0B2A4A] hover:bg-blue-50/70 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200 dark:hover:bg-slate-800 dark:hover:text-white dark:hover:border-blue-500 transition shadow-xs"
+                className="rounded-xl border-2 border-slate-300 bg-white px-3 py-1.5 text-xs sm:text-sm font-semibold text-slate-800 hover:border-[#0B2A4A] hover:text-[#0B2A4A] hover:bg-blue-50/70 transition shadow-xs cursor-pointer"
               >
                 {q}
               </button>
@@ -346,14 +348,14 @@ export default function ChatPage() {
             onChange={(e) => setInputValue(e.target.value)}
             maxLength={3000}
             placeholder="Inquire regarding stream choices, prerequisite checks, cutoffs, or career outlooks..."
-            className="w-full rounded-xl border-2 border-slate-300 bg-white py-3.5 pl-4 pr-14 text-xs sm:text-sm font-medium text-slate-900 focus:border-[#0B2A4A] focus:outline-none dark:border-slate-700 dark:bg-slate-900 dark:text-white shadow-xs"
+            className="w-full rounded-xl border-2 border-slate-300 bg-white py-3.5 pl-4 pr-14 text-xs sm:text-sm font-medium text-slate-900 focus:border-[#0B2A4A] focus:outline-none shadow-xs"
           />
           <button
             type="submit"
             disabled={!inputValue.trim() || loading}
-            className="absolute right-2.5 flex h-9 w-9 items-center justify-center rounded-lg bg-[#0B2A4A] text-white hover:bg-[#071C33] disabled:opacity-40 transition shadow-xs"
+            className="absolute right-2.5 flex h-9 w-9 items-center justify-center rounded-lg bg-[#0B2A4A] text-white hover:bg-[#153e6b] disabled:opacity-40 transition shadow-xs cursor-pointer"
           >
-            <Send className="h-4 w-4 text-amber-400" />
+            <Send className="h-4 w-4 text-amber-300" />
           </button>
         </form>
       </div>

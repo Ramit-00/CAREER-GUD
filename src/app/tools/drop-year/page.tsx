@@ -122,18 +122,18 @@ export default function DropYearDiagnosticPage() {
   ]);
 
   return (
-    <div className="min-h-screen bg-slate-50 py-10 dark:bg-slate-950">
+    <div className="min-h-screen bg-white py-10">
       <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
-        {/* Header */}
-        <div className="text-center max-w-3xl mx-auto mb-10">
-          <span className="inline-flex items-center gap-1.5 rounded-full border border-rose-200 bg-rose-50 px-3 py-1 text-xs font-bold text-rose-900 dark:border-rose-900/60 dark:bg-rose-950/40 dark:text-rose-300 mb-3">
-            <HeartPulse className="h-3.5 w-3.5 text-rose-600 dark:text-rose-400" />
+        {/* Header Hero Container */}
+        <div className="rounded-3xl border-2 border-slate-300 bg-[#EAEFF5] p-6 sm:p-10 shadow-xs mb-10 text-center max-w-4xl mx-auto">
+          <span className="inline-flex items-center gap-1.5 rounded-lg border border-rose-300 bg-white px-3.5 py-1.5 text-xs font-bold text-rose-800 mb-3 shadow-2xs">
+            <HeartPulse className="h-3.5 w-3.5 text-rose-600" />
             Empirical Statistical Diagnostic
           </span>
-          <h1 className="text-3xl sm:text-4xl font-black text-slate-900 dark:text-white tracking-tight">
+          <h1 className="text-3xl sm:text-4xl font-black text-[#0B2A4A] tracking-tight">
             &quot;Drop Year&quot; Statistical Reality &amp; Risk Diagnostic
           </h1>
-          <p className="mt-3 text-sm sm:text-base font-medium text-slate-600 dark:text-slate-300 leading-relaxed">
+          <p className="mt-3 text-sm sm:text-base font-medium text-slate-700 leading-relaxed max-w-2xl mx-auto">
             Over 15 lakh Indian students take repeat gap years for JEE and NEET. National counseling data reveals that over 60% of droppers plateau within ±5 percentile of their baseline. Evaluate your statistical odds before committing 365 days.
           </p>
         </div>
@@ -141,8 +141,8 @@ export default function DropYearDiagnosticPage() {
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
           {/* Diagnostic Inputs */}
           <div className="lg:col-span-6 flex flex-col gap-6">
-            <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-800 dark:bg-slate-900 space-y-4">
-              <h3 className="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">
+            <div className="rounded-2xl border-2 border-slate-300 bg-[#EAEFF5] p-6 shadow-xs space-y-4">
+              <h3 className="text-xs font-bold uppercase tracking-wider text-slate-700">
                 1. Exam &amp; Target Ambition
               </h3>
 
@@ -153,10 +153,10 @@ export default function DropYearDiagnosticPage() {
                     setBaselineScore(85);
                     setTargetScore(98);
                   }}
-                  className={`p-3 rounded-xl border text-left font-bold text-xs transition ${
+                  className={`p-3.5 rounded-xl border-2 text-left font-bold text-xs transition shadow-2xs cursor-pointer ${
                     exam === 'JEE'
-                      ? 'border-[#0B2A4A] bg-[#0B2A4A]/5 text-[#0B2A4A] dark:border-amber-400 dark:bg-amber-400/10 dark:text-amber-300'
-                      : 'border-slate-200 text-slate-600 dark:border-slate-800 dark:text-slate-400'
+                      ? 'border-[#0B2A4A] bg-[#0B2A4A] text-white shadow-xs'
+                      : 'border-slate-300 text-slate-700 bg-white hover:border-[#0B2A4A]'
                   }`}
                 >
                   JEE Main / Advanced
@@ -167,10 +167,10 @@ export default function DropYearDiagnosticPage() {
                     setBaselineScore(480);
                     setTargetScore(635);
                   }}
-                  className={`p-3 rounded-xl border text-left font-bold text-xs transition ${
+                  className={`p-3.5 rounded-xl border-2 text-left font-bold text-xs transition shadow-2xs cursor-pointer ${
                     exam === 'NEET'
-                      ? 'border-[#0B2A4A] bg-[#0B2A4A]/5 text-[#0B2A4A] dark:border-amber-400 dark:bg-amber-400/10 dark:text-amber-300'
-                      : 'border-slate-200 text-slate-600 dark:border-slate-800 dark:text-slate-400'
+                      ? 'border-[#0B2A4A] bg-[#0B2A4A] text-white shadow-xs'
+                      : 'border-slate-300 text-slate-700 bg-white hover:border-[#0B2A4A]'
                   }`}
                 >
                   NEET-UG (Medical)
@@ -178,13 +178,13 @@ export default function DropYearDiagnosticPage() {
               </div>
 
               <div>
-                <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
+                <label className="block text-xs font-bold text-slate-700 mb-1">
                   How many drop years have you already taken?
                 </label>
                 <select
                   value={previousDropCount}
                   onChange={(e) => setPreviousDropCount(Number(e.target.value))}
-                  className="w-full rounded-xl border border-slate-300 bg-white p-2.5 text-xs font-bold text-slate-800 dark:border-slate-700 dark:bg-slate-800 dark:text-white"
+                  className="w-full rounded-xl border-2 border-slate-300 bg-white p-2.5 text-xs font-bold text-slate-900 shadow-2xs focus:border-[#0B2A4A] focus:outline-none"
                 >
                   <option value={0}>0 - First time considering a drop year</option>
                   <option value={1}>1 - Already taken 1 drop (considering 2nd drop)</option>
@@ -194,39 +194,39 @@ export default function DropYearDiagnosticPage() {
 
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
+                  <label className="block text-xs font-bold text-slate-700 mb-1">
                     Previous {exam === 'JEE' ? 'Percentile' : 'Score / 720'}
                   </label>
                   <input
                     type="number"
                     value={baselineScore}
                     onChange={(e) => setBaselineScore(Number(e.target.value))}
-                    className="w-full rounded-xl border border-slate-300 bg-white p-2 text-xs font-bold text-slate-800 dark:border-slate-700 dark:bg-slate-800 dark:text-white"
+                    className="w-full rounded-xl border-2 border-slate-300 bg-white p-2.5 text-xs font-bold text-slate-900 shadow-2xs focus:border-[#0B2A4A] focus:outline-none"
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
+                  <label className="block text-xs font-bold text-slate-700 mb-1">
                     Target {exam === 'JEE' ? 'Percentile' : 'Score / 720'}
                   </label>
                   <input
                     type="number"
                     value={targetScore}
                     onChange={(e) => setTargetScore(Number(e.target.value))}
-                    className="w-full rounded-xl border border-slate-300 bg-white p-2 text-xs font-bold text-slate-800 dark:border-slate-700 dark:bg-slate-800 dark:text-white"
+                    className="w-full rounded-xl border-2 border-slate-300 bg-white p-2.5 text-xs font-bold text-slate-900 shadow-2xs focus:border-[#0B2A4A] focus:outline-none"
                   />
                 </div>
               </div>
             </div>
 
-            <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-800 dark:bg-slate-900 space-y-4">
-              <h3 className="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">
+            <div className="rounded-2xl border-2 border-slate-300 bg-[#EAEFF5] p-6 shadow-xs space-y-4">
+              <h3 className="text-xs font-bold uppercase tracking-wider text-slate-700">
                 2. Stamina &amp; Psychological Fatigue
               </h3>
 
               <div>
-                <div className="flex justify-between text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
+                <div className="flex justify-between text-xs font-bold text-slate-800 mb-1">
                   <span>Daily Independent Problem-Solving Stamina</span>
-                  <span className="text-[#0B2A4A] dark:text-amber-400 font-black">
+                  <span className="text-[#0B2A4A] font-black rounded-lg bg-white px-2.5 py-0.5 border border-slate-200 shadow-2xs">
                     {studyStaminaHours} Hours / Day
                   </span>
                 </div>
@@ -237,17 +237,17 @@ export default function DropYearDiagnosticPage() {
                   step={1}
                   value={studyStaminaHours}
                   onChange={(e) => setStudyStaminaHours(Number(e.target.value))}
-                  className="w-full accent-[#0B2A4A] dark:accent-amber-400 cursor-pointer h-2 bg-slate-200 rounded-lg dark:bg-slate-700"
+                  className="w-full accent-[#0B2A4A] cursor-pointer h-2 bg-slate-200 rounded-lg"
                 />
-                <span className="text-[11px] text-slate-400 mt-1 block">
+                <span className="text-[11px] text-slate-500 mt-1 block font-medium">
                   Self-study hours solving new problems, excluding watching passive video lectures.
                 </span>
               </div>
 
               <div>
-                <div className="flex justify-between text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
+                <div className="flex justify-between text-xs font-bold text-slate-800 mb-1">
                   <span>Syllabus Completed with Previous Year Questions</span>
-                  <span className="text-[#0B2A4A] dark:text-amber-400 font-black">
+                  <span className="text-[#0B2A4A] font-black rounded-lg bg-white px-2.5 py-0.5 border border-slate-200 shadow-2xs">
                     {syllabusCoverage}%
                   </span>
                 </div>
@@ -258,12 +258,12 @@ export default function DropYearDiagnosticPage() {
                   step={5}
                   value={syllabusCoverage}
                   onChange={(e) => setSyllabusCoverage(Number(e.target.value))}
-                  className="w-full accent-[#0B2A4A] dark:accent-amber-400 cursor-pointer h-2 bg-slate-200 rounded-lg dark:bg-slate-700"
+                  className="w-full accent-[#0B2A4A] cursor-pointer h-2 bg-slate-200 rounded-lg"
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-2">
+                <label className="block text-xs font-bold text-slate-700 mb-2">
                   Current Level of Emotional Fatigue / Pressure
                 </label>
                 <div className="grid grid-cols-3 gap-2">
@@ -271,10 +271,10 @@ export default function DropYearDiagnosticPage() {
                     <button
                       key={level}
                       onClick={() => setBurnoutLevel(level)}
-                      className={`p-2 rounded-xl border text-center font-bold text-xs transition ${
+                      className={`p-3 rounded-xl border-2 text-center font-bold text-xs transition shadow-2xs cursor-pointer ${
                         burnoutLevel === level
-                          ? 'border-[#0B2A4A] bg-[#0B2A4A]/5 text-[#0B2A4A] dark:border-amber-400 dark:bg-amber-400/10 dark:text-amber-300'
-                          : 'border-slate-200 text-slate-600 dark:border-slate-800 dark:text-slate-400'
+                          ? 'border-[#0B2A4A] bg-[#0B2A4A] text-white shadow-xs'
+                          : 'border-slate-300 text-slate-800 bg-white hover:border-[#0B2A4A]'
                       }`}
                     >
                       {level === 'LOW' ? 'Low Fatigue' : level === 'MODERATE' ? 'Moderate Stress' : 'Severe Burnout'}
@@ -288,19 +288,19 @@ export default function DropYearDiagnosticPage() {
           {/* Diagnostic Verdict & Analysis */}
           <div className="lg:col-span-6 flex flex-col gap-6">
             <div
-              className={`rounded-2xl p-6 border-2 ${
+              className={`rounded-2xl p-6 border-2 shadow-xs ${
                 diagnosticResult.verdict.color === 'emerald'
-                  ? 'border-emerald-500 bg-emerald-50/70 text-emerald-950 dark:border-emerald-500/60 dark:bg-emerald-950/30 dark:text-emerald-200'
+                  ? 'border-emerald-400 bg-emerald-50 text-emerald-950'
                   : diagnosticResult.verdict.color === 'amber'
-                  ? 'border-amber-500 bg-amber-50/70 text-amber-950 dark:border-amber-500/60 dark:bg-amber-950/30 dark:text-amber-200'
-                  : 'border-rose-500 bg-rose-50/70 text-rose-950 dark:border-rose-500/60 dark:bg-rose-950/30 dark:text-rose-200'
+                  ? 'border-amber-400 bg-amber-50 text-amber-950'
+                  : 'border-rose-400 bg-rose-50 text-rose-950'
               }`}
             >
               <div className="flex items-center gap-2 font-black text-base mb-1">
                 {diagnosticResult.verdict.color === 'emerald' ? (
-                  <CheckCircle2 className="h-5 w-5 text-emerald-600 dark:text-emerald-400" />
+                  <CheckCircle2 className="h-5 w-5 text-[#138808]" />
                 ) : (
-                  <AlertOctagon className="h-5 w-5 text-rose-600 dark:text-rose-400" />
+                  <AlertOctagon className="h-5 w-5 text-rose-600" />
                 )}
                 <span>{diagnosticResult.verdict.title}</span>
               </div>
@@ -310,56 +310,56 @@ export default function DropYearDiagnosticPage() {
             </div>
 
             <div className="grid grid-cols-2 gap-4">
-              <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-800 dark:bg-slate-900">
+              <div className="rounded-2xl border-2 border-slate-300 bg-[#EAEFF5] p-5 shadow-xs">
                 <span className="text-xs font-bold text-slate-500 block mb-1">
                   Probability of Target Leap
                 </span>
-                <span className="text-2xl font-black text-[#0B2A4A] dark:text-amber-400">
+                <span className="text-2xl font-black text-[#0B2A4A]">
                   {diagnosticResult.improvementProbability}%
                 </span>
-                <span className="text-[11px] text-slate-400 block mt-1">
+                <span className="text-[11px] text-slate-500 block mt-1">
                   Statistical likelihood of target reach
                 </span>
               </div>
 
-              <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-800 dark:bg-slate-900">
+              <div className="rounded-2xl border-2 border-slate-300 bg-[#EAEFF5] p-5 shadow-xs">
                 <span className="text-xs font-bold text-slate-500 block mb-1">
                   Burnout Risk Index
                 </span>
-                <span className="text-2xl font-black text-rose-600 dark:text-rose-400">
+                <span className="text-2xl font-black text-rose-600">
                   {diagnosticResult.burnoutRiskScore} / 100
                 </span>
-                <span className="text-[11px] text-slate-400 block mt-1">
+                <span className="text-[11px] text-slate-500 block mt-1">
                   Psychological fatigue vulnerability
                 </span>
               </div>
             </div>
 
             {/* Strategic Action Items */}
-            <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-800 dark:bg-slate-900 space-y-3">
-              <h4 className="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">
+            <div className="rounded-2xl border-2 border-slate-300 bg-[#EAEFF5] p-6 shadow-xs space-y-3">
+              <h4 className="text-xs font-bold uppercase tracking-wider text-slate-700">
                 Recommended Action Blueprint:
               </h4>
-              <div className="space-y-2">
+              <div className="space-y-2.5">
                 {diagnosticResult.verdict.actionableGuidance.map((item, idx) => (
-                  <div key={idx} className="flex items-start gap-2 text-xs text-slate-700 dark:text-slate-300">
-                    <CheckCircle2 className="h-4 w-4 text-emerald-600 shrink-0 mt-0.5" />
-                    <span>{item}</span>
+                  <div key={idx} className="flex items-start gap-2.5 rounded-xl bg-white p-3 border border-slate-200 text-xs text-slate-800 shadow-2xs">
+                    <CheckCircle2 className="h-4 w-4 text-[#138808] shrink-0 mt-0.5" />
+                    <span className="leading-relaxed">{item}</span>
                   </div>
                 ))}
               </div>
 
-              <div className="pt-4 border-t border-slate-100 dark:border-slate-800 flex flex-col sm:flex-row items-center justify-between gap-3">
+              <div className="pt-4 border-t-2 border-slate-200 flex flex-col sm:flex-row items-center justify-between gap-3">
                 <Link
                   href="/tools/stream-pivot"
-                  className="text-xs font-bold text-[#0B2A4A] dark:text-amber-400 hover:underline inline-flex items-center gap-1"
+                  className="text-xs font-bold text-[#0B2A4A] hover:text-[#D96B00] hover:underline inline-flex items-center gap-1"
                 >
                   Explore High-Growth Non-Drop Trajectories <ArrowRight className="h-3.5 w-3.5" />
                 </Link>
 
                 <Link
                   href="/consultants"
-                  className="rounded-xl bg-[#0B2A4A] px-4 py-2 text-xs font-bold text-white hover:bg-[#081f37] dark:bg-amber-400 dark:text-slate-950 dark:hover:bg-amber-300 transition"
+                  className="rounded-xl bg-[#0B2A4A] px-4 py-2.5 text-xs font-bold text-white hover:bg-[#153e6b] transition shadow-xs"
                 >
                   Book 1-on-1 Strategy Session
                 </Link>

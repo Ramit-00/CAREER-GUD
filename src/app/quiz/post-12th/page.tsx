@@ -26,31 +26,31 @@ const STREAM_OPTIONS: { id: StreamType; title: string; desc: string; icon: React
     id: 'SCIENCE_PCM',
     title: 'Science: Non-Medical (PCM)',
     desc: 'Physics, Chemistry & Mathematics. Statutory eligibility for B.Tech, B.Arch, Merchant Navy, Defense/NDA, Pure Sciences, and all cross-stream programs (Management, Law, Design).',
-    icon: <Cpu className="h-5 w-5 text-[#0B2A4A] dark:text-blue-400" />,
+    icon: <Cpu className="h-5 w-5 text-[#0B2A4A]" />,
   },
   {
     id: 'SCIENCE_PCB',
     title: 'Science: Medical (PCB)',
     desc: 'Physics, Chemistry & Biology. Statutory eligibility for MBBS, BDS, Pharmacy, Biotechnology, Bioinformatics, Clinical Sciences, and cross-stream fields (Law, Healthcare Management).',
-    icon: <Stethoscope className="h-5 w-5 text-[#138808] dark:text-emerald-400" />,
+    icon: <Stethoscope className="h-5 w-5 text-[#138808]" />,
   },
   {
     id: 'SCIENCE_PCMB',
     title: 'Science: Dual Stream (PCMB)',
     desc: 'Physics, Chemistry, Maths & Biology. Maximum statutory flexibility across all technological, computational biology, research, and corporate disciplines.',
-    icon: <Microscope className="h-5 w-5 text-[#0B2A4A] dark:text-sky-400" />,
+    icon: <Microscope className="h-5 w-5 text-[#0B2A4A]" />,
   },
   {
     id: 'COMMERCE_MATHS',
     title: 'Commerce (with / without Maths)',
     desc: 'Accountancy, Economics & Business Studies. Direct entry into Chartered Accountancy (CA), Investment Banking, Corporate Law, and IIM Integrated Management.',
-    icon: <BarChart3 className="h-5 w-5 text-[#D96B00] dark:text-amber-400" />,
+    icon: <BarChart3 className="h-5 w-5 text-[#D96B00]" />,
   },
   {
     id: 'ARTS',
     title: 'Humanities & Social Sciences',
     desc: 'Political Science, Psychology, Economics, Sociology. Direct entry into National Law Universities (CLAT), Design (UCEED/NID), Public Policy, and Management.',
-    icon: <Scale className="h-5 w-5 text-slate-800 dark:text-slate-300" />,
+    icon: <Scale className="h-5 w-5 text-slate-800" />,
   },
 ];
 
@@ -186,23 +186,23 @@ export default function Post12thQuizPage() {
   return (
     <div className="mx-auto max-w-4xl px-4 py-12 sm:px-6 lg:px-8">
       {!quizResult ? (
-        <div className="rounded-2xl border-2 border-slate-200 bg-white p-8 sm:p-10 shadow-sm dark:border-slate-700 dark:bg-slate-900">
+        <div className="rounded-3xl border-2 border-slate-300 bg-[#EAEFF5] p-8 sm:p-10 shadow-xs">
           <div className="text-center max-w-2xl mx-auto">
-            <span className="inline-flex items-center gap-2 rounded-md border border-amber-300 bg-[#FFF8EE] px-3.5 py-1 text-xs font-bold text-[#D96B00] dark:border-amber-800 dark:bg-amber-950/40 dark:text-amber-300 mb-3 shadow-2xs">
-              <GraduationCap className="h-4 w-4 text-[#D96B00] dark:text-amber-400" />
-              Statutory Eligibility & Program Alignment
+            <span className="inline-flex items-center gap-2 rounded-lg border border-amber-300 bg-white px-3.5 py-1.5 text-xs font-bold text-[#D96B00] mb-3 shadow-2xs">
+              <GraduationCap className="h-4 w-4 text-[#D96B00]" />
+              Statutory Eligibility &amp; Program Alignment
             </span>
-            <h1 className="text-2xl sm:text-3xl font-black text-[#0B2A4A] dark:text-white">
-              Undergraduate Degree & Career Program Matcher
+            <h1 className="text-2xl sm:text-3xl font-black text-[#0B2A4A]">
+              Undergraduate Degree &amp; Career Program Matcher
             </h1>
-            <p className="mt-2 text-sm font-medium text-slate-700 dark:text-slate-200 leading-relaxed">
+            <p className="mt-2 text-sm font-medium text-slate-700 leading-relaxed">
               In India, your senior secondary stream establishes statutory eligibility (e.g., NMC mandates Biology for MBBS; COA mandates Mathematics for Architecture). Select your confirmed discipline below.
             </p>
           </div>
 
           {/* Stream Selector */}
           <div className="mt-8 flex flex-col gap-3">
-            <label className="text-xs font-bold uppercase tracking-wider text-slate-800 dark:text-slate-200">
+            <label className="text-xs font-bold uppercase tracking-wider text-slate-800">
               Select Current Secondary Stream (+2):
             </label>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
@@ -211,16 +211,16 @@ export default function Post12thQuizPage() {
                   key={st.id}
                   type="button"
                   onClick={() => setSelectedStream(st.id)}
-                  className={`flex items-start gap-3 rounded-xl border-2 p-4 text-left transition ${
+                  className={`flex items-start gap-3 rounded-xl border-2 p-4 text-left transition cursor-pointer shadow-2xs ${
                     selectedStream === st.id
-                      ? 'border-[#0B2A4A] bg-blue-50/60 ring-1 ring-[#0B2A4A] dark:border-blue-400 dark:bg-blue-950/50 shadow-2xs'
-                      : 'border-slate-200 bg-white hover:border-slate-400 hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-800 dark:hover:bg-slate-700'
+                      ? 'border-[#0B2A4A] bg-[#0B2A4A] text-white shadow-xs'
+                      : 'border-slate-300 bg-white hover:border-[#0B2A4A] hover:bg-slate-50'
                   }`}
                 >
                   <div className="mt-0.5 shrink-0">{st.icon}</div>
                   <div>
-                    <h4 className="text-sm font-bold text-slate-950 dark:text-white">{st.title}</h4>
-                    <p className="text-xs font-medium text-slate-700 dark:text-slate-300 mt-1 leading-relaxed">{st.desc}</p>
+                    <h4 className={`text-sm font-bold ${selectedStream === st.id ? 'text-white' : 'text-slate-950'}`}>{st.title}</h4>
+                    <p className={`text-xs font-medium mt-1 leading-relaxed ${selectedStream === st.id ? 'text-slate-200' : 'text-slate-700'}`}>{st.desc}</p>
                   </div>
                 </button>
               ))}
@@ -230,11 +230,11 @@ export default function Post12thQuizPage() {
           {/* Career Trajectory & Cross-Stream Intent */}
           <div className="mt-8 flex flex-col gap-3">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1">
-              <label className="text-xs font-bold uppercase tracking-wider text-slate-950 dark:text-white">
-                Career Trajectory & Non-Linear Pathways:
+              <label className="text-xs font-bold uppercase tracking-wider text-slate-950">
+                Career Trajectory &amp; Non-Linear Pathways:
               </label>
-              <span className="text-xs font-bold text-[#D96B00] dark:text-amber-400">
-                You are not pigeonholed: PCM & PCB qualify for management, law & design
+              <span className="text-xs font-bold text-[#D96B00]">
+                You are not pigeonholed: PCM &amp; PCB qualify for management, law &amp; design
               </span>
             </div>
 
@@ -244,25 +244,25 @@ export default function Post12thQuizPage() {
                   key={tr.id}
                   type="button"
                   onClick={() => setTargetTrajectory(tr.id)}
-                  className={`flex flex-col items-start gap-1 rounded-xl border-2 p-4 text-left transition ${
+                  className={`flex flex-col items-start gap-1 rounded-xl border-2 p-4 text-left transition cursor-pointer shadow-2xs ${
                     targetTrajectory === tr.id
-                      ? 'border-[#D96B00] bg-[#FFF8EE] ring-1 ring-[#D96B00] dark:border-amber-500 dark:bg-amber-950/40 shadow-2xs'
-                      : 'border-slate-200 bg-white hover:border-slate-400 hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-800 dark:hover:bg-slate-700'
+                      ? 'border-[#D96B00] bg-[#FFF8EE] ring-2 ring-[#D96B00] shadow-xs'
+                      : 'border-slate-300 bg-white hover:border-[#D96B00] hover:bg-slate-50'
                   }`}
                 >
                   <div className="flex w-full items-center justify-between">
-                    <h4 className="text-sm font-bold text-slate-950 dark:text-white">{tr.title}</h4>
+                    <h4 className="text-sm font-bold text-slate-950">{tr.title}</h4>
                     <span
-                      className={`text-xs font-bold px-2 py-0.5 rounded ${
+                      className={`text-xs font-bold px-2 py-0.5 rounded shadow-2xs ${
                         targetTrajectory === tr.id
                           ? 'bg-[#D96B00] text-white'
-                          : 'bg-slate-100 text-slate-800 dark:bg-slate-700 dark:text-slate-200'
+                          : 'bg-slate-100 text-slate-800'
                       }`}
                     >
                       {tr.badge}
                     </span>
                   </div>
-                  <p className="text-xs font-medium text-slate-700 dark:text-slate-300 mt-1 leading-relaxed">
+                  <p className="text-xs font-medium text-slate-700 mt-1 leading-relaxed">
                     {tr.desc}
                   </p>
                 </button>
@@ -271,14 +271,14 @@ export default function Post12thQuizPage() {
           </div>
 
           {/* Marks Calibration */}
-          <div className="mt-8 rounded-2xl border-2 border-slate-200 bg-[#F8F9FA] p-6 dark:border-slate-700 dark:bg-slate-800">
-            <h4 className="text-xs font-bold uppercase tracking-wider text-slate-800 dark:text-slate-200 mb-4">
+          <div className="mt-8 rounded-2xl border-2 border-slate-200 bg-white p-6 shadow-2xs">
+            <h4 className="text-xs font-bold uppercase tracking-wider text-slate-800 mb-4">
               Academic Baseline Verification
             </h4>
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
               <div>
-                <span className="text-xs font-bold text-slate-800 dark:text-slate-200">
-                  Class 12 Aggregate (%): <strong className="text-[#0B2A4A] dark:text-amber-400 font-extrabold">{twelfthPercentage}%</strong>
+                <span className="text-xs font-bold text-slate-800">
+                  Class 12 Aggregate (%): <strong className="text-[#0B2A4A] font-extrabold">{twelfthPercentage}%</strong>
                 </span>
                 <input
                   type="range"
@@ -292,8 +292,8 @@ export default function Post12thQuizPage() {
 
               {selectedStream !== 'ARTS' && (
                 <div>
-                  <span className="text-xs font-bold text-slate-800 dark:text-slate-200">
-                    Mathematics (%): <strong className="text-[#0B2A4A] dark:text-amber-400 font-extrabold">{mathScore}%</strong>
+                  <span className="text-xs font-bold text-slate-800">
+                    Mathematics (%): <strong className="text-[#0B2A4A] font-extrabold">{mathScore}%</strong>
                   </span>
                   <input
                     type="range"
@@ -308,8 +308,8 @@ export default function Post12thQuizPage() {
 
               {(selectedStream === 'SCIENCE_PCB' || selectedStream === 'SCIENCE_PCMB') && (
                 <div>
-                  <span className="text-xs font-bold text-slate-800 dark:text-slate-200">
-                    Biology (%): <strong className="text-[#0B2A4A] dark:text-amber-400 font-extrabold">{scienceScore}%</strong>
+                  <span className="text-xs font-bold text-slate-800">
+                    Biology (%): <strong className="text-[#0B2A4A] font-extrabold">{scienceScore}%</strong>
                   </span>
                   <input
                     type="range"
@@ -325,7 +325,7 @@ export default function Post12thQuizPage() {
           </div>
 
           {submissionError && (
-            <div className="mt-4 flex items-center gap-2 rounded-xl border border-rose-300 bg-rose-50 p-3 text-xs font-bold text-rose-900 dark:border-rose-900 dark:bg-rose-950 dark:text-rose-200">
+            <div className="mt-4 flex items-center gap-2 rounded-xl border border-rose-300 bg-rose-50 p-3 text-xs font-bold text-rose-900">
               <AlertCircle className="h-4 w-4 text-rose-600 shrink-0" />
               <span>{submissionError}</span>
             </div>
@@ -335,14 +335,14 @@ export default function Post12thQuizPage() {
             type="button"
             onClick={handleSubmit}
             disabled={submitting}
-            className="mt-8 flex w-full items-center justify-center gap-2 rounded-xl bg-[#0B2A4A] py-3.5 text-xs font-bold text-white hover:bg-[#071C33] border border-[#071C33] disabled:opacity-50 transition shadow-sm cursor-pointer"
+            className="mt-8 flex w-full items-center justify-center gap-2 rounded-xl bg-[#0B2A4A] py-3.5 text-xs font-bold text-white hover:bg-[#153e6b] disabled:opacity-50 transition shadow-sm cursor-pointer"
           >
             {submitting ? (
-              <span>Mapping Statutory Eligibility & Cutoffs...</span>
+              <span>Mapping Statutory Eligibility &amp; Cutoffs...</span>
             ) : (
               <>
-                <span>Match Accredited Degrees & Career Frameworks</span>
-                <ArrowRight className="h-4 w-4 text-amber-400" />
+                <span>Match Accredited Degrees &amp; Career Frameworks</span>
+                <ArrowRight className="h-4 w-4 text-amber-300" />
               </>
             )}
           </button>
@@ -351,25 +351,25 @@ export default function Post12thQuizPage() {
         /* Scored Results */
         <div className="flex flex-col gap-6 animate-in fade-in zoom-in-95">
           {/* Header */}
-          <div className="rounded-2xl border-2 border-slate-200 bg-white p-6 sm:p-8 shadow-sm dark:border-slate-700 dark:bg-slate-900">
+          <div className="rounded-3xl border-2 border-slate-300 bg-[#EAEFF5] p-6 sm:p-8 shadow-xs border-t-4 border-t-[#0B2A4A]">
             <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
               <div>
-                <span className="rounded-md border border-amber-300 bg-[#FFF8EE] px-3 py-1 text-xs font-bold text-[#D96B00] dark:border-amber-800 dark:bg-amber-950/40 dark:text-amber-300">
+                <span className="rounded-lg border border-amber-300 bg-white px-3 py-1 text-xs font-bold text-[#D96B00] shadow-2xs">
                   Primary Matched Degree Trajectory
                 </span>
-                <h1 className="mt-3 text-2xl sm:text-3xl font-black text-[#0B2A4A] dark:text-white">
+                <h1 className="mt-3 text-2xl sm:text-3xl font-black text-[#0B2A4A]">
                   {quizResult.primaryRecommendation.title}
                 </h1>
-                <p className="mt-2 text-sm font-medium text-slate-700 dark:text-slate-200 leading-relaxed max-w-2xl">
+                <p className="mt-2 text-sm font-medium text-slate-700 leading-relaxed max-w-2xl">
                   {quizResult.primaryRecommendation.whyItFits}
                 </p>
               </div>
 
-              <div className="flex flex-col items-center justify-center rounded-2xl bg-blue-50/70 p-5 dark:bg-slate-800 border-2 border-blue-200 dark:border-slate-700 shrink-0">
-                <span className="text-3xl font-black text-[#0B2A4A] dark:text-white">
+              <div className="flex flex-col items-center justify-center rounded-2xl bg-white p-5 border-2 border-blue-200 shadow-2xs shrink-0">
+                <span className="text-3xl font-black text-[#0B2A4A]">
                   {quizResult.primaryRecommendation.matchPercentage}%
                 </span>
-                <span className="text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 mt-0.5">
+                <span className="text-xs font-bold uppercase tracking-wider text-slate-700 mt-0.5">
                   Aptitude Fit
                 </span>
               </div>
@@ -377,31 +377,31 @@ export default function Post12thQuizPage() {
           </div>
 
           {/* Realism Note */}
-          <div className="rounded-2xl border-2 border-amber-300 bg-[#FFFDF5] p-6 dark:border-amber-800 dark:bg-amber-950/40 border-l-6 border-l-[#FF9933]">
-            <div className="flex items-center gap-2 text-xs font-bold uppercase text-amber-900 dark:text-amber-300">
-              <AlertCircle className="h-5 w-5 text-[#D96B00] dark:text-amber-400" />
-              <span className="text-sm font-black text-slate-950 dark:text-white">Realism Advisory: {quizResult.realismCheck.headline}</span>
+          <div className="rounded-2xl border-2 border-amber-300 bg-[#FFFDF5] p-6 border-l-6 border-l-[#FF9933] shadow-xs">
+            <div className="flex items-center gap-2 text-xs font-bold uppercase text-amber-900">
+              <AlertCircle className="h-5 w-5 text-[#D96B00]" />
+              <span className="text-sm font-black text-slate-950">Realism Advisory: {quizResult.realismCheck.headline}</span>
             </div>
-            <p className="mt-3 text-sm text-slate-800 dark:text-slate-100 leading-relaxed font-medium">
+            <p className="mt-3 text-sm text-slate-800 leading-relaxed font-medium">
               {quizResult.realismCheck.description}
             </p>
-            <p className="mt-3 text-xs text-slate-700 dark:text-slate-300 font-semibold">
+            <p className="mt-3 text-xs text-slate-700 font-semibold">
               National Examination Benchmark: {quizResult.realismCheck.workloadReality}
             </p>
           </div>
 
           {/* Key Entrance Exams with Interactive Modals and Links */}
           {quizResult.primaryRecommendation.topExams && (
-            <div className="rounded-2xl border-2 border-slate-200 bg-white p-6 shadow-sm dark:border-slate-700 dark:bg-slate-900">
+            <div className="rounded-2xl border-2 border-slate-300 bg-[#EAEFF5] p-6 shadow-xs">
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-4">
                 <div className="flex items-center gap-2">
-                  <BookOpen className="h-5 w-5 text-[#0B2A4A] dark:text-blue-400" />
-                  <h3 className="text-xs font-bold uppercase tracking-wider text-[#0B2A4A] dark:text-white">
-                    National Entrance Examinations & Statutory Portals
+                  <BookOpen className="h-5 w-5 text-[#0B2A4A]" />
+                  <h3 className="text-xs font-bold uppercase tracking-wider text-[#0B2A4A]">
+                    National Entrance Examinations &amp; Statutory Portals
                   </h3>
                 </div>
-                <span className="text-xs font-bold text-slate-600 dark:text-slate-400">
-                  Click any exam badge to view official links & Wikipedia overview
+                <span className="text-xs font-bold text-slate-600">
+                  Click any exam badge to view official links &amp; Wikipedia overview
                 </span>
               </div>
               <div className="flex flex-wrap gap-2.5">
@@ -414,17 +414,17 @@ export default function Post12thQuizPage() {
 
           {/* Parallel & Cross-Stream Alternate Trajectories */}
           {quizResult.secondaryRecommendations && quizResult.secondaryRecommendations.length > 0 && (
-            <div className="rounded-2xl border-2 border-slate-200 bg-white p-6 shadow-sm dark:border-slate-700 dark:bg-slate-900">
+            <div className="rounded-2xl border-2 border-slate-300 bg-[#EAEFF5] p-6 shadow-xs">
               <div className="flex items-center justify-between mb-4">
                 <div>
-                  <span className="text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-400">
-                    Non-Linear Options & Parallel Degrees
+                  <span className="text-xs font-bold uppercase tracking-wider text-slate-600">
+                    Non-Linear Options &amp; Parallel Degrees
                   </span>
-                  <h3 className="text-lg font-black text-[#0B2A4A] dark:text-white mt-1">
+                  <h3 className="text-lg font-black text-[#0B2A4A] mt-1">
                     Alternative High-Trajectory Pathways
                   </h3>
                 </div>
-                <span className="rounded-md border border-amber-300 bg-[#FFF8EE] px-3 py-1 text-xs font-bold text-[#D96B00] dark:border-amber-800 dark:bg-amber-950 dark:text-amber-200">
+                <span className="rounded-lg border border-amber-300 bg-white px-3 py-1 text-xs font-bold text-[#D96B00] shadow-2xs">
                   Cross-Stream Viable
                 </span>
               </div>
@@ -433,13 +433,13 @@ export default function Post12thQuizPage() {
                 {quizResult.secondaryRecommendations.map((sec, idx) => (
                   <div
                     key={idx}
-                    className="rounded-xl border-2 border-slate-200 bg-[#F8F9FA] p-4.5 dark:border-slate-700 dark:bg-slate-800"
+                    className="rounded-xl border-2 border-slate-200 bg-white p-4.5 shadow-2xs"
                   >
                     <div className="flex items-center justify-between text-xs">
-                      <span className="font-bold text-[#0B2A4A] dark:text-white text-sm">{sec.title}</span>
-                      <span className="font-bold text-[#D96B00] dark:text-amber-400">{sec.matchPercentage}% Match</span>
+                      <span className="font-bold text-[#0B2A4A] text-sm">{sec.title}</span>
+                      <span className="font-bold text-[#D96B00]">{sec.matchPercentage}% Match</span>
                     </div>
-                    <p className="text-xs text-slate-700 dark:text-slate-200 mt-2 leading-relaxed font-medium">
+                    <p className="text-xs text-slate-700 mt-2 leading-relaxed font-medium">
                       {sec.whyItFits}
                     </p>
                   </div>
@@ -449,14 +449,14 @@ export default function Post12thQuizPage() {
           )}
 
           {/* Action Plan */}
-          <div className="rounded-2xl border-2 border-slate-200 bg-white p-6 shadow-sm dark:border-slate-700 dark:bg-slate-900">
-            <h3 className="text-sm font-bold text-[#0B2A4A] dark:text-white mb-4">
+          <div className="rounded-2xl border-2 border-slate-300 bg-[#EAEFF5] p-6 shadow-xs">
+            <h3 className="text-sm font-bold text-[#0B2A4A] mb-4">
               Strategic Admission Milestones
             </h3>
             <div className="flex flex-col gap-3">
               {quizResult.primaryRecommendation.actionPlan.map((action, idx) => (
-                <div key={idx} className="flex items-start gap-3 rounded-xl bg-[#F8F9FA] p-3.5 text-xs sm:text-sm font-medium text-slate-800 dark:bg-slate-800 dark:text-slate-200 border border-slate-200 dark:border-slate-700">
-                  <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-lg bg-[#0B2A4A] text-xs font-bold text-white dark:bg-blue-600">
+                <div key={idx} className="flex items-start gap-3 rounded-xl bg-white p-3.5 text-xs sm:text-sm font-medium text-slate-800 border border-slate-200 shadow-2xs">
+                  <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-lg bg-[#0B2A4A] text-xs font-bold text-white">
                     {idx + 1}
                   </span>
                   <span className="leading-relaxed">{action}</span>
@@ -466,23 +466,23 @@ export default function Post12thQuizPage() {
           </div>
 
           {/* Parent Discussion Dossier Card */}
-          <div className="rounded-2xl border-2 border-emerald-300 bg-emerald-50/70 p-6 dark:border-emerald-800 dark:bg-emerald-950/40 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+          <div className="rounded-2xl border-2 border-emerald-300 bg-emerald-50/70 p-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
             <div>
-              <div className="flex items-center gap-2 text-xs font-black uppercase tracking-wider text-emerald-800 dark:text-emerald-300">
+              <div className="flex items-center gap-2 text-xs font-black uppercase tracking-wider text-emerald-800">
                 <FileText className="h-4 w-4" />
-                <span>Family Alignment & Higher Ed Discussion</span>
+                <span>Family Alignment &amp; Higher Ed Discussion</span>
               </div>
-              <h3 className="text-base font-black text-slate-950 dark:text-white mt-1">
-                Share Degree & Career Strategy with Parents
+              <h3 className="text-base font-black text-slate-950 mt-1">
+                Share Degree &amp; Career Strategy with Parents
               </h3>
-              <p className="text-xs text-slate-700 dark:text-slate-300 mt-0.5 font-medium max-w-xl">
+              <p className="text-xs text-slate-700 mt-0.5 font-medium max-w-xl">
                 Includes printable 2-page academic roadmap, 5 data-backed conversation prompts on entrance exams vs degrees, and 1-click WhatsApp summary.
               </p>
             </div>
             <button
               type="button"
               onClick={() => setShowParentModal(true)}
-              className="flex items-center gap-2 rounded-xl bg-emerald-600 px-5 py-2.5 text-xs font-black text-white hover:bg-emerald-700 transition shadow-xs shrink-0 cursor-pointer"
+              className="flex items-center gap-2 rounded-xl bg-[#138808] px-5 py-2.5 text-xs font-black text-white hover:bg-emerald-700 transition shadow-xs shrink-0 cursor-pointer"
             >
               <Share2 className="h-3.5 w-3.5" />
               <span>Open Parent Dossier</span>
@@ -490,11 +490,11 @@ export default function Post12thQuizPage() {
           </div>
 
           {/* Action Links */}
-          <div className="flex flex-wrap items-center justify-between gap-4 pt-4 border-t-2 border-slate-200 dark:border-slate-700">
+          <div className="flex flex-wrap items-center justify-between gap-4 pt-4 border-t-2 border-slate-200">
             <button
               type="button"
               onClick={() => setQuizResult(null)}
-              className="flex items-center gap-2 rounded-xl border-2 border-slate-300 px-4 py-2.5 text-xs font-bold text-slate-800 hover:bg-slate-100 dark:border-slate-700 dark:text-slate-200 dark:hover:bg-slate-800 transition cursor-pointer"
+              className="flex items-center gap-2 rounded-xl border-2 border-slate-300 px-4 py-2.5 text-xs font-bold text-slate-800 hover:bg-slate-100 transition cursor-pointer"
             >
               <RotateCcw className="h-4 w-4" />
               Retake / Select Another Stream
@@ -503,13 +503,13 @@ export default function Post12thQuizPage() {
             <div className="flex items-center gap-3">
               <Link
                 href={`/careers?stream=${encodeURIComponent(quizResult.primaryRecommendation.title)}`}
-                className="rounded-xl border-2 border-slate-300 px-4 py-2.5 text-xs font-bold text-[#0B2A4A] hover:bg-slate-100 dark:border-slate-700 dark:text-white dark:hover:bg-slate-800"
+                className="rounded-xl border-2 border-slate-300 px-4 py-2.5 text-xs font-bold text-[#0B2A4A] hover:bg-slate-100"
               >
                 Explore {quizResult.primaryRecommendation.title} Careers →
               </Link>
               <Link
                 href="/colleges"
-                className="rounded-xl bg-[#0B2A4A] px-5 py-2.5 text-xs font-bold text-white hover:bg-[#071C33] border border-[#071C33] shadow-sm"
+                className="rounded-xl bg-[#0B2A4A] px-5 py-2.5 text-xs font-bold text-white hover:bg-[#153e6b] shadow-sm"
               >
                 View Accredited Institutions
               </Link>

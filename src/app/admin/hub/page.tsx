@@ -241,7 +241,7 @@ export default function AdminHubPage() {
             <Clock className="h-4 w-4" />
             <span>Pending Applications ({pendingCount})</span>
             {pendingCount > 0 && (
-              <span className="rounded-full bg-red-600 px-1.5 py-0.2 text-[10px] font-black text-white">
+              <span className="rounded-md bg-red-600 px-1.5 py-0.2 text-[10px] font-black text-white">
                 {pendingCount}
               </span>
             )}
@@ -290,15 +290,15 @@ export default function AdminHubPage() {
         <div
           className={`flex items-center justify-between gap-3 rounded-2xl p-4 text-xs sm:text-sm font-bold shadow-xs ${
             statusMessage.type === 'success'
-              ? 'bg-emerald-50 text-emerald-900 border border-emerald-300 dark:bg-emerald-950/60 dark:text-emerald-200 dark:border-emerald-800'
-              : 'bg-rose-50 text-rose-900 border border-rose-300 dark:bg-rose-950/60 dark:text-rose-200 dark:border-rose-800'
+              ? 'bg-emerald-50 text-emerald-900 border border-emerald-300'
+              : 'bg-rose-50 text-rose-900 border border-rose-300'
           }`}
         >
           <div className="flex items-center gap-2">
             {statusMessage.type === 'success' ? (
-              <CheckCircle2 className="h-5 w-5 text-emerald-600 dark:text-emerald-400 shrink-0" />
+              <CheckCircle2 className="h-5 w-5 text-emerald-600 shrink-0" />
             ) : (
-              <AlertCircle className="h-5 w-5 text-rose-600 dark:text-rose-400 shrink-0" />
+              <AlertCircle className="h-5 w-5 text-rose-600 shrink-0" />
             )}
             <span>{statusMessage.text}</span>
           </div>
@@ -313,22 +313,22 @@ export default function AdminHubPage() {
 
       {/* Main Content Area */}
       {activeTab !== 'SECURITY' ? (
-        <div className="rounded-3xl border-2 border-slate-200 bg-white p-6 sm:p-8 shadow-xs dark:border-slate-800 dark:bg-slate-900 flex flex-col gap-6">
+        <div className="rounded-3xl border-2 border-slate-200 bg-white p-6 sm:p-8 shadow-xs flex flex-col gap-6">
           {/* Filter Bar */}
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-200 pb-5 dark:border-slate-800">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-200 pb-5">
             <div>
-              <h2 className="text-xl font-black text-[#0B2A4A] dark:text-white flex items-center gap-2">
+              <h2 className="text-xl font-black text-[#0B2A4A] flex items-center gap-2">
                 <Briefcase className="h-5 w-5 text-emerald-600" />
                 <span>
                   {activeTab === 'PENDING' && 'Pending Application Audit Queue'}
                   {activeTab === 'VERIFIED' && 'Verified Mentorship Council'}
                   {activeTab === 'REJECTED' && 'Declined Advisor Applications'}
                 </span>
-                <span className="rounded-full bg-slate-100 dark:bg-slate-800 px-2.5 py-0.5 text-xs font-black text-slate-700 dark:text-slate-300">
+                <span className="rounded-md bg-slate-100 px-2.5 py-0.5 text-xs font-black text-slate-700">
                   {filteredAdvisors.length}
                 </span>
               </h2>
-              <p className="text-xs text-slate-600 dark:text-slate-400 mt-0.5 font-medium">
+              <p className="text-xs text-slate-600 mt-0.5 font-medium">
                 {activeTab === 'PENDING' && 'Review candidate experience, degree proof, and verify or decline their practice.'}
                 {activeTab === 'VERIFIED' && 'Advisors active on the public mentor roster eligible for student session booking.'}
                 {activeTab === 'REJECTED' && 'Candidates whose credentials were deemed fraudulent, unverifiable, or incomplete.'}
@@ -343,14 +343,14 @@ export default function AdminHubPage() {
                   placeholder="Search mentor or university..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="rounded-xl border border-slate-300 bg-slate-50 py-2 pl-9 pr-3 text-xs font-bold text-slate-900 focus:border-[#0B2A4A] focus:outline-none dark:border-slate-700 dark:bg-slate-800 dark:text-white"
+                  className="rounded-xl border border-slate-300 bg-slate-50 py-2 pl-9 pr-3 text-xs font-bold text-slate-900 focus:border-[#0B2A4A] focus:outline-none"
                 />
               </div>
 
               <select
                 value={domainFilter}
                 onChange={(e) => setDomainFilter(e.target.value)}
-                className="rounded-xl border border-slate-300 bg-slate-50 px-3 py-2 text-xs font-bold text-slate-900 focus:border-[#0B2A4A] focus:outline-none dark:border-slate-700 dark:bg-slate-800 dark:text-white"
+                className="rounded-xl border border-slate-300 bg-slate-50 px-3 py-2 text-xs font-bold text-slate-900 focus:border-[#0B2A4A] focus:outline-none"
               >
                 <option value="ALL">All Domains</option>
                 <option value="ENGINEERING">Engineering</option>
@@ -364,17 +364,17 @@ export default function AdminHubPage() {
 
           {/* Advisors List */}
           {loading ? (
-            <div className="py-20 text-center text-sm font-bold text-slate-700 dark:text-slate-300">
+            <div className="py-20 text-center text-sm font-bold text-slate-700">
               <span className="animate-spin inline-block h-6 w-6 border-3 border-blue-600 border-t-transparent rounded-full mb-3" />
               <p>Loading advisor applications...</p>
             </div>
           ) : filteredAdvisors.length === 0 ? (
-            <div className="rounded-2xl border-2 border-dashed border-slate-300 bg-slate-50 p-12 text-center dark:border-slate-700 dark:bg-slate-800/40">
+            <div className="rounded-2xl border-2 border-dashed border-slate-300 bg-slate-50 p-12 text-center">
               <Briefcase className="h-8 w-8 text-slate-400 mx-auto mb-2" />
-              <p className="text-sm font-bold text-slate-700 dark:text-slate-300">
+              <p className="text-sm font-bold text-slate-700">
                 No advisor applications match the selected criteria.
               </p>
-              <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
+              <p className="text-xs text-slate-500 mt-1">
                 {activeTab === 'PENDING'
                   ? 'All received applications have been audited. Great work!'
                   : 'Try changing search terms or domain filters.'}
@@ -388,31 +388,31 @@ export default function AdminHubPage() {
                 return (
                   <div
                     key={adv.id}
-                    className="rounded-2xl border-2 border-slate-200 bg-[#F8F9FA] p-6 text-xs sm:text-sm dark:border-slate-800 dark:bg-slate-800/60 shadow-xs"
+                    className="rounded-2xl border-2 border-slate-300 bg-[#EAEFF5] p-6 text-xs sm:text-sm shadow-xs"
                   >
                     {/* Header Details */}
-                    <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4 border-b border-slate-200 pb-4 dark:border-slate-700">
+                    <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4 border-b border-slate-200 pb-4">
                       <div>
                         <div className="flex items-center gap-3">
-                          <h3 className="text-lg font-black text-[#0B2A4A] dark:text-white">
+                          <h3 className="text-lg font-black text-[#0B2A4A]">
                             {adv.name}
                           </h3>
                           <span
                             className={`rounded-md px-2.5 py-0.5 text-xs font-black uppercase tracking-wider border ${
                               adv.verificationStatus === 'VERIFIED'
-                                ? 'bg-emerald-50 text-emerald-800 border-emerald-300 dark:bg-emerald-950/60 dark:text-emerald-300 dark:border-emerald-800'
+                                ? 'bg-emerald-50 text-emerald-800 border-emerald-300'
                                 : adv.verificationStatus === 'REJECTED'
-                                ? 'bg-red-50 text-red-800 border-red-300 dark:bg-red-950/60 dark:text-red-300 dark:border-red-800'
-                                : 'bg-amber-50 text-amber-800 border-amber-300 dark:bg-amber-950/60 dark:text-amber-300 dark:border-amber-800'
+                                ? 'bg-red-50 text-red-800 border-red-300'
+                                : 'bg-amber-50 text-amber-800 border-amber-300'
                             }`}
                           >
                             {adv.verificationStatus}
                           </span>
                         </div>
-                        <p className="text-xs sm:text-sm font-bold text-slate-700 dark:text-slate-300 mt-1">
+                        <p className="text-xs sm:text-sm font-bold text-slate-700 mt-1">
                           {adv.headline}
                         </p>
-                        <div className="flex flex-wrap gap-4 text-xs text-slate-600 dark:text-slate-300 mt-2.5">
+                        <div className="flex flex-wrap gap-4 text-xs text-slate-600 mt-2.5">
                           <span className="flex items-center gap-1">
                             <Mail className="h-3.5 w-3.5 text-slate-400" />
                             <strong>{adv.email}</strong>
@@ -428,7 +428,7 @@ export default function AdminHubPage() {
                               href={sanitizeSafeUrl(adv.linkedinUrl)}
                               target="_blank"
                               rel="noreferrer"
-                              className="flex items-center gap-1 text-[#0B2A4A] dark:text-amber-400 font-bold hover:underline"
+                              className="flex items-center gap-1 text-[#0B2A4A] font-bold hover:underline"
                             >
                               <ExternalLink className="h-3.5 w-3.5" />
                               <span>LinkedIn Profile</span>
@@ -453,7 +453,7 @@ export default function AdminHubPage() {
                           <button
                             onClick={() => handleProfileDecision(adv.id, 'REJECT')}
                             disabled={isBusy}
-                            className="flex items-center gap-1.5 rounded-xl border border-red-300 bg-white hover:bg-red-100 px-4 py-2 text-xs font-black text-red-600 dark:bg-slate-900 dark:border-red-900 dark:hover:bg-red-950/50 dark:hover:text-red-300 disabled:opacity-50 transition cursor-pointer"
+                            className="flex items-center gap-1.5 rounded-xl border border-red-300 bg-white hover:bg-red-100 px-4 py-2 text-xs font-black text-red-600 disabled:opacity-50 transition cursor-pointer"
                           >
                             <XCircle className="h-4 w-4" />
                             <span>Reject Application</span>
@@ -464,31 +464,31 @@ export default function AdminHubPage() {
 
                     {/* Academic & Professional Grid */}
                     <div className="mt-4 grid grid-cols-2 sm:grid-cols-4 gap-3 text-xs">
-                      <div className="rounded-xl bg-white p-3 border border-slate-200 dark:bg-slate-900 dark:border-slate-700">
-                        <span className="text-slate-500 dark:text-slate-400 block text-[10px] uppercase font-bold">Experience</span>
-                        <strong className="text-slate-950 dark:text-white font-black text-sm">{adv.experienceYears} Years</strong>
+                      <div className="rounded-xl bg-white p-3 border border-slate-200">
+                        <span className="text-slate-500 block text-[10px] uppercase font-bold">Experience</span>
+                        <strong className="text-slate-950 font-black text-sm">{adv.experienceYears} Years</strong>
                       </div>
-                      <div className="rounded-xl bg-white p-3 border border-slate-200 dark:bg-slate-900 dark:border-slate-700">
-                        <span className="text-slate-500 dark:text-slate-400 block text-[10px] uppercase font-bold">Alma Mater</span>
-                        <strong className="text-slate-950 dark:text-white font-black text-sm truncate block">{adv.almaMater || 'Not set'}</strong>
+                      <div className="rounded-xl bg-white p-3 border border-slate-200">
+                        <span className="text-slate-500 block text-[10px] uppercase font-bold">Alma Mater</span>
+                        <strong className="text-slate-950 font-black text-sm truncate block">{adv.almaMater || 'Not set'}</strong>
                       </div>
-                      <div className="rounded-xl bg-white p-3 border border-slate-200 dark:bg-slate-900 dark:border-slate-700">
-                        <span className="text-slate-500 dark:text-slate-400 block text-[10px] uppercase font-bold">Highest Degree</span>
-                        <strong className="text-slate-950 dark:text-white font-black text-sm truncate block">{adv.highestEducation || 'Degree'}</strong>
+                      <div className="rounded-xl bg-white p-3 border border-slate-200">
+                        <span className="text-slate-500 block text-[10px] uppercase font-bold">Highest Degree</span>
+                        <strong className="text-slate-950 font-black text-sm truncate block">{adv.highestEducation || 'Degree'}</strong>
                       </div>
-                      <div className="rounded-xl bg-white p-3 border border-slate-200 dark:bg-slate-900 dark:border-slate-700">
-                        <span className="text-slate-500 dark:text-slate-400 block text-[10px] uppercase font-bold">Fee / Session</span>
-                        <strong className="text-emerald-700 dark:text-emerald-400 font-black text-sm">₹{adv.feePerSessionINR}</strong>
+                      <div className="rounded-xl bg-white p-3 border border-slate-200">
+                        <span className="text-slate-500 block text-[10px] uppercase font-bold">Fee / Session</span>
+                        <strong className="text-emerald-700 font-black text-sm">₹{adv.feePerSessionINR}</strong>
                       </div>
                     </div>
 
                     {/* Bio Quote */}
                     {adv.bio && (
-                      <div className="mt-4 rounded-xl bg-white p-3.5 border border-slate-200 dark:bg-slate-900 dark:border-slate-700">
-                        <span className="text-[10px] uppercase font-black tracking-wider text-slate-500 dark:text-slate-400 block mb-1">
+                      <div className="mt-4 rounded-xl bg-white p-3.5 border border-slate-200">
+                        <span className="text-[10px] uppercase font-black tracking-wider text-slate-500 block mb-1">
                           Counseling Philosophy & Bio:
                         </span>
-                        <p className="text-xs text-slate-800 dark:text-slate-200 leading-relaxed font-normal italic">
+                        <p className="text-xs text-slate-800 leading-relaxed font-normal italic">
                           &ldquo;{adv.bio}&rdquo;
                         </p>
                       </div>
@@ -496,7 +496,7 @@ export default function AdminHubPage() {
 
                     {/* Domain Verifications Sub-List */}
                     <div className="mt-4 flex flex-col gap-2.5">
-                      <span className="text-xs font-black uppercase tracking-wider text-[#0B2A4A] dark:text-amber-400">
+                      <span className="text-xs font-black uppercase tracking-wider text-[#0B2A4A]">
                         Submitted Domain Competencies & Verifiable Credentials:
                       </span>
                       <div className="flex flex-col gap-2">
@@ -507,27 +507,27 @@ export default function AdminHubPage() {
                           return (
                             <div
                               key={v.domain}
-                              className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 rounded-xl border border-slate-200 bg-white p-3.5 dark:border-slate-700 dark:bg-slate-900"
+                              className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 rounded-xl border border-slate-200 bg-white p-3.5"
                             >
                               <div className="flex flex-col gap-1">
                                 <div className="flex items-center gap-2">
-                                  <span className="font-extrabold text-slate-950 dark:text-white text-xs sm:text-sm">
+                                  <span className="font-extrabold text-slate-950 text-xs sm:text-sm">
                                     {v.domain} Guidance
                                   </span>
                                   <span
                                     className={`rounded-md px-2 py-0.5 text-[10px] font-black border ${
                                       v.status === 'VERIFIED'
-                                        ? 'bg-emerald-50 text-emerald-800 border-emerald-300 dark:bg-emerald-950/50 dark:text-emerald-300'
+                                        ? 'bg-emerald-50 text-emerald-800 border-emerald-300'
                                         : v.status === 'REJECTED'
-                                        ? 'bg-red-50 text-red-800 border-red-300 dark:bg-red-950/50 dark:text-red-300'
-                                        : 'bg-amber-50 text-amber-800 border-amber-300 dark:bg-amber-950/50 dark:text-amber-300'
+                                        ? 'bg-red-50 text-red-800 border-red-300'
+                                        : 'bg-amber-50 text-amber-800 border-amber-300'
                                     }`}
                                   >
                                     {v.status}
                                   </span>
                                 </div>
-                                <p className="text-xs text-slate-600 dark:text-slate-400 font-medium">
-                                  Proof / License: <strong className="text-slate-900 dark:text-white font-bold">{v.proofDescription || 'Standard application submission'}</strong>
+                                <p className="text-xs text-slate-600 font-medium">
+                                  Proof / License: <strong className="text-slate-900 font-bold">{v.proofDescription || 'Standard application submission'}</strong>
                                 </p>
                               </div>
 
@@ -546,7 +546,7 @@ export default function AdminHubPage() {
                                   <button
                                     onClick={() => handleDomainDecision(adv.id, v.domain, 'REJECTED')}
                                     disabled={isDomainBusy}
-                                    className="flex items-center gap-1 rounded-lg border border-red-300 bg-white hover:bg-red-100 px-3 py-1 text-xs font-bold text-red-600 dark:bg-slate-900 dark:border-red-900 dark:hover:bg-red-950/50 dark:hover:text-red-300 transition cursor-pointer disabled:opacity-50"
+                                    className="flex items-center gap-1 rounded-lg border border-red-300 bg-white hover:bg-red-100 px-3 py-1 text-xs font-bold text-red-600 transition cursor-pointer disabled:opacity-50"
                                   >
                                     <X className="h-3.5 w-3.5" />
                                     <span>Decline Domain</span>
@@ -566,36 +566,36 @@ export default function AdminHubPage() {
         </div>
       ) : (
         /* Security Governance Tab */
-        <div className="rounded-3xl border-2 border-slate-200 bg-white p-6 sm:p-8 shadow-xs dark:border-slate-800 dark:bg-slate-900 flex flex-col gap-6">
-          <h3 className="text-xl font-black text-[#0B2A4A] dark:text-white flex items-center gap-2">
+        <div className="rounded-3xl border-2 border-slate-200 bg-white p-6 sm:p-8 shadow-xs flex flex-col gap-6">
+          <h3 className="text-xl font-black text-[#0B2A4A] flex items-center gap-2">
             <Lock className="h-6 w-6 text-amber-500" />
             Platform Security Governance & Access Controls
           </h3>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <div className="rounded-2xl border border-emerald-300 bg-emerald-50/70 p-5 dark:border-emerald-800 dark:bg-emerald-950/40">
-              <div className="flex items-center gap-2 text-emerald-900 dark:text-emerald-300 font-bold text-sm">
+            <div className="rounded-2xl border border-emerald-300 bg-emerald-50/70 p-5">
+              <div className="flex items-center gap-2 text-emerald-900 font-bold text-sm">
                 <ShieldCheck className="h-5 w-5 text-emerald-600" />
                 <span>Dual-Factor Master Secret Guard</span>
               </div>
-              <p className="mt-2 text-xs text-slate-700 dark:text-slate-300 leading-relaxed font-medium">
+              <p className="mt-2 text-xs text-slate-700 leading-relaxed font-medium">
                 Admin portal access strictly enforces server-validated environment secret key verification before issuing JWT session tokens.
               </p>
-              <div className="mt-4 flex items-center gap-2 text-xs font-bold text-emerald-800 dark:text-emerald-300">
+              <div className="mt-4 flex items-center gap-2 text-xs font-bold text-emerald-800">
                 <span className="h-2.5 w-2.5 rounded-full bg-emerald-500 animate-ping" />
                 <span>Status: Fully Armed & Enforced</span>
               </div>
             </div>
 
-            <div className="rounded-2xl border border-blue-300 bg-blue-50/70 p-5 dark:border-blue-800 dark:bg-blue-950/40">
-              <div className="flex items-center gap-2 text-[#0B2A4A] dark:text-blue-300 font-bold text-sm">
+            <div className="rounded-2xl border border-blue-300 bg-blue-50/70 p-5">
+              <div className="flex items-center gap-2 text-[#0B2A4A] font-bold text-sm">
                 <Lock className="h-5 w-5 text-blue-600" />
                 <span>Zero Public Auto-Provisioning</span>
               </div>
-              <p className="mt-2 text-xs text-slate-700 dark:text-slate-300 leading-relaxed font-medium">
+              <p className="mt-2 text-xs text-slate-700 leading-relaxed font-medium">
                 Unregistered sign-ins via Google OAuth or credentials strictly reject nonexistent accounts with mandatory registration gates.
               </p>
-              <div className="mt-4 flex items-center gap-2 text-xs font-bold text-[#0B2A4A] dark:text-blue-300">
+              <div className="mt-4 flex items-center gap-2 text-xs font-bold text-[#0B2A4A]">
                 <span className="h-2.5 w-2.5 rounded-full bg-blue-500" />
                 <span>Status: Supabase Protected</span>
               </div>

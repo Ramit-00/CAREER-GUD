@@ -44,7 +44,7 @@ const INTELLIGENCE_TOOLS = [
     href: '/tools/stream-pivot',
     badge: 'NEP 2020 Flexibility',
     icon: Repeat,
-    color: 'purple',
+    color: 'blue',
   },
   {
     title: '"Drop Year" Statistical Reality & Risk Diagnostic',
@@ -77,18 +77,18 @@ const INTELLIGENCE_TOOLS = [
 
 export default function ToolsHubPage() {
   return (
-    <div className="min-h-screen bg-slate-50 py-12 dark:bg-slate-950">
+    <div className="min-h-screen bg-white py-12">
       <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
-        {/* Header */}
-        <div className="text-center max-w-3xl mx-auto mb-12">
-          <span className="inline-flex items-center gap-1.5 rounded-full border border-amber-200 bg-amber-50 px-3.5 py-1 text-xs font-bold text-amber-900 dark:border-amber-900/60 dark:bg-amber-950/40 dark:text-amber-300 mb-3">
-            <Sparkles className="h-3.5 w-3.5 text-amber-600 dark:text-amber-400" />
+        {/* Header Hero Container */}
+        <div className="rounded-3xl border-2 border-slate-300 bg-[#EAEFF5] p-6 sm:p-10 shadow-xs mb-10 text-center max-w-4xl mx-auto">
+          <span className="inline-flex items-center gap-1.5 rounded-lg border border-amber-300 bg-white px-3.5 py-1.5 text-xs font-bold text-[#D96B00] mb-3 shadow-2xs">
+            <Sparkles className="h-3.5 w-3.5 text-[#D96B00]" />
             Empirical Educational Intelligence
           </span>
-          <h1 className="text-3xl sm:text-5xl font-black text-slate-900 dark:text-white tracking-tight">
+          <h1 className="text-3xl sm:text-5xl font-black text-[#0B2A4A] tracking-tight">
             Academic Intelligence &amp; Calculation Suite
           </h1>
-          <p className="mt-4 text-sm sm:text-base font-medium text-slate-600 dark:text-slate-300 leading-relaxed">
+          <p className="mt-4 text-sm sm:text-base font-medium text-slate-700 leading-relaxed max-w-2xl mx-auto">
             Data-backed calculators, psychometric diagnostics, and regulatory simulators engineered specifically for Indian high school &amp; college students, parents, and mentors.
           </p>
         </div>
@@ -101,27 +101,27 @@ export default function ToolsHubPage() {
               <Link
                 key={tool.href}
                 href={tool.href}
-                className="group relative rounded-2xl border border-slate-200 bg-white p-6 sm:p-8 shadow-sm transition hover:shadow-md hover:border-slate-300 dark:border-slate-800 dark:bg-slate-900 dark:hover:border-slate-700 flex flex-col justify-between"
+                className="group relative rounded-2xl border-2 border-slate-300 bg-[#EAEFF5] p-6 sm:p-8 shadow-xs transition-all hover:shadow-md hover:bg-white hover:border-[#0B2A4A] flex flex-col justify-between"
               >
                 <div>
                   <div className="flex items-center justify-between mb-4">
-                    <span className="rounded-full bg-slate-100 p-3 text-slate-800 dark:bg-slate-800 dark:text-amber-400 group-hover:scale-105 transition">
-                      <Icon className="h-6 w-6" />
+                    <span className="rounded-xl bg-white p-3 text-[#0B2A4A] border border-slate-200 shadow-2xs group-hover:scale-105 group-hover:border-[#0B2A4A] transition">
+                      <Icon className="h-6 w-6 text-[#0B2A4A]" />
                     </span>
-                    <span className="rounded-md bg-slate-100 px-2.5 py-1 text-[11px] font-bold text-slate-700 dark:bg-slate-800 dark:text-slate-300">
+                    <span className="rounded-lg bg-white border border-slate-300 px-3 py-1 text-[11px] font-bold text-slate-800 shadow-2xs">
                       {tool.badge}
                     </span>
                   </div>
 
-                  <h2 className="text-lg sm:text-xl font-black text-slate-900 dark:text-white group-hover:text-[#0B2A4A] dark:group-hover:text-amber-400 transition">
+                  <h2 className="text-lg sm:text-xl font-black text-slate-900 group-hover:text-[#0B2A4A] transition">
                     {tool.title}
                   </h2>
-                  <p className="mt-2.5 text-xs sm:text-sm font-medium text-slate-600 dark:text-slate-300 leading-relaxed">
+                  <p className="mt-2.5 text-xs sm:text-sm font-medium text-slate-700 leading-relaxed">
                     {tool.description}
                   </p>
                 </div>
 
-                <div className="mt-6 pt-4 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between text-xs font-bold text-[#0B2A4A] dark:text-amber-400">
+                <div className="mt-6 pt-4 border-t-2 border-slate-200 flex items-center justify-between text-xs font-bold text-[#0B2A4A] group-hover:text-[#D96B00]">
                   <span>Launch Tool</span>
                   <ArrowRight className="h-4 w-4 transform group-hover:translate-x-1 transition" />
                 </div>

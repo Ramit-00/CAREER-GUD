@@ -75,11 +75,11 @@ export function ChatWidget() {
 
     try {
       const safeHistory = [...messages, userMessage]
-        .filter((m) => m.id !== 'welcome_1' && !m.id.startsWith('bot_err_') && m.content.trim().length > 0)
-        .slice(-15)
+        .filter((m) => m.id !== 'welcome_1' && m.id !== 'init_msg' && !m.id.startsWith('bot_err_') && m.content.trim().length > 0)
+        .slice(-20)
         .map((m) => ({
           role: m.role,
-          content: m.content.slice(0, 5000),
+          content: m.content.slice(0, 8000),
         }));
 
       const res = await fetch('/api/chat', {
@@ -105,7 +105,7 @@ export function ChatWidget() {
       };
 
       setMessages((prev) => [...prev, botMessage]);
-    } catch (err) {
+    } catch (err: any) {
       console.error('Chat error:', err);
       setMessages((prev) => [
         ...prev,
@@ -113,7 +113,9 @@ export function ChatWidget() {
           id: `bot_err_${Date.now()}`,
           role: 'assistant',
           content:
-            "I ran into a temporary hiccup connecting to the counselor service. Feel free to browse our [Careers Directory](/careers) or [Stream Quizzes](/quiz/post-10th) while I reconnect!",
+            err?.message && !err.message.includes('status')
+              ? `Note: ${err.message}. Please feel free to try again or browse our [Careers Directory](/careers).`
+              : "I ran into a temporary hiccup connecting to the counselor service. Feel free to browse our [Careers Directory](/careers) or [Stream Quizzes](/quiz/post-10th) while I reconnect!",
           timestamp: new Date().toISOString(),
         },
       ]);
@@ -137,21 +139,21 @@ export function ChatWidget() {
 
       {/* Expanded chat dialog */}
       {isOpen && (
-        <div className="flex h-[560px] w-[360px] sm:w-[420px] flex-col rounded-2xl border-2 border-slate-300 bg-white shadow-2xl dark:border-slate-700 dark:bg-slate-900 animate-in fade-in slide-in-from-bottom-3">
+        <div className="flex h-[560px] w-[360px] sm:w-[420px] flex-col rounded-2xl border-2 border-slate-300 bg-white shadow-2xl animate-in fade-in slide-in-from-bottom-3">
           {/* Header */}
-          <div className="flex items-center justify-between border-b-2 border-slate-200 bg-[#F8F9FA] px-4 py-3 rounded-t-2xl dark:border-slate-800 dark:bg-slate-900">
+          <div className="flex items-center justify-between border-b-2 border-slate-200 bg-slate-100 px-4 py-3 rounded-t-2xl">
             <div className="flex items-center gap-2.5">
               <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-[#0B2A4A] text-white shadow-xs">
                 <Compass className="h-4 w-4 text-amber-400" />
               </div>
               <div>
-                <h3 className="text-xs sm:text-sm font-black text-[#0B2A4A] dark:text-white flex items-center gap-1.5">
+                <h3 className="text-xs sm:text-sm font-black text-[#0B2A4A] flex items-center gap-1.5">
                   Academic Counseling
-                  <span className="rounded-md border border-amber-300 bg-[#FFF8EE] px-1.5 py-0.5 text-[10px] font-black text-[#D96B00] dark:bg-blue-950 dark:text-blue-200">
+                  <span className="rounded-md border border-amber-300 bg-[#FFF8EE] px-1.5 py-0.5 text-[10px] font-black text-[#D96B00]">
                     NIRF Grounded
                   </span>
                 </h3>
-                <p className="text-[11px] text-slate-700 dark:text-slate-300 font-semibold">Grounded Secondary Intelligence</p>
+                <p className="text-[11px] text-slate-700 font-semibold">Grounded Secondary Intelligence</p>
               </div>
             </div>
 
@@ -159,14 +161,14 @@ export function ChatWidget() {
               <Link
                 href="/chat"
                 title="Open full page console"
-                className="rounded-lg p-1.5 text-slate-700 hover:bg-slate-200 dark:text-slate-300 dark:hover:bg-slate-800"
+                className="rounded-lg p-1.5 text-slate-700 hover:bg-slate-200"
               >
                 <Maximize2 className="h-4 w-4" />
               </Link>
               <button
                 onClick={() => setIsOpen(false)}
                 title="Close chat"
-                className="rounded-lg p-1.5 text-slate-700 hover:bg-slate-200 dark:text-slate-300 dark:hover:bg-slate-800"
+                className="rounded-lg p-1.5 text-slate-700 hover:bg-slate-200"
               >
                 <X className="h-4 w-4" />
               </button>
@@ -190,7 +192,7 @@ export function ChatWidget() {
                   className={`max-w-[85%] rounded-2xl px-4 py-3 ${
                     msg.role === 'user'
                       ? 'bg-[#0B2A4A] text-white rounded-br-none shadow-xs font-medium'
-                      : 'bg-[#F8F9FA] text-slate-950 border border-slate-200 rounded-bl-none dark:bg-slate-800 dark:border-slate-700 dark:text-slate-100 font-normal'
+                      : 'bg-slate-100 text-slate-950 border border-slate-200 rounded-bl-none font-normal'
                   }`}
                 >
                   <p className="whitespace-pre-wrap">{msg.content}</p>
@@ -199,16 +201,16 @@ export function ChatWidget() {
                 {/* Citations block */}
                 {msg.citations && msg.citations.length > 0 && (
                   <div className="mt-1.5 flex flex-col gap-1 max-w-[85%]">
-                    <span className="text-[10px] font-black uppercase tracking-wider text-slate-700 dark:text-slate-300">
+                    <span className="text-[10px] font-black uppercase tracking-wider text-slate-800">
                       Grounded References:
                     </span>
                     {msg.citations.map((c, idx) => (
                       <Link
                         key={idx}
                         href={sanitizeSafeUrl(c.link)}
-                        className="flex items-center justify-between gap-2 rounded-lg border-2 border-slate-200 bg-white p-2 text-xs hover:bg-slate-100 hover:border-slate-300 dark:border-slate-700 dark:bg-slate-800 dark:hover:bg-slate-700 transition shadow-xs"
+                        className="flex items-center justify-between gap-2 rounded-lg border-2 border-slate-200 bg-white p-2 text-xs hover:bg-slate-100 hover:border-slate-300 transition shadow-xs"
                       >
-                        <span className="font-bold text-[#0B2A4A] dark:text-blue-400 truncate">
+                        <span className="font-bold text-[#0B2A4A] truncate">
                           {c.title}
                         </span>
                         <ArrowUpRight className="h-3.5 w-3.5 text-[#D96B00] shrink-0" />
@@ -220,7 +222,7 @@ export function ChatWidget() {
             ))}
 
             {loading && (
-              <div className="flex items-center gap-2.5 rounded-xl bg-slate-100 border border-slate-200 px-3.5 py-2.5 text-slate-800 text-xs font-semibold dark:bg-slate-800 dark:border-slate-700 dark:text-slate-200">
+              <div className="flex items-center gap-2.5 rounded-xl bg-slate-100 border border-slate-200 px-3.5 py-2.5 text-slate-800 text-xs font-semibold">
                 <span className="animate-spin inline-block h-3.5 w-3.5 border-2 border-[#0B2A4A] border-t-transparent rounded-full" />
                 <span>Consulting verified regulatory datasets...</span>
               </div>
@@ -229,8 +231,8 @@ export function ChatWidget() {
 
           {/* Quick Prompts (visible if conversation is short) */}
           {messages.length <= 2 && (
-            <div className="border-t-2 border-slate-200 bg-slate-50 p-2.5 dark:border-slate-800 dark:bg-slate-900/60">
-              <span className="block px-1 text-[10px] font-black uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1">
+            <div className="border-t-2 border-slate-200 bg-slate-50 p-2.5">
+              <span className="block px-1 text-[10px] font-black uppercase tracking-wider text-slate-800 mb-1">
                 Suggested inquiries:
               </span>
               <div className="flex flex-col gap-1">
@@ -238,7 +240,7 @@ export function ChatWidget() {
                   <button
                     key={idx}
                     onClick={() => handleSendMessage(q)}
-                    className="text-left text-xs font-semibold text-slate-800 hover:text-[#0B2A4A] dark:text-slate-200 rounded p-1 hover:bg-slate-200/70 dark:hover:bg-slate-800 dark:hover:text-white transition truncate"
+                    className="text-left text-xs font-semibold text-slate-800 hover:text-[#0B2A4A] rounded p-1 hover:bg-slate-200 transition truncate"
                   >
                     • {q}
                   </button>
@@ -248,7 +250,7 @@ export function ChatWidget() {
           )}
 
           {/* Input Box */}
-          <div className="border-t-2 border-slate-200 p-3 dark:border-slate-800">
+          <div className="border-t-2 border-slate-200 p-3">
             <form
               onSubmit={(e) => {
                 e.preventDefault();
@@ -262,7 +264,7 @@ export function ChatWidget() {
                 onChange={(e) => setInputValue(e.target.value)}
                 maxLength={3000}
                 placeholder="Ask regarding streams, cutoffs, or programs..."
-                className="flex-1 rounded-xl border-2 border-slate-300 bg-white px-3.5 py-2 text-xs sm:text-sm font-medium text-slate-900 focus:border-[#0B2A4A] focus:outline-none dark:border-slate-700 dark:bg-slate-800 dark:text-white shadow-xs"
+                className="flex-1 rounded-xl border-2 border-slate-300 bg-white px-3.5 py-2 text-xs sm:text-sm font-medium text-slate-900 focus:border-[#0B2A4A] focus:outline-none shadow-xs"
               />
               <button
                 type="submit"

@@ -20,7 +20,17 @@ export async function POST(req: NextRequest) {
   try {
     const token = await getToken({ req, secret: getJwtSecret() });
     if (!token?.id) {
-      return NextResponse.json({ error: 'You must be logged in to book a session' }, { status: 401 });
+      return NextResponse.json(
+        { error: 'You must be signed in as a student to book a consultation session.' },
+        { status: 401 }
+      );
+    }
+
+    if (token.role !== 'STUDENT') {
+      return NextResponse.json(
+        { error: 'Consultation booking is exclusively reserved for student accounts. Advisor accounts cannot book consultations.' },
+        { status: 403 }
+      );
     }
 
     const raw = await req.json();

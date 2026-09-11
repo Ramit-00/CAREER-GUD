@@ -64,80 +64,82 @@ function AdminPortalLoginForm() {
 
   return (
     <div className="mx-auto flex min-h-[85vh] max-w-lg flex-col justify-center px-4 py-12">
-      <div className="rounded-3xl border-2 border-amber-500/30 bg-[#071C33] p-8 sm:p-10 shadow-2xl text-white">
+      <div className="rounded-2xl border-2 border-slate-300 bg-white p-8 sm:p-10 shadow-xl text-slate-900">
         <div className="text-center">
-          <div className="inline-flex h-14 w-14 items-center justify-center rounded-2xl bg-amber-500/20 border border-amber-400/40 text-amber-400 shadow-md mb-3">
-            <ShieldCheck className="h-8 w-8 text-amber-400" />
+          <div className="inline-flex h-14 w-14 items-center justify-center rounded-xl bg-amber-50 border border-amber-300 text-amber-800 shadow-xs mb-3">
+            <ShieldCheck className="h-8 w-8 text-[#D96B00]" />
           </div>
-          <div className="inline-block px-3 py-1 rounded-full bg-red-950/80 border border-red-500/50 text-[11px] font-extrabold uppercase tracking-wider text-red-300 mb-2">
-            Restricted Security Gateway
+          <div>
+            <span className="inline-block px-3 py-1 rounded-md bg-red-50 border border-red-200 text-[11px] font-extrabold uppercase tracking-wider text-red-700 mb-2">
+              Restricted Security Gateway
+            </span>
           </div>
-          <h1 className="text-2xl sm:text-3xl font-black text-white tracking-tight">
+          <h1 className="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight">
             Administrator Security Portal
           </h1>
-          <p className="mt-1.5 text-xs sm:text-sm font-medium text-slate-300">
+          <p className="mt-1.5 text-xs sm:text-sm font-medium text-slate-600">
             Mandatory dual-factor authentication for CAREER-GUD governance and audit personnel
           </p>
         </div>
 
         {errorMessage && (
-          <div className="mt-6 flex items-center gap-2.5 rounded-2xl bg-red-950/90 border border-red-500/80 p-4 text-xs font-bold text-red-200">
-            <ShieldAlert className="h-5 w-5 shrink-0 text-red-400" />
+          <div className="mt-6 flex items-center gap-2.5 rounded-xl bg-red-50 border border-red-300 p-4 text-xs font-bold text-red-800">
+            <ShieldAlert className="h-5 w-5 shrink-0 text-red-600" />
             <span>{errorMessage}</span>
           </div>
         )}
 
         <form onSubmit={handleSubmit} className="mt-6 flex flex-col gap-4">
           <div>
-            <label className="block text-xs font-bold uppercase tracking-wider text-slate-300 mb-1.5">
+            <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1.5">
               Admin Email Address
             </label>
             <div className="relative">
-              <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
+              <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-500" />
               <input
                 type="email"
                 required
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="admin@example.com"
-                className="w-full rounded-xl border border-slate-700 bg-slate-900/90 py-3 pl-11 pr-3.5 text-xs sm:text-sm font-medium text-white focus:border-amber-400 focus:outline-none shadow-xs"
+                className="w-full rounded-xl border border-slate-300 bg-slate-50 py-3 pl-11 pr-3.5 text-xs sm:text-sm font-medium text-slate-900 placeholder:text-slate-400 focus:border-[#0B2A4A] focus:bg-white focus:outline-none shadow-xs"
               />
             </div>
           </div>
 
           <div>
-            <label className="block text-xs font-bold uppercase tracking-wider text-slate-300 mb-1.5">
+            <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1.5">
               Admin Password
             </label>
             <div className="relative">
-              <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
+              <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-500" />
               <input
                 type="password"
                 required
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder="••••••••"
-                className="w-full rounded-xl border border-slate-700 bg-slate-900/90 py-3 pl-11 pr-3.5 text-xs sm:text-sm font-medium text-white focus:border-amber-400 focus:outline-none shadow-xs"
+                className="w-full rounded-xl border border-slate-300 bg-slate-50 py-3 pl-11 pr-3.5 text-xs sm:text-sm font-medium text-slate-900 placeholder:text-slate-400 focus:border-[#0B2A4A] focus:bg-white focus:outline-none shadow-xs"
               />
             </div>
           </div>
 
           <div>
             <div className="flex items-center justify-between mb-1.5">
-              <label className="block text-xs font-bold uppercase tracking-wider text-amber-300">
+              <label className="block text-xs font-bold uppercase tracking-wider text-amber-900">
                 Master Admin Security Key
               </label>
-              <span className="text-[10px] text-slate-400">Environment Protected</span>
+              <span className="text-[10px] font-semibold text-slate-500">Environment Protected</span>
             </div>
             <div className="relative">
-              <KeyRound className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-amber-400" />
+              <KeyRound className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-[#D96B00]" />
               <input
                 type="password"
                 required
                 value={adminSecretKey}
                 onChange={(e) => setAdminSecretKey(e.target.value)}
                 placeholder="Enter ADMIN_SECRET_KEY"
-                className="w-full rounded-xl border border-amber-500/50 bg-slate-900/90 py-3 pl-11 pr-3.5 text-xs sm:text-sm font-medium text-white focus:border-amber-400 focus:outline-none shadow-xs"
+                className="w-full rounded-xl border border-amber-300 bg-amber-50/40 py-3 pl-11 pr-3.5 text-xs sm:text-sm font-medium text-slate-900 placeholder:text-slate-400 focus:border-[#D96B00] focus:bg-white focus:outline-none shadow-xs"
               />
             </div>
           </div>
@@ -145,17 +147,17 @@ function AdminPortalLoginForm() {
           <button
             type="submit"
             disabled={loading}
-            className="mt-3 flex w-full items-center justify-center gap-2 rounded-xl bg-amber-500 py-3.5 text-xs sm:text-sm font-extrabold text-slate-950 shadow-lg hover:bg-amber-400 disabled:opacity-50 transition cursor-pointer"
+            className="mt-3 flex w-full items-center justify-center gap-2 rounded-xl bg-[#0B2A4A] py-3.5 text-xs sm:text-sm font-extrabold text-white shadow-md hover:bg-[#153e6b] disabled:opacity-50 transition cursor-pointer"
           >
             {loading ? 'Verifying Security Credentials...' : 'Authenticate as Administrator'}
-            <ArrowRight className="h-4 w-4 text-slate-950" />
+            <ArrowRight className="h-4 w-4 text-white" />
           </button>
         </form>
 
-        <div className="mt-6 pt-4 border-t border-slate-800 text-center">
+        <div className="mt-6 pt-4 border-t border-slate-200 text-center">
           <Link
             href="/login"
-            className="text-xs font-medium text-slate-400 hover:text-white transition underline"
+            className="text-xs font-semibold text-slate-600 hover:text-slate-900 transition underline"
           >
             Return to Public Sign In
           </Link>

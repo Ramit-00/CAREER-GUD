@@ -28,8 +28,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className="min-h-full antialiased">
-      <body className="min-h-full flex flex-col bg-slate-50 text-slate-900 dark:bg-slate-950 dark:text-slate-50">
+    <html lang="en" className="min-h-full antialiased light" style={{ colorScheme: 'light' }}>
+      <body className="min-h-full flex flex-col bg-white text-slate-900">
         <AuthProvider>
           <Suspense fallback={null}>
             <ScrollToTop />

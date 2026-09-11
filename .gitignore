@@ -8,13 +8,10 @@
 !.yarn/releases
 !.yarn/versions
 
-# Environment files (CRITICAL SECURITY)
+# Environment files (CRITICAL SECURITY - NEVER COMMIT)
 .env
+.env.*
 .env*.local
-.env.development
-.env.test
-.env.production
-.env.staging
 !.env.example
 
 # Local SQLite / Databases

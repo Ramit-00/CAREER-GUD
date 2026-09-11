@@ -329,23 +329,23 @@ export default function StudentDashboardPage() {
       {/* Feedback banner */}
       {feedbackMsg && (
         <div
-          className={`flex items-center justify-between rounded-2xl p-4 text-xs sm:text-sm font-bold shadow-sm ${
+          className={`flex items-center justify-between rounded-2xl p-4 text-xs sm:text-sm font-bold shadow-xs ${
             feedbackMsg.type === 'success'
-              ? 'bg-emerald-50 border border-emerald-300 text-emerald-900 dark:bg-emerald-950 dark:border-emerald-800 dark:text-emerald-200'
-              : 'bg-red-50 border border-red-300 text-red-900 dark:bg-red-950 dark:border-red-800 dark:text-red-200'
+              ? 'bg-emerald-50 border border-emerald-300 text-emerald-900'
+              : 'bg-red-50 border border-red-300 text-red-900'
           }`}
         >
           <div className="flex items-center gap-2">
             {feedbackMsg.type === 'success' ? (
-              <CheckCircle2 className="h-5 w-5 text-emerald-600 dark:text-emerald-400" />
+              <CheckCircle2 className="h-5 w-5 text-emerald-600" />
             ) : (
-              <AlertCircle className="h-5 w-5 text-red-600 dark:text-red-400" />
+              <AlertCircle className="h-5 w-5 text-red-600" />
             )}
             <span>{feedbackMsg.text}</span>
           </div>
           <button
             onClick={() => setFeedbackMsg(null)}
-            className="text-slate-500 hover:text-slate-800 dark:text-slate-400"
+            className="text-slate-500 hover:text-slate-800"
           >
             <X className="h-4 w-4" />
           </button>
@@ -353,22 +353,22 @@ export default function StudentDashboardPage() {
       )}
 
       {/* Header Profile Card */}
-      <div className="rounded-3xl border-2 border-slate-200 bg-white p-6 sm:p-8 shadow-sm dark:border-slate-800 dark:bg-slate-900">
+      <div className="rounded-3xl border border-slate-200 bg-white p-6 sm:p-8 shadow-xs">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-6">
           <div className="flex items-center gap-4 sm:gap-5">
-            <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-[#0B2A4A] text-amber-400 font-black text-2xl shadow-md shrink-0 border border-[#071C33]">
+            <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-[#0B2A4A] text-amber-400 font-black text-2xl shadow-xs shrink-0 border border-[#071C33]">
               {studentName?.[0]?.toUpperCase() || 'S'}
             </div>
             <div>
               <div className="flex flex-wrap items-center gap-2.5">
-                <h1 className="text-2xl sm:text-3xl font-black text-[#0B2A4A] dark:text-white tracking-tight">
+                <h1 className="text-2xl sm:text-3xl font-black text-[#0B2A4A] tracking-tight">
                   {studentName || 'Student'}
                 </h1>
-                <span className="rounded-full bg-blue-50 border border-blue-200 px-3 py-0.5 text-xs font-black text-[#0B2A4A] dark:bg-blue-950 dark:border-blue-800 dark:text-blue-200">
+                <span className="rounded-lg bg-blue-50 border border-blue-200 px-3 py-0.5 text-xs font-black text-[#0B2A4A]">
                   Student Account
                 </span>
               </div>
-              <p className="text-xs sm:text-sm font-semibold text-slate-500 dark:text-slate-400 mt-1">
+              <p className="text-xs sm:text-sm font-semibold text-slate-600 mt-1">
                 {studentEmail || session?.user?.email}
               </p>
             </div>
@@ -380,9 +380,9 @@ export default function StudentDashboardPage() {
                 setIsEditing(!isEditing);
                 if (!isEditing) populateForm(studentName, profile);
               }}
-              className="flex items-center gap-2 rounded-xl border-2 border-slate-300 bg-white px-4 py-2.5 text-xs font-black text-slate-800 hover:bg-slate-100 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100 dark:hover:bg-slate-700 transition cursor-pointer shadow-xs"
+              className="flex items-center gap-2 rounded-xl border border-slate-300 bg-white px-4 py-2.5 text-xs font-black text-slate-800 hover:bg-slate-100 transition cursor-pointer shadow-xs"
             >
-              <Edit3 className="h-4 w-4 text-[#0B2A4A] dark:text-amber-400" />
+              <Edit3 className="h-4 w-4 text-[#0B2A4A]" />
               <span>{isEditing ? 'Close Editor' : 'Edit Profile & Marks'}</span>
             </button>
             <Link
@@ -396,25 +396,25 @@ export default function StudentDashboardPage() {
 
         {/* Bio / About Me Quote */}
         {profile?.aboutMe ? (
-          <div className="mt-6 rounded-2xl border border-amber-200 bg-amber-50/50 p-4 dark:border-amber-900/50 dark:bg-amber-950/20">
-            <span className="text-[11px] font-black uppercase tracking-wider text-amber-800 dark:text-amber-300 block mb-1">
+          <div className="mt-6 rounded-2xl border border-amber-200 bg-amber-50/50 p-4">
+            <span className="text-[11px] font-black uppercase tracking-wider text-amber-900 block mb-1">
               About Me & Career Aspirations
             </span>
-            <p className="text-xs sm:text-sm text-slate-800 dark:text-slate-200 italic font-medium">
+            <p className="text-xs sm:text-sm text-slate-800 italic font-medium">
               &ldquo;{profile.aboutMe}&rdquo;
             </p>
           </div>
         ) : (
-          <div className="mt-6 rounded-2xl border border-dashed border-slate-300 p-3.5 text-center text-xs text-slate-500 dark:border-slate-700 dark:text-slate-400">
+          <div className="mt-6 rounded-2xl border border-dashed border-slate-300 p-3.5 text-center text-xs text-slate-500">
             No bio added yet. Click <strong>Edit Profile & Marks</strong> to describe your academic interests and goals.
           </div>
         )}
 
         {/* Incomplete Record Notice */}
         {hasIncompleteRecord && !isEditing && (
-          <div className="mt-5 flex items-center justify-between rounded-2xl border border-amber-300 bg-amber-50/70 p-4 text-xs font-bold text-amber-900 dark:border-amber-800 dark:bg-amber-950/40 dark:text-amber-200">
+          <div className="mt-5 flex items-center justify-between rounded-2xl border border-amber-300 bg-amber-50/70 p-4 text-xs font-bold text-amber-900">
             <div className="flex items-center gap-2">
-              <AlertCircle className="h-4 w-4 shrink-0 text-amber-600 dark:text-amber-400" />
+              <AlertCircle className="h-4 w-4 shrink-0 text-amber-600" />
               <span>Your academic signals are not fully specified yet. Fill your 10th/12th percentages to receive accurate career matches.</span>
             </div>
             <button
@@ -430,20 +430,20 @@ export default function StudentDashboardPage() {
         {isEditing && (
           <form
             onSubmit={handleSaveProfile}
-            className="mt-6 border-t-2 border-slate-200 dark:border-slate-800 pt-6 flex flex-col gap-5 text-sm animate-in fade-in duration-200"
+            className="mt-6 border-t border-slate-200 pt-6 flex flex-col gap-5 text-sm animate-in fade-in duration-200"
           >
             <div className="flex items-center justify-between">
-              <h3 className="text-base font-black text-[#0B2A4A] dark:text-white flex items-center gap-2">
+              <h3 className="text-base font-black text-[#0B2A4A] flex items-center gap-2">
                 <Edit3 className="h-4 w-4 text-[#D96B00]" />
                 Update Student Information & Academic Marks
               </h3>
-              <span className="text-xs text-slate-500 dark:text-slate-400">Persisted securely in Supabase</span>
+              <span className="text-xs text-slate-600">Persisted securely in Supabase</span>
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               {/* Full Name */}
               <div>
-                <label className="block text-xs font-black uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1">
+                <label className="block text-xs font-black uppercase tracking-wider text-slate-700 mb-1">
                   Full Name
                 </label>
                 <input
@@ -452,19 +452,19 @@ export default function StudentDashboardPage() {
                   value={formName}
                   onChange={(e) => setFormName(e.target.value)}
                   placeholder="Your Name"
-                  className="w-full rounded-xl border border-slate-300 bg-slate-50 p-2.5 text-xs font-bold text-slate-900 focus:border-[#0B2A4A] focus:outline-none dark:border-slate-700 dark:bg-slate-800 dark:text-white"
+                  className="w-full rounded-xl border border-slate-300 bg-slate-50 p-2.5 text-xs font-bold text-slate-900 focus:border-[#0B2A4A] focus:outline-none"
                 />
               </div>
 
               {/* Education Board */}
               <div>
-                <label className="block text-xs font-black uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1">
+                <label className="block text-xs font-black uppercase tracking-wider text-slate-700 mb-1">
                   School Board
                 </label>
                 <select
                   value={formBoard}
                   onChange={(e) => setFormBoard(e.target.value)}
-                  className="w-full rounded-xl border border-slate-300 bg-slate-50 p-2.5 text-xs font-bold text-slate-900 focus:border-[#0B2A4A] focus:outline-none dark:border-slate-700 dark:bg-slate-800 dark:text-white"
+                  className="w-full rounded-xl border border-slate-300 bg-slate-50 p-2.5 text-xs font-bold text-slate-900 focus:border-[#0B2A4A] focus:outline-none"
                 >
                   <option value="">-- Select Board --</option>
                   <option value="CBSE">CBSE (Central Board of Secondary Education)</option>
@@ -478,13 +478,13 @@ export default function StudentDashboardPage() {
 
               {/* Current Class */}
               <div>
-                <label className="block text-xs font-black uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1">
+                <label className="block text-xs font-black uppercase tracking-wider text-slate-700 mb-1">
                   Current Class / Grade
                 </label>
                 <select
                   value={formClass}
                   onChange={(e) => setFormClass(e.target.value)}
-                  className="w-full rounded-xl border border-slate-300 bg-slate-50 p-2.5 text-xs font-bold text-slate-900 focus:border-[#0B2A4A] focus:outline-none dark:border-slate-700 dark:bg-slate-800 dark:text-white"
+                  className="w-full rounded-xl border border-slate-300 bg-slate-50 p-2.5 text-xs font-bold text-slate-900 focus:border-[#0B2A4A] focus:outline-none"
                 >
                   <option value="">-- Not specified --</option>
                   <option value="CLASS_9">Class 9</option>
@@ -498,13 +498,13 @@ export default function StudentDashboardPage() {
 
               {/* Stream */}
               <div>
-                <label className="block text-xs font-black uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1">
+                <label className="block text-xs font-black uppercase tracking-wider text-slate-700 mb-1">
                   Current Stream (If 11th / 12th)
                 </label>
                 <select
                   value={formStream}
                   onChange={(e) => setFormStream(e.target.value)}
-                  className="w-full rounded-xl border border-slate-300 bg-slate-50 p-2.5 text-xs font-bold text-slate-900 focus:border-[#0B2A4A] focus:outline-none dark:border-slate-700 dark:bg-slate-800 dark:text-white"
+                  className="w-full rounded-xl border border-slate-300 bg-slate-50 p-2.5 text-xs font-bold text-slate-900 focus:border-[#0B2A4A] focus:outline-none"
                 >
                   <option value="">-- Not decided / Not applicable --</option>
                   <option value="SCIENCE_PCM">Science (Physics, Chemistry, Maths)</option>
@@ -519,7 +519,7 @@ export default function StudentDashboardPage() {
 
               {/* 10th Percentage */}
               <div>
-                <label className="block text-xs font-black uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1">
+                <label className="block text-xs font-black uppercase tracking-wider text-slate-700 mb-1">
                   10th Board Percentage (%)
                 </label>
                 <input
@@ -530,13 +530,13 @@ export default function StudentDashboardPage() {
                   value={formTenth}
                   onChange={(e) => setFormTenth(e.target.value)}
                   placeholder="e.g. 88.5"
-                  className="w-full rounded-xl border border-slate-300 bg-slate-50 p-2.5 text-xs font-bold text-slate-900 focus:border-[#0B2A4A] focus:outline-none dark:border-slate-700 dark:bg-slate-800 dark:text-white"
+                  className="w-full rounded-xl border border-slate-300 bg-slate-50 p-2.5 text-xs font-bold text-slate-900 focus:border-[#0B2A4A] focus:outline-none"
                 />
               </div>
 
               {/* 12th Percentage */}
               <div>
-                <label className="block text-xs font-black uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1">
+                <label className="block text-xs font-black uppercase tracking-wider text-slate-700 mb-1">
                   12th Board Percentage (%) (If completed)
                 </label>
                 <input
@@ -547,13 +547,13 @@ export default function StudentDashboardPage() {
                   value={formTwelfth}
                   onChange={(e) => setFormTwelfth(e.target.value)}
                   placeholder="e.g. 91.2 (or leave empty)"
-                  className="w-full rounded-xl border border-slate-300 bg-slate-50 p-2.5 text-xs font-bold text-slate-900 focus:border-[#0B2A4A] focus:outline-none dark:border-slate-700 dark:bg-slate-800 dark:text-white"
+                  className="w-full rounded-xl border border-slate-300 bg-slate-50 p-2.5 text-xs font-bold text-slate-900 focus:border-[#0B2A4A] focus:outline-none"
                 />
               </div>
 
               {/* Previous Class Percentage */}
               <div>
-                <label className="block text-xs font-black uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1">
+                <label className="block text-xs font-black uppercase tracking-wider text-slate-700 mb-1">
                   Previous Academic Year Score (%)
                 </label>
                 <input
@@ -564,13 +564,13 @@ export default function StudentDashboardPage() {
                   value={formPrevClass}
                   onChange={(e) => setFormPrevClass(e.target.value)}
                   placeholder="e.g. 85.0"
-                  className="w-full rounded-xl border border-slate-300 bg-slate-50 p-2.5 text-xs font-bold text-slate-900 focus:border-[#0B2A4A] focus:outline-none dark:border-slate-700 dark:bg-slate-800 dark:text-white"
+                  className="w-full rounded-xl border border-slate-300 bg-slate-50 p-2.5 text-xs font-bold text-slate-900 focus:border-[#0B2A4A] focus:outline-none"
                 />
               </div>
 
               {/* Interests */}
               <div>
-                <label className="block text-xs font-black uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1">
+                <label className="block text-xs font-black uppercase tracking-wider text-slate-700 mb-1">
                   Key Interests (comma-separated)
                 </label>
                 <input
@@ -578,14 +578,14 @@ export default function StudentDashboardPage() {
                   value={formInterests}
                   onChange={(e) => setFormInterests(e.target.value)}
                   placeholder="AI, Robotics, Economics, Space, Law"
-                  className="w-full rounded-xl border border-slate-300 bg-slate-50 p-2.5 text-xs font-bold text-slate-900 focus:border-[#0B2A4A] focus:outline-none dark:border-slate-700 dark:bg-slate-800 dark:text-white"
+                  className="w-full rounded-xl border border-slate-300 bg-slate-50 p-2.5 text-xs font-bold text-slate-900 focus:border-[#0B2A4A] focus:outline-none"
                 />
               </div>
             </div>
 
             {/* About Me */}
             <div>
-              <label className="block text-xs font-black uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1">
+              <label className="block text-xs font-black uppercase tracking-wider text-slate-700 mb-1">
                 About Me (Tell mentors and counselors about your ambitions)
               </label>
               <textarea
@@ -593,7 +593,7 @@ export default function StudentDashboardPage() {
                 value={formAboutMe}
                 onChange={(e) => setFormAboutMe(e.target.value)}
                 placeholder="Write a brief statement about your interests, dreams, favorite subjects, or career questions..."
-                className="w-full rounded-xl border border-slate-300 bg-slate-50 p-2.5 text-xs font-medium text-slate-900 focus:border-[#0B2A4A] focus:outline-none dark:border-slate-700 dark:bg-slate-800 dark:text-white"
+                className="w-full rounded-xl border border-slate-300 bg-slate-50 p-2.5 text-xs font-medium text-slate-900 focus:border-[#0B2A4A] focus:outline-none"
               />
             </div>
 
@@ -609,7 +609,7 @@ export default function StudentDashboardPage() {
               <button
                 type="button"
                 onClick={() => setIsEditing(false)}
-                className="rounded-xl border border-slate-300 bg-white px-5 py-2.5 text-xs font-bold text-slate-700 hover:bg-slate-100 hover:text-slate-950 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200 dark:hover:bg-slate-700 dark:hover:text-white transition-colors cursor-pointer"
+                className="rounded-xl border border-slate-300 bg-white px-5 py-2.5 text-xs font-bold text-slate-700 hover:bg-slate-100 hover:text-slate-950 transition-colors cursor-pointer"
               >
                 Cancel
               </button>
@@ -618,40 +618,40 @@ export default function StudentDashboardPage() {
         )}
 
         {/* Academic Signals Summary Grid */}
-        <div className="mt-8 grid grid-cols-2 sm:grid-cols-4 gap-4 border-t-2 border-slate-200 dark:border-slate-800 pt-6">
-          <div className="rounded-2xl border-2 border-slate-200 bg-[#F8F9FA] p-4 dark:border-slate-800 dark:bg-slate-800/40">
-            <span className="text-[11px] uppercase tracking-wider font-black text-slate-600 dark:text-slate-400 block">Class Level</span>
-            <span className="font-black text-slate-950 dark:text-white text-base mt-1 block">
+        <div className="mt-8 grid grid-cols-2 sm:grid-cols-4 gap-4 border-t border-slate-200 pt-6">
+          <div className="rounded-2xl border-2 border-slate-300 bg-[#EAEFF5] p-4">
+            <span className="text-[11px] uppercase tracking-wider font-black text-slate-600 block">Class Level</span>
+            <span className="font-black text-slate-950 text-base mt-1 block">
               {formatClass(profile?.currentClass)}
             </span>
           </div>
 
-          <div className="rounded-2xl border-2 border-slate-200 bg-[#F8F9FA] p-4 dark:border-slate-800 dark:bg-slate-800/40">
-            <span className="text-[11px] uppercase tracking-wider font-black text-slate-600 dark:text-slate-400 block">10th Percentage</span>
-            <span className="font-black text-[#0B2A4A] dark:text-blue-400 text-base mt-1 block">
+          <div className="rounded-2xl border-2 border-slate-300 bg-[#EAEFF5] p-4">
+            <span className="text-[11px] uppercase tracking-wider font-black text-slate-600 block">10th Percentage</span>
+            <span className="font-black text-[#0B2A4A] text-base mt-1 block">
               {profile?.tenthPercentage != null ? `${profile.tenthPercentage}%` : 'Not provided'}
             </span>
           </div>
 
-          <div className="rounded-2xl border-2 border-slate-200 bg-[#F8F9FA] p-4 dark:border-slate-800 dark:bg-slate-800/40">
-            <span className="text-[11px] uppercase tracking-wider font-black text-slate-600 dark:text-slate-400 block">12th Percentage</span>
-            <span className="font-black text-slate-950 dark:text-white text-base mt-1 block">
+          <div className="rounded-2xl border-2 border-slate-300 bg-[#EAEFF5] p-4">
+            <span className="text-[11px] uppercase tracking-wider font-black text-slate-600 block">12th Percentage</span>
+            <span className="font-black text-slate-950 text-base mt-1 block">
               {profile?.twelfthPercentage != null ? `${profile.twelfthPercentage}%` : 'Not provided'}
             </span>
           </div>
 
-          <div className="rounded-2xl border-2 border-slate-200 bg-[#F8F9FA] p-4 dark:border-slate-800 dark:bg-slate-800/40">
-            <span className="text-[11px] uppercase tracking-wider font-black text-slate-600 dark:text-slate-400 block">School Board</span>
-            <span className="font-black text-slate-950 dark:text-white text-base mt-1 block">
+          <div className="rounded-2xl border-2 border-slate-300 bg-[#EAEFF5] p-4">
+            <span className="text-[11px] uppercase tracking-wider font-black text-slate-600 block">School Board</span>
+            <span className="font-black text-slate-950 text-base mt-1 block">
               {profile?.board || 'Not specified'}
             </span>
           </div>
         </div>
 
         {profile?.currentStream && (
-          <div className="mt-3 flex items-center gap-2 text-xs font-bold text-slate-600 dark:text-slate-400">
+          <div className="mt-3 flex items-center gap-2 text-xs font-bold text-slate-600">
             <span>Enrolled Stream:</span>
-            <span className="rounded-lg bg-slate-100 px-2.5 py-0.5 font-extrabold text-[#0B2A4A] dark:bg-slate-800 dark:text-blue-300">
+            <span className="rounded-lg bg-slate-100 px-2.5 py-0.5 font-extrabold text-[#0B2A4A]">
               {formatStream(profile.currentStream)}
             </span>
           </div>
@@ -719,30 +719,30 @@ export default function StudentDashboardPage() {
         ];
 
         return (
-          <div className="rounded-3xl border-2 border-slate-200 bg-white p-6 sm:p-8 shadow-sm dark:border-slate-800 dark:bg-slate-900">
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b-2 border-slate-100 dark:border-slate-800">
+          <div className="rounded-3xl border-2 border-slate-200 bg-white p-6 sm:p-8 shadow-sm">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b-2 border-slate-100">
               <div>
                 <div className="flex items-center gap-2">
-                  <Compass className="h-5 w-5 text-[#0B2A4A] dark:text-amber-400" />
-                  <h2 className="text-xl font-black text-[#0B2A4A] dark:text-white">
+                  <Compass className="h-5 w-5 text-[#0B2A4A]" />
+                  <h2 className="text-xl font-black text-[#0B2A4A]">
                     Academic Milestone Tracker
                   </h2>
-                  <span className="rounded-full bg-amber-50 border border-amber-300 px-3 py-0.5 text-xs font-black text-[#D96B00] dark:bg-amber-950 dark:border-amber-800 dark:text-amber-300">
+                  <span className="rounded-md bg-amber-50 border border-amber-300 px-3 py-0.5 text-xs font-black text-[#D96B00]">
                     {completedCount}/4 Stages Achieved
                   </span>
                 </div>
-                <p className="text-xs sm:text-sm font-semibold text-slate-600 dark:text-slate-400 mt-1">
+                <p className="text-xs sm:text-sm font-semibold text-slate-600 mt-1">
                   Step-by-step roadmap from 10th standard diagnostic to college admission and mentor strategy.
                 </p>
               </div>
 
               {/* Progress gauge bar */}
               <div className="flex flex-col gap-1.5 min-w-[200px]">
-                <div className="flex justify-between text-xs font-black text-slate-800 dark:text-slate-200">
+                <div className="flex justify-between text-xs font-black text-slate-800">
                   <span>Journey Progress</span>
-                  <span className="text-[#0B2A4A] dark:text-amber-400">{progressPct}%</span>
+                  <span className="text-[#0B2A4A]">{progressPct}%</span>
                 </div>
-                <div className="h-2.5 w-full rounded-full bg-slate-100 dark:bg-slate-800 overflow-hidden border border-slate-200 dark:border-slate-700">
+                <div className="h-2.5 w-full rounded-full bg-slate-100 overflow-hidden border border-slate-200">
                   <div
                     className="h-full bg-gradient-to-r from-amber-500 to-[#0B2A4A] transition-all duration-500 rounded-full"
                     style={{ width: `${progressPct}%` }}
@@ -758,47 +758,47 @@ export default function StudentDashboardPage() {
                   key={m.step}
                   className={`flex flex-col justify-between rounded-2xl border-2 p-5 transition shadow-xs ${
                     m.isDone
-                      ? 'border-emerald-200 bg-emerald-50/40 dark:border-emerald-900/60 dark:bg-emerald-950/20'
-                      : 'border-slate-200 bg-[#F8F9FA] hover:border-slate-300 dark:border-slate-800 dark:bg-slate-800/40'
+                      ? 'border-emerald-200 bg-emerald-50/40'
+                      : 'border-slate-300 bg-[#EAEFF5] hover:border-[#0B2A4A]'
                   }`}
                 >
                   <div>
                     <div className="flex items-center justify-between gap-2 mb-3">
-                      <span className="flex h-7 w-7 items-center justify-center rounded-xl bg-[#0B2A4A] text-xs font-black text-white dark:bg-slate-800">
+                      <span className="flex h-7 w-7 items-center justify-center rounded-xl bg-[#0B2A4A] text-xs font-black text-white">
                         0{m.step}
                       </span>
                       <span
-                        className={`rounded-full px-2.5 py-0.5 text-[10px] font-black uppercase tracking-wider ${
+                        className={`rounded-md px-2.5 py-0.5 text-[10px] font-black uppercase tracking-wider ${
                           m.isDone
-                            ? 'bg-emerald-100 text-emerald-800 border border-emerald-300 dark:bg-emerald-950 dark:text-emerald-300 dark:border-emerald-800'
+                            ? 'bg-emerald-100 text-emerald-800 border border-emerald-300'
                             : m.badge === 'Recommended Next' || m.badge === 'Current Focus'
-                            ? 'bg-amber-100 text-amber-800 border border-amber-300 dark:bg-amber-950 dark:text-amber-300 dark:border-amber-800'
-                            : 'bg-slate-200 text-slate-700 dark:bg-slate-800 dark:text-slate-400'
+                            ? 'bg-amber-100 text-amber-800 border border-amber-300'
+                            : 'bg-slate-200 text-slate-700'
                         }`}
                       >
                         {m.badge}
                       </span>
                     </div>
 
-                    <h3 className="font-black text-slate-900 dark:text-white text-sm">
+                    <h3 className="font-black text-slate-900 text-sm">
                       {m.title}
                     </h3>
-                    <p className="text-[11px] font-bold text-[#D96B00] dark:text-amber-400 mt-0.5">
+                    <p className="text-[11px] font-bold text-[#D96B00] mt-0.5">
                       {m.subtitle}
                     </p>
-                    <p className="text-xs text-slate-600 dark:text-slate-400 mt-2 font-medium leading-relaxed">
+                    <p className="text-xs text-slate-600 mt-2 font-medium leading-relaxed">
                       {m.description}
                     </p>
                   </div>
 
-                  <div className="pt-4 mt-3 border-t border-slate-200 dark:border-slate-800 flex items-center justify-between">
+                  <div className="pt-4 mt-3 border-t border-slate-200 flex items-center justify-between">
                     <div className="flex items-center gap-1.5 text-xs font-bold">
                       {m.isDone ? (
-                        <CheckCircle2 className="h-4 w-4 text-emerald-600 dark:text-emerald-400 shrink-0" />
+                        <CheckCircle2 className="h-4 w-4 text-emerald-600 shrink-0" />
                       ) : (
                         <Clock className="h-4 w-4 text-slate-400 shrink-0" />
                       )}
-                      <span className={m.isDone ? 'text-emerald-700 dark:text-emerald-300' : 'text-slate-500'}>
+                      <span className={m.isDone ? 'text-emerald-700' : 'text-slate-500'}>
                         {m.isDone ? 'Verified' : 'Pending'}
                       </span>
                     </div>
@@ -806,7 +806,7 @@ export default function StudentDashboardPage() {
                       href={m.href}
                       className={`inline-flex items-center gap-1 rounded-lg px-2.5 py-1 text-xs font-black transition ${
                         m.isDone
-                          ? 'text-slate-700 hover:text-slate-950 dark:text-slate-300 dark:hover:text-white'
+                          ? 'text-slate-700 hover:text-slate-950'
                           : 'bg-[#0B2A4A] text-white hover:bg-[#071C33]'
                       }`}
                     >
@@ -822,18 +822,18 @@ export default function StudentDashboardPage() {
       })()}
 
       {/* Quiz Assessment History */}
-      <div className="rounded-3xl border-2 border-slate-200 bg-white p-6 sm:p-8 shadow-sm dark:border-slate-800 dark:bg-slate-900">
+      <div className="rounded-3xl border-2 border-slate-200 bg-white p-6 sm:p-8 shadow-sm">
         <div className="flex items-center justify-between mb-5">
-          <h2 className="text-xl font-black text-[#0B2A4A] dark:text-white flex items-center gap-2">
+          <h2 className="text-xl font-black text-[#0B2A4A] flex items-center gap-2">
             <Sparkles className="h-5 w-5 text-[#D96B00]" />
             Quiz Assessments & Career Pathways
           </h2>
         </div>
 
         {quizHistory.length === 0 ? (
-          <div className="rounded-2xl border-2 border-dashed border-slate-300 bg-[#F8F9FA] p-8 text-center dark:border-slate-700 dark:bg-slate-800/40">
-            <p className="text-sm font-bold text-slate-700 dark:text-slate-300">You haven&apos;t taken a career assessment yet.</p>
-            <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">Take an assessment based on your current academic class to discover aligned streams and colleges.</p>
+          <div className="rounded-2xl border-2 border-dashed border-slate-300 bg-[#EAEFF5] p-8 text-center">
+            <p className="text-sm font-bold text-slate-700">You haven&apos;t taken a career assessment yet.</p>
+            <p className="text-xs text-slate-500 mt-1">Take an assessment based on your current academic class to discover aligned streams and colleges.</p>
             <div className="mt-4 flex flex-wrap justify-center gap-3">
               <Link
                 href="/quiz/post-10th"
@@ -843,7 +843,7 @@ export default function StudentDashboardPage() {
               </Link>
               <Link
                 href="/quiz/post-12th"
-                className="rounded-xl border border-slate-300 bg-white px-5 py-2.5 font-black text-xs text-slate-800 hover:bg-slate-100 hover:text-slate-950 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100 dark:hover:bg-slate-700 dark:hover:text-white transition-colors"
+                className="rounded-xl border border-slate-300 bg-white px-5 py-2.5 font-black text-xs text-slate-800 hover:bg-slate-100 hover:text-slate-950 transition-colors"
               >
                 Post-12th Career Navigator →
               </Link>
@@ -854,24 +854,24 @@ export default function StudentDashboardPage() {
             {quizHistory.map((quiz) => (
               <div
                 key={quiz.id}
-                className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 rounded-2xl border-2 border-slate-200 bg-[#F8F9FA] p-5 dark:border-slate-800 dark:bg-slate-800/60"
+                className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 rounded-2xl border-2 border-slate-300 bg-[#EAEFF5] p-5"
               >
                 <div>
                   <div className="flex items-center gap-2.5">
-                    <span className="rounded-full bg-blue-50 border border-blue-300 px-3 py-0.5 text-xs font-black text-[#0B2A4A] dark:bg-blue-950 dark:text-blue-200 dark:border-blue-800">
+                    <span className="rounded-md bg-blue-50 border border-blue-300 px-3 py-0.5 text-xs font-black text-[#0B2A4A]">
                       {quiz.quizType}
                     </span>
-                    <h3 className="font-black text-[#0B2A4A] dark:text-white text-base">
+                    <h3 className="font-black text-[#0B2A4A] text-base">
                       {quiz.primaryRecommendation?.title}
                     </h3>
                   </div>
-                  <p className="text-xs font-semibold text-slate-700 dark:text-slate-300 mt-2 line-clamp-1">
+                  <p className="text-xs font-semibold text-slate-700 mt-2 line-clamp-1">
                     {quiz.primaryRecommendation?.whyItFits}
                   </p>
                 </div>
 
                 <div className="flex items-center gap-3 shrink-0">
-                  <span className="rounded-xl bg-white border-2 border-slate-300 px-3.5 py-1.5 text-xs font-black text-[#0B2A4A] dark:bg-slate-900 dark:border-slate-700 dark:text-blue-300">
+                  <span className="rounded-xl bg-white border-2 border-slate-300 px-3.5 py-1.5 text-xs font-black text-[#0B2A4A]">
                     {quiz.primaryRecommendation?.matchPercentage}% Affinity
                   </span>
                   <Link
@@ -888,15 +888,15 @@ export default function StudentDashboardPage() {
       </div>
 
       {/* 1-on-1 Mentor Sessions */}
-      <div className="rounded-3xl border-2 border-slate-200 bg-white p-6 sm:p-8 shadow-sm dark:border-slate-800 dark:bg-slate-900">
-        <h2 className="text-xl font-black text-[#0B2A4A] dark:text-white mb-5 flex items-center gap-2">
+      <div className="rounded-3xl border-2 border-slate-200 bg-white p-6 sm:p-8 shadow-sm">
+        <h2 className="text-xl font-black text-[#0B2A4A] mb-5 flex items-center gap-2">
           <Calendar className="h-5 w-5 text-[#138808]" />
           My Counselor & Mentor Consultations
         </h2>
 
         {bookings.length === 0 ? (
-          <div className="rounded-2xl border-2 border-dashed border-slate-300 bg-[#F8F9FA] p-8 text-center dark:border-slate-700 dark:bg-slate-800/40">
-            <p className="text-sm font-bold text-slate-700 dark:text-slate-300">No active mentor consultations booked.</p>
+          <div className="rounded-2xl border-2 border-dashed border-slate-300 bg-[#EAEFF5] p-8 text-center">
+            <p className="text-sm font-bold text-slate-700">No active mentor consultations booked.</p>
             <Link
               href="/consultants"
               className="mt-4 inline-block rounded-xl bg-[#0B2A4A] px-5 py-2.5 font-black text-xs text-white hover:bg-[#071C33] shadow-sm"
@@ -909,34 +909,34 @@ export default function StudentDashboardPage() {
             {bookings.map((b) => (
               <div
                 key={b.id}
-                className="flex flex-col md:flex-row md:items-center justify-between gap-4 rounded-2xl border-2 border-slate-200 bg-[#F8F9FA] p-5 dark:border-slate-800 dark:bg-slate-800/60"
+                className="flex flex-col md:flex-row md:items-center justify-between gap-4 rounded-xl border-2 border-slate-300 bg-[#EAEFF5] p-5"
               >
                 <div>
                   <div className="flex items-center gap-2.5 flex-wrap">
-                    <span className="font-black text-[#0B2A4A] dark:text-white text-base">{b.consultantName}</span>
-                    <span className="rounded-full bg-blue-50 border border-blue-200 px-2.5 py-0.5 text-xs font-black text-[#0B2A4A] dark:bg-teal-950 dark:text-teal-200 dark:border-teal-800">
+                    <span className="font-black text-[#0B2A4A] text-base">{b.consultantName}</span>
+                    <span className="rounded-md bg-blue-50 border border-blue-200 px-2.5 py-0.5 text-xs font-black text-[#0B2A4A]">
                       {b.domain}
                     </span>
                     <span
-                      className={`rounded-full px-3 py-0.5 text-xs font-black border ${
+                      className={`rounded-md px-3 py-0.5 text-xs font-black border ${
                         b.status === 'CONFIRMED'
-                          ? 'bg-emerald-50 text-[#138808] border-emerald-300 dark:bg-emerald-950 dark:text-emerald-200'
+                          ? 'bg-emerald-50 text-[#138808] border-emerald-300'
                           : b.status === 'COMPLETED'
-                          ? 'bg-purple-50 text-purple-800 border-purple-200 dark:bg-purple-950 dark:text-purple-200'
+                          ? 'bg-blue-50 text-[#0B2A4A] border-blue-300'
                           : b.status === 'CANCELLED'
-                          ? 'bg-rose-50 text-rose-800 border-rose-200 dark:bg-rose-950 dark:text-rose-200'
-                          : 'bg-amber-50 text-amber-800 border-amber-300 dark:bg-amber-950 dark:text-amber-200'
+                          ? 'bg-rose-50 text-rose-800 border-rose-200'
+                          : 'bg-amber-50 text-amber-800 border-amber-300'
                       }`}
                     >
                       {b.status}
                     </span>
                   </div>
-                  <div className="flex items-center gap-4 text-slate-700 dark:text-slate-300 mt-2 text-xs font-bold flex-wrap">
-                    <span>Date: <strong className="text-slate-950 dark:text-white">{b.requestedDate}</strong></span>
-                    <span>Slot: <strong className="text-slate-950 dark:text-white">{b.timeSlot}</strong></span>
+                  <div className="flex items-center gap-4 text-slate-700 mt-2 text-xs font-bold flex-wrap">
+                    <span>Date: <strong className="text-slate-950">{b.requestedDate}</strong></span>
+                    <span>Slot: <strong className="text-slate-950">{b.timeSlot}</strong></span>
                   </div>
                   {b.studentNotes && (
-                    <p className="text-xs text-slate-600 dark:text-slate-400 mt-1 line-clamp-1 italic">
+                    <p className="text-xs text-slate-600 mt-1 line-clamp-1 italic">
                       &quot;{b.studentNotes}&quot;
                     </p>
                   )}
@@ -970,7 +970,7 @@ export default function StudentDashboardPage() {
                         });
                         downloadIcsFile(`consultation-${b.requestedDate}.ics`, ics);
                       }}
-                      className="flex items-center gap-1.5 rounded-xl border border-slate-300 bg-white px-3 py-1.5 text-xs font-bold text-slate-700 hover:bg-slate-100 dark:border-slate-700 dark:bg-slate-850 dark:text-slate-200 transition"
+                      className="flex items-center gap-1.5 rounded-xl border border-slate-300 bg-white px-3 py-1.5 text-xs font-bold text-slate-700 hover:bg-slate-100 transition"
                       title="Download .ics Calendar Invite"
                     >
                       <Download className="h-3.5 w-3.5 text-emerald-600" />
@@ -983,7 +983,7 @@ export default function StudentDashboardPage() {
                       type="button"
                       onClick={() => handleCancelBooking(b.id)}
                       disabled={cancellingBookingId === b.id}
-                      className="flex items-center gap-1 rounded-xl border border-rose-200 bg-white px-3 py-1.5 text-xs font-bold text-rose-700 hover:bg-rose-50 disabled:opacity-50 dark:border-rose-900 dark:bg-slate-855 dark:text-rose-300 transition cursor-pointer"
+                      className="flex items-center gap-1 rounded-xl border border-rose-200 bg-white px-3 py-1.5 text-xs font-bold text-rose-700 hover:bg-rose-50 disabled:opacity-50 transition cursor-pointer"
                     >
                       <XCircle className="h-3.5 w-3.5" />
                       <span>{cancellingBookingId === b.id ? 'Cancelling...' : 'Cancel'}</span>
@@ -997,22 +997,22 @@ export default function StudentDashboardPage() {
       </div>
 
       {/* Bookmarked Careers & Colleges */}
-      <div className="rounded-3xl border-2 border-slate-200 bg-white p-6 sm:p-8 shadow-sm dark:border-slate-800 dark:bg-slate-900 flex flex-col gap-6">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-200 pb-4 dark:border-slate-800">
+      <div className="rounded-3xl border-2 border-slate-200 bg-white p-6 sm:p-8 shadow-sm flex flex-col gap-6">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-200 pb-4">
           <div>
-            <h2 className="text-xl font-black text-[#0B2A4A] dark:text-white flex items-center gap-2">
+            <h2 className="text-xl font-black text-[#0B2A4A] flex items-center gap-2">
               <Bookmark className="h-5 w-5 text-[#D96B00]" />
               Saved Careers & Colleges
             </h2>
-            <p className="text-xs font-semibold text-slate-600 dark:text-slate-400 mt-1">
+            <p className="text-xs font-semibold text-slate-600 mt-1">
               Your personalized academic portfolio — review roadmaps, NIRF metrics, and entrance prerequisites anytime
             </p>
           </div>
-          <div className="flex items-center gap-2 text-xs font-bold text-slate-700 dark:text-slate-300">
-            <span className="rounded-xl bg-blue-50 border border-blue-200 px-3 py-1 font-black text-[#0B2A4A] dark:bg-blue-950 dark:border-blue-800 dark:text-blue-300">
+          <div className="flex items-center gap-2 text-xs font-bold text-slate-700">
+            <span className="rounded-xl bg-blue-50 border border-blue-200 px-3 py-1 font-black text-[#0B2A4A]">
               {savedCareersList.length} Careers
             </span>
-            <span className="rounded-xl bg-emerald-50 border border-emerald-200 px-3 py-1 font-black text-emerald-800 dark:bg-emerald-950 dark:border-emerald-800 dark:text-emerald-300">
+            <span className="rounded-xl bg-emerald-50 border border-emerald-200 px-3 py-1 font-black text-emerald-800">
               {savedCollegesList.length} Colleges
             </span>
           </div>
@@ -1022,13 +1022,13 @@ export default function StudentDashboardPage() {
           {/* 1. Saved Careers List */}
           <div className="flex flex-col gap-3">
             <div className="flex items-center justify-between">
-              <span className="font-black text-slate-950 dark:text-white text-sm flex items-center gap-2">
+              <span className="font-black text-slate-950 text-sm flex items-center gap-2">
                 <Briefcase className="h-4 w-4 text-[#D96B00]" />
                 Saved Career Roadmaps ({savedCareersList.length})
               </span>
               <Link
                 href="/careers"
-                className="text-xs font-bold text-[#0B2A4A] hover:underline dark:text-blue-400 flex items-center gap-1"
+                className="text-xs font-bold text-[#0B2A4A] hover:underline flex items-center gap-1"
               >
                 <span>Browse All</span>
                 <ArrowRight className="h-3 w-3" />
@@ -1036,10 +1036,10 @@ export default function StudentDashboardPage() {
             </div>
 
             {savedCareersList.length === 0 ? (
-              <div className="rounded-2xl border-2 border-dashed border-slate-200 bg-[#F8F9FA] p-8 text-center dark:border-slate-800 dark:bg-slate-800/40">
+              <div className="rounded-2xl border-2 border-dashed border-slate-300 bg-[#EAEFF5] p-8 text-center">
                 <Bookmark className="h-8 w-8 text-slate-400 mx-auto mb-2 opacity-50" />
-                <p className="text-xs font-bold text-slate-700 dark:text-slate-300">No careers bookmarked yet.</p>
-                <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-1 max-w-xs mx-auto">
+                <p className="text-xs font-bold text-slate-700">No careers bookmarked yet.</p>
+                <p className="text-[11px] text-slate-500 mt-1 max-w-xs mx-auto">
                   Click &ldquo;Save Career Option&rdquo; on any career pathway to save it to your permanent portfolio.
                 </p>
                 <Link
@@ -1055,18 +1055,18 @@ export default function StudentDashboardPage() {
                 {savedCareersList.map((car) => (
                   <div
                     key={car.slug}
-                    className="rounded-2xl border-2 border-slate-200 bg-[#F8F9FA] p-4 text-xs dark:border-slate-800 dark:bg-slate-800/50 hover:border-[#0B2A4A] transition-all flex flex-col justify-between gap-3 shadow-xs"
+                    className="rounded-2xl border-2 border-slate-300 bg-[#EAEFF5] p-4 text-xs hover:border-[#0B2A4A] transition-all flex flex-col justify-between gap-3 shadow-xs"
                   >
                     <div className="flex items-start justify-between gap-3">
                       <div>
-                        <span className="rounded-md bg-amber-100/80 text-[#D96B00] border border-amber-200 px-2 py-0.5 text-[10px] font-black uppercase tracking-wider dark:bg-amber-950/60 dark:text-amber-300 dark:border-amber-800">
+                        <span className="rounded-md bg-amber-100/80 text-[#D96B00] border border-amber-200 px-2 py-0.5 text-[10px] font-black uppercase tracking-wider">
                           {car.streamLabel || 'Career Pathway'}
                         </span>
-                        <h4 className="font-black text-slate-950 dark:text-white text-sm sm:text-base mt-1.5">
+                        <h4 className="font-black text-slate-950 text-sm sm:text-base mt-1.5">
                           {car.title}
                         </h4>
                         {car.description && (
-                          <p className="text-slate-600 dark:text-slate-300 text-xs mt-1 line-clamp-2 leading-relaxed">
+                          <p className="text-slate-600 text-xs mt-1 line-clamp-2 leading-relaxed">
                             {car.description}
                           </p>
                         )}
@@ -1076,15 +1076,15 @@ export default function StudentDashboardPage() {
                         onClick={() => handleRemoveBookmark('CAREER', car.slug)}
                         disabled={removingBookmark === car.slug}
                         title="Remove from saved"
-                        className="rounded-lg p-1.5 text-slate-400 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-950/40 transition shrink-0 cursor-pointer"
+                        className="rounded-lg p-1.5 text-slate-400 hover:text-red-600 hover:bg-red-50 transition shrink-0 cursor-pointer"
                       >
                         <Trash2 className="h-4 w-4" />
                       </button>
                     </div>
 
-                    <div className="flex items-center justify-between pt-2 border-t border-slate-200 dark:border-slate-700">
-                      <span className="font-bold text-slate-700 dark:text-slate-300 text-xs">
-                        Compensation: <strong className="text-slate-950 dark:text-white">{car.avgSalary || 'Verified Industry Pay'}</strong>
+                    <div className="flex items-center justify-between pt-2 border-t border-slate-200">
+                      <span className="font-bold text-slate-700 text-xs">
+                        Compensation: <strong className="text-slate-950">{car.avgSalary || 'Verified Industry Pay'}</strong>
                       </span>
                       <Link
                         href={`/careers/${car.slug}`}
@@ -1103,13 +1103,13 @@ export default function StudentDashboardPage() {
           {/* 2. Saved Colleges List */}
           <div className="flex flex-col gap-3">
             <div className="flex items-center justify-between">
-              <span className="font-black text-slate-950 dark:text-white text-sm flex items-center gap-2">
+              <span className="font-black text-slate-950 text-sm flex items-center gap-2">
                 <GraduationCap className="h-4 w-4 text-[#138808]" />
                 Saved Universities & Colleges ({savedCollegesList.length})
               </span>
               <Link
                 href="/colleges"
-                className="text-xs font-bold text-[#0B2A4A] hover:underline dark:text-blue-400 flex items-center gap-1"
+                className="text-xs font-bold text-[#0B2A4A] hover:underline flex items-center gap-1"
               >
                 <span>Browse All</span>
                 <ArrowRight className="h-3 w-3" />
@@ -1117,10 +1117,10 @@ export default function StudentDashboardPage() {
             </div>
 
             {savedCollegesList.length === 0 ? (
-              <div className="rounded-2xl border-2 border-dashed border-slate-200 bg-[#F8F9FA] p-8 text-center dark:border-slate-800 dark:bg-slate-800/40">
+              <div className="rounded-2xl border-2 border-dashed border-slate-300 bg-[#EAEFF5] p-8 text-center">
                 <School className="h-8 w-8 text-slate-400 mx-auto mb-2 opacity-50" />
-                <p className="text-xs font-bold text-slate-700 dark:text-slate-300">No colleges bookmarked yet.</p>
-                <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-1 max-w-xs mx-auto">
+                <p className="text-xs font-bold text-slate-700">No colleges bookmarked yet.</p>
+                <p className="text-[11px] text-slate-500 mt-1 max-w-xs mx-auto">
                   Click &ldquo;Save College&rdquo; on any university profile to save it to your portfolio.
                 </p>
                 <Link
@@ -1136,13 +1136,13 @@ export default function StudentDashboardPage() {
                 {savedCollegesList.map((col) => (
                   <div
                     key={col.slug}
-                    className="rounded-2xl border-2 border-slate-200 bg-[#F8F9FA] p-4 text-xs dark:border-slate-800 dark:bg-slate-800/50 hover:border-[#0B2A4A] transition-all flex flex-col justify-between gap-3 shadow-xs"
+                    className="rounded-2xl border-2 border-slate-300 bg-[#EAEFF5] p-4 text-xs hover:border-[#0B2A4A] transition-all flex flex-col justify-between gap-3 shadow-xs"
                   >
                     <div className="flex items-start justify-between gap-3">
                       <div>
                         <div className="flex items-center gap-2">
                           {col.nirfRanking > 0 && (
-                            <span className="rounded-md bg-emerald-100 text-emerald-950 border border-emerald-300 px-2 py-0.5 text-[10px] font-black uppercase dark:bg-emerald-950 dark:text-emerald-300 dark:border-emerald-800">
+                            <span className="rounded-md bg-emerald-100 text-emerald-950 border border-emerald-300 px-2 py-0.5 text-[10px] font-black uppercase">
                               NIRF #{col.nirfRanking}
                             </span>
                           )}
@@ -1151,7 +1151,7 @@ export default function StudentDashboardPage() {
                             {col.city}{col.state ? `, ${col.state}` : ''}
                           </span>
                         </div>
-                        <h4 className="font-black text-slate-950 dark:text-white text-sm sm:text-base mt-1.5">
+                        <h4 className="font-black text-slate-950 text-sm sm:text-base mt-1.5">
                           {col.name}
                         </h4>
                       </div>
@@ -1160,15 +1160,15 @@ export default function StudentDashboardPage() {
                         onClick={() => handleRemoveBookmark('COLLEGE', col.slug)}
                         disabled={removingBookmark === col.slug}
                         title="Remove from saved"
-                        className="rounded-lg p-1.5 text-slate-400 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-950/40 transition shrink-0 cursor-pointer"
+                        className="rounded-lg p-1.5 text-slate-400 hover:text-red-600 hover:bg-red-50 transition shrink-0 cursor-pointer"
                       >
                         <Trash2 className="h-4 w-4" />
                       </button>
                     </div>
 
-                    <div className="flex items-center justify-between pt-2 border-t border-slate-200 dark:border-slate-700">
-                      <span className="font-bold text-slate-700 dark:text-slate-300 text-xs">
-                        Avg Package: <strong className="text-emerald-700 dark:text-emerald-400">{col.avgPackage || 'High Placement'}</strong>
+                    <div className="flex items-center justify-between pt-2 border-t border-slate-200">
+                      <span className="font-bold text-slate-700 text-xs">
+                        Avg Package: <strong className="text-emerald-700">{col.avgPackage || 'High Placement'}</strong>
                       </span>
                       <Link
                         href={`/colleges/${col.slug}`}

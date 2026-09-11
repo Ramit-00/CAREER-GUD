@@ -77,15 +77,15 @@ function LoginForm() {
 
   return (
     <div className="mx-auto flex min-h-[80vh] max-w-md flex-col justify-center px-4 py-12">
-      <div className="rounded-3xl border border-slate-200/90 bg-white p-8 shadow-lg dark:border-slate-800 dark:bg-slate-900">
+      <div className="rounded-3xl border border-slate-200 bg-white p-8 shadow-md">
         <div className="text-center">
-          <div className="inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-[#0B2A4A] text-amber-400 shadow-sm mb-3">
+          <div className="inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-[#0B2A4A] text-amber-400 shadow-xs mb-3">
             <GraduationCap className="h-6 w-6" />
           </div>
-          <h1 className="text-2xl font-extrabold text-[#0B2A4A] dark:text-white tracking-tight">
+          <h1 className="text-2xl font-extrabold text-[#0B2A4A] tracking-tight">
             Sign In to CAREER-GUD
           </h1>
-          <p className="mt-1.5 text-xs sm:text-sm font-medium text-slate-600 dark:text-slate-300">
+          <p className="mt-1.5 text-xs sm:text-sm font-medium text-slate-600">
             Access your personalized career pathways, assessments & mentor sessions
           </p>
         </div>
@@ -95,7 +95,7 @@ function LoginForm() {
           <button
             type="button"
             onClick={handleGoogleLogin}
-            className="flex w-full items-center justify-center gap-3 rounded-xl border border-slate-200 bg-white py-3 text-xs sm:text-sm font-bold text-slate-800 hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100 dark:hover:bg-slate-700 transition shadow-xs cursor-pointer"
+            className="flex w-full items-center justify-center gap-3 rounded-xl border border-slate-300 bg-white py-3 text-xs sm:text-sm font-bold text-slate-800 hover:bg-slate-50 transition shadow-xs cursor-pointer"
           >
             <svg className="h-5 w-5" viewBox="0 0 24 24">
               <path
@@ -121,21 +121,21 @@ function LoginForm() {
 
         <div className="relative my-6 text-center">
           <div className="absolute inset-0 flex items-center">
-            <div className="w-full border-t border-slate-200 dark:border-slate-800" />
+            <div className="w-full border-t border-slate-200" />
           </div>
-          <span className="relative bg-white px-3 text-xs font-bold uppercase tracking-wider text-slate-400 dark:bg-slate-900 dark:text-slate-500">
+          <span className="relative bg-white px-3 text-xs font-bold uppercase tracking-wider text-slate-500">
             or sign in with email
           </span>
         </div>
 
         {errorMessage && (
-          <div className="mb-4 flex items-start gap-2.5 rounded-xl bg-rose-50 border border-rose-200 p-3.5 text-xs font-bold text-rose-800 dark:bg-rose-950/60 dark:border-rose-900 dark:text-rose-200">
+          <div className="mb-4 flex items-start gap-2.5 rounded-xl bg-rose-50 border border-rose-200 p-3.5 text-xs font-bold text-rose-800">
             <AlertCircle className="h-4 w-4 shrink-0 mt-0.5" />
             <div>
               <p>{errorMessage}</p>
               <Link
                 href="/register"
-                className="mt-1.5 inline-block text-[11px] font-extrabold text-[#0B2A4A] underline dark:text-amber-400"
+                className="mt-1.5 inline-block text-[11px] font-extrabold text-[#0B2A4A] underline hover:text-amber-700"
               >
                 Click here to create an account →
               </Link>
@@ -145,35 +145,35 @@ function LoginForm() {
 
         <form onSubmit={handleSubmit} className="flex flex-col gap-4">
           <div>
-            <label className="block text-xs font-bold uppercase text-slate-700 dark:text-slate-300 mb-1.5">
+            <label className="block text-xs font-bold uppercase text-slate-700 mb-1.5">
               Email Address
             </label>
             <div className="relative">
-              <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
+              <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-500" />
               <input
                 type="email"
                 required
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="you@example.com"
-                className="w-full rounded-xl border border-slate-300 bg-white py-3 pl-11 pr-3.5 text-xs sm:text-sm font-medium text-slate-900 focus:border-[#0B2A4A] focus:outline-none dark:border-slate-700 dark:bg-slate-800 dark:text-white shadow-xs"
+                className="w-full rounded-xl border border-slate-300 bg-white py-3 pl-11 pr-3.5 text-xs sm:text-sm font-medium text-slate-900 focus:border-[#0B2A4A] focus:outline-none shadow-xs"
               />
             </div>
           </div>
 
           <div>
-            <label className="block text-xs font-bold uppercase text-slate-700 dark:text-slate-300 mb-1.5">
+            <label className="block text-xs font-bold uppercase text-slate-700 mb-1.5">
               Password
             </label>
             <div className="relative">
-              <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
+              <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-500" />
               <input
                 type="password"
                 required
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder="••••••••"
-                className="w-full rounded-xl border border-slate-300 bg-white py-3 pl-11 pr-3.5 text-xs sm:text-sm font-medium text-slate-900 focus:border-[#0B2A4A] focus:outline-none dark:border-slate-700 dark:bg-slate-800 dark:text-white shadow-xs"
+                className="w-full rounded-xl border border-slate-300 bg-white py-3 pl-11 pr-3.5 text-xs sm:text-sm font-medium text-slate-900 focus:border-[#0B2A4A] focus:outline-none shadow-xs"
               />
             </div>
           </div>
@@ -189,16 +189,16 @@ function LoginForm() {
         </form>
 
         {/* Advisor Sign-in / Application Notice */}
-        <div className="mt-6 rounded-2xl border border-emerald-200/80 bg-emerald-50/60 p-3.5 dark:border-emerald-900/60 dark:bg-emerald-950/30 text-xs">
-          <div className="flex items-center gap-2 font-bold text-emerald-900 dark:text-emerald-300">
-            <Briefcase className="h-4 w-4 text-emerald-700 dark:text-emerald-400 shrink-0" />
+        <div className="mt-6 rounded-2xl border border-emerald-200 bg-emerald-50/70 p-3.5 text-xs">
+          <div className="flex items-center gap-2 font-bold text-emerald-900">
+            <Briefcase className="h-4 w-4 text-emerald-700 shrink-0" />
             <span>Are you a Career Advisor or Mentor?</span>
           </div>
-          <p className="mt-1 text-slate-600 dark:text-slate-300">
+          <p className="mt-1 text-slate-700">
             Sign in with your registered account, or{' '}
             <Link
               href="/register/advisor"
-              className="font-bold text-emerald-800 underline dark:text-emerald-400"
+              className="font-bold text-emerald-800 underline hover:text-emerald-950"
             >
               apply for council verification
             </Link>
@@ -207,23 +207,23 @@ function LoginForm() {
         </div>
 
         {/* Register Link */}
-        <p className="mt-5 text-center text-xs sm:text-sm font-medium text-slate-600 dark:text-slate-300">
+        <p className="mt-5 text-center text-xs sm:text-sm font-medium text-slate-700">
           Don&apos;t have an account yet?{' '}
           <Link
             href="/register"
-            className="font-bold text-[#0B2A4A] hover:underline dark:text-amber-400"
+            className="font-bold text-[#0B2A4A] hover:underline"
           >
             Create an account
           </Link>
         </p>
 
         {/* Secure Admin Gate Link */}
-        <div className="mt-6 pt-4 border-t border-slate-200 dark:border-slate-800 text-center">
+        <div className="mt-6 pt-4 border-t border-slate-200 text-center">
           <Link
             href="/admin/portal-login"
-            className="inline-flex items-center gap-1.5 text-[11px] font-bold text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-200 transition"
+            className="inline-flex items-center gap-1.5 text-[11px] font-bold text-slate-600 hover:text-[#0B2A4A] transition"
           >
-            <ShieldCheck className="h-3.5 w-3.5 text-amber-500" />
+            <ShieldCheck className="h-3.5 w-3.5 text-amber-600" />
             <span>Authorized Personnel: Admin Security Portal</span>
           </Link>
         </div>

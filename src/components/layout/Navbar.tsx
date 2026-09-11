@@ -131,7 +131,7 @@ export function Navbar() {
 
   const dashboardHref = role === 'ADMIN' ? '/admin/overview' : role === 'CONSULTANT' ? '/consultant/dashboard' : '/dashboard';
   return (
-    <header className="sticky top-0 z-50 w-full border-b-2 border-slate-200 bg-white/98 backdrop-blur-md dark:border-slate-800 dark:bg-slate-950/98 shadow-xs">
+    <header className="sticky top-0 z-50 w-full border-b-2 border-slate-200 bg-white/98 backdrop-blur-md shadow-xs">
       {/* 1. National Tricolor Line */}
       <div className="tricolor-strip" aria-hidden="true">
         <div className="strip-saffron"></div>
@@ -140,16 +140,16 @@ export function Navbar() {
       </div>
 
       {/* 2. Institutional Utility Bar (GIGW Compliant Tone) */}
-      <div className="border-b border-slate-200/90 bg-slate-50/90 py-1 px-4 text-xs font-semibold text-slate-700 dark:border-slate-800 dark:bg-slate-900 dark:text-slate-300">
+      <div className="border-b border-slate-200 bg-slate-100 py-1 px-4 text-xs font-semibold text-slate-800">
         <div className="mx-auto flex max-w-7xl items-center justify-between">
           <div className="flex items-center gap-2">
             <span className="inline-block h-2 w-2 rounded-full bg-amber-500"></span>
             <span>भारत सरकार | Government of India • National Guidance Architecture</span>
           </div>
           <div className="hidden sm:flex items-center gap-4 text-xs">
-            <span>Toll-Free Helpline: <strong className="text-slate-900 dark:text-white">1800-11-2026</strong></span>
-            <span className="text-slate-300 dark:text-slate-700">|</span>
-            <span>Tele-MANAS: <strong className="text-slate-900 dark:text-white">14416</strong></span>
+            <span>Toll-Free Helpline: <strong className="text-slate-950">1800-11-2026</strong></span>
+            <span className="text-slate-400">|</span>
+            <span>Tele-MANAS: <strong className="text-slate-950">14416</strong></span>
           </div>
         </div>
       </div>
@@ -161,17 +161,17 @@ export function Navbar() {
             <GraduationCap className="h-6 w-6 text-amber-400" />
           </div>
           <div className="flex flex-col">
-            <span className="text-xl font-black tracking-tight text-slate-950 dark:text-white">
-              CAREER<span className="text-[#D96B00] dark:text-amber-400">-GUD</span>
+            <span className="text-xl font-black tracking-tight text-slate-950">
+              CAREER<span className="text-[#D96B00]">-GUD</span>
             </span>
-            <span className="text-[11px] font-extrabold uppercase tracking-wider text-slate-600 dark:text-slate-300">
+            <span className="text-[11px] font-extrabold uppercase tracking-wider text-slate-600">
               National Guidance Architecture
             </span>
           </div>
         </Link>
 
         {/* Desktop Navigation Links */}
-        <nav className="hidden lg:flex items-center gap-1 xl:gap-2 text-sm font-bold text-slate-700 dark:text-slate-200">
+        <nav className="hidden lg:flex items-center gap-1 xl:gap-2 text-sm font-bold text-slate-800">
           {/* Quizzes Dropdown - Hover and Click/Tap with Click-Outside Guard */}
           <div
             ref={dropdownRef}
@@ -189,13 +189,13 @@ export function Navbar() {
                 }
                 setQuizDropdownOpen((prev) => !prev);
               }}
-              className={`flex items-center gap-1.5 px-3.5 py-2 rounded-xl hover:bg-slate-100 hover:text-slate-950 dark:hover:bg-slate-800 dark:hover:text-white transition-colors cursor-pointer select-none touch-manipulation ${
+              className={`flex items-center gap-1.5 px-3.5 py-2 rounded-xl hover:bg-slate-100 hover:text-slate-950 transition-colors cursor-pointer select-none touch-manipulation ${
                 pathname.startsWith('/quiz')
-                  ? 'text-[#0B2A4A] dark:text-amber-400 font-extrabold bg-amber-50/70 border-b-2 border-[#D96B00] dark:bg-slate-800'
+                  ? 'text-[#0B2A4A] font-extrabold bg-amber-50 border-b-2 border-[#D96B00]'
                   : ''
               }`}
             >
-              <Compass className="h-4 w-4 text-[#D96B00] dark:text-amber-400" />
+              <Compass className="h-4 w-4 text-[#D96B00]" />
               <span>Assessments</span>
               <ChevronDown className={`h-3.5 w-3.5 opacity-60 transition-transform duration-200 ${quizDropdownOpen ? 'rotate-180' : ''}`} />
             </button>
@@ -206,7 +206,7 @@ export function Navbar() {
                 onMouseEnter={handleDropdownMouseEnter}
                 onMouseLeave={handleDropdownMouseLeave}
               >
-                <div className="rounded-2xl border border-slate-200 bg-white p-3 shadow-xl dark:border-slate-700 dark:bg-slate-900 animate-in fade-in zoom-in-95">
+                <div className="rounded-2xl border border-slate-200 bg-white p-3 shadow-xl animate-in fade-in zoom-in-95">
                   <Link
                     href="/quiz/post-10th"
                     onClick={(e) => {
@@ -215,15 +215,15 @@ export function Navbar() {
                     }}
                     onPointerDown={handleItemPointerDown}
                     onPointerUp={(e) => handleItemPointerUp('/quiz/post-10th', e)}
-                    className="flex flex-col gap-1 rounded-xl p-3 hover:bg-amber-50/70 dark:hover:bg-slate-800 transition-colors cursor-pointer group select-none touch-manipulation active:scale-[0.99] border-l-3 border-[#D96B00]"
+                    className="flex flex-col gap-1 rounded-xl p-3 hover:bg-amber-50 transition-colors cursor-pointer group select-none touch-manipulation active:scale-[0.99] border-l-3 border-[#D96B00]"
                   >
-                    <div className="flex items-center gap-2.5 text-sm font-bold text-slate-900 dark:text-white group-hover:text-[#D96B00] dark:group-hover:text-amber-400">
-                      <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-amber-100 text-xs font-black text-[#D96B00] dark:bg-amber-950 dark:text-amber-300 pointer-events-none">
+                    <div className="flex items-center gap-2.5 text-sm font-bold text-slate-900 group-hover:text-[#D96B00]">
+                      <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-amber-100 text-xs font-black text-[#D96B00] pointer-events-none">
                         10
                       </span>
                       <span className="pointer-events-none font-bold">Class 10: Stream Selection</span>
                     </div>
-                    <span className="text-xs font-medium text-slate-600 dark:text-slate-400 pl-9 pointer-events-none">
+                    <span className="text-xs font-medium text-slate-600 pl-9 pointer-events-none">
                       Discover PCM, PCB, Commerce, or Arts based on real strengths
                     </span>
                   </Link>
@@ -236,15 +236,15 @@ export function Navbar() {
                     }}
                     onPointerDown={handleItemPointerDown}
                     onPointerUp={(e) => handleItemPointerUp('/quiz/post-12th', e)}
-                    className="flex flex-col gap-1 rounded-xl p-3 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer group select-none touch-manipulation active:scale-[0.99] border-l-3 border-[#0B2A4A] mt-1"
+                    className="flex flex-col gap-1 rounded-xl p-3 hover:bg-slate-100 transition-colors cursor-pointer group select-none touch-manipulation active:scale-[0.99] border-l-3 border-[#0B2A4A] mt-1"
                   >
-                    <div className="flex items-center gap-2.5 text-sm font-bold text-slate-900 dark:text-white group-hover:text-[#0B2A4A] dark:group-hover:text-slate-100">
-                      <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-slate-100 text-xs font-black text-[#0B2A4A] dark:bg-slate-800 dark:text-white pointer-events-none">
+                    <div className="flex items-center gap-2.5 text-sm font-bold text-slate-900 group-hover:text-[#0B2A4A]">
+                      <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-slate-100 text-xs font-black text-[#0B2A4A] pointer-events-none">
                         12
                       </span>
                       <span className="pointer-events-none font-bold">Class 12: Degree & Exam Matrix</span>
                     </div>
-                    <span className="text-xs font-medium text-slate-600 dark:text-slate-400 pl-9 pointer-events-none">
+                    <span className="text-xs font-medium text-slate-600 pl-9 pointer-events-none">
                       Degrees, IIMs, Law, Design, Biotech & national exams beyond B.Tech/MBBS
                     </span>
                   </Link>
@@ -255,9 +255,9 @@ export function Navbar() {
 
           <Link
             href="/careers"
-            className={`flex items-center gap-1.5 px-3 py-2 rounded-xl hover:bg-slate-100 hover:text-slate-950 dark:hover:bg-slate-800 dark:hover:text-white transition-colors ${
+            className={`flex items-center gap-1.5 px-3 py-2 rounded-xl hover:bg-slate-100 hover:text-slate-950 transition-colors ${
               pathname.startsWith('/careers')
-                ? 'text-[#0B2A4A] dark:text-amber-400 font-extrabold bg-amber-50/70 border-b-2 border-[#D96B00] dark:bg-slate-800'
+                ? 'text-[#0B2A4A] font-extrabold bg-amber-50 border-b-2 border-[#D96B00]'
                 : ''
             }`}
           >
@@ -267,9 +267,9 @@ export function Navbar() {
 
           <Link
             href="/colleges"
-            className={`flex items-center gap-1.5 px-3 py-2 rounded-xl hover:bg-slate-100 hover:text-slate-950 dark:hover:bg-slate-800 dark:hover:text-white transition-colors ${
+            className={`flex items-center gap-1.5 px-3 py-2 rounded-xl hover:bg-slate-100 hover:text-slate-950 transition-colors ${
               pathname.startsWith('/colleges')
-                ? 'text-[#0B2A4A] dark:text-amber-400 font-extrabold bg-amber-50/70 border-b-2 border-[#D96B00] dark:bg-slate-800'
+                ? 'text-[#0B2A4A] font-extrabold bg-amber-50 border-b-2 border-[#D96B00]'
                 : ''
             }`}
           >
@@ -279,9 +279,9 @@ export function Navbar() {
 
           <Link
             href="/consultants"
-            className={`flex items-center gap-1.5 px-3 py-2 rounded-xl hover:bg-slate-100 hover:text-slate-950 dark:hover:bg-slate-800 dark:hover:text-white transition-colors ${
+            className={`flex items-center gap-1.5 px-3 py-2 rounded-xl hover:bg-slate-100 hover:text-slate-950 transition-colors ${
               pathname.startsWith('/consultants')
-                ? 'text-[#0B2A4A] dark:text-amber-400 font-extrabold bg-amber-50/70 border-b-2 border-[#D96B00] dark:bg-slate-800'
+                ? 'text-[#0B2A4A] font-extrabold bg-amber-50 border-b-2 border-[#D96B00]'
                 : ''
             }`}
           >
@@ -291,9 +291,9 @@ export function Navbar() {
 
           <Link
             href="/tools"
-            className={`flex items-center gap-1.5 px-3 py-2 rounded-xl hover:bg-slate-100 hover:text-slate-950 dark:hover:bg-slate-800 dark:hover:text-white transition-colors ${
+            className={`flex items-center gap-1.5 px-3 py-2 rounded-xl hover:bg-slate-100 hover:text-slate-950 transition-colors ${
               pathname.startsWith('/tools')
-                ? 'text-[#0B2A4A] dark:text-amber-400 font-extrabold bg-amber-50/70 border-b-2 border-[#D96B00] dark:bg-slate-800'
+                ? 'text-[#0B2A4A] font-extrabold bg-amber-50 border-b-2 border-[#D96B00]'
                 : ''
             }`}
           >
@@ -303,19 +303,19 @@ export function Navbar() {
 
           <Link
             href="/chat"
-            className={`flex items-center gap-1.5 px-3 py-2 rounded-xl hover:bg-slate-100 hover:text-slate-950 dark:hover:bg-slate-800 dark:hover:text-white transition-colors ${
+            className={`flex items-center gap-1.5 px-3 py-2 rounded-xl hover:bg-slate-100 hover:text-slate-950 transition-colors ${
               pathname === '/chat'
-                ? 'text-[#0B2A4A] dark:text-amber-400 font-extrabold bg-amber-50/70 border-b-2 border-[#D96B00] dark:bg-slate-800'
+                ? 'text-[#0B2A4A] font-extrabold bg-amber-50 border-b-2 border-[#D96B00]'
                 : ''
             }`}
           >
-            <MessageSquare className="h-4 w-4 text-[#D96B00] dark:text-amber-400" />
+            <MessageSquare className="h-4 w-4 text-[#D96B00]" />
             <span>AI Advisor</span>
           </Link>
         </nav>
 
         {/* Action Buttons / User Menu - Protected with shrink-0 and separate spacing */}
-        <div className="hidden lg:flex items-center gap-3 shrink-0 pl-4 border-l border-slate-200 dark:border-slate-800">
+        <div className="hidden lg:flex items-center gap-3 shrink-0 pl-4 border-l border-slate-200">
           {session ? (
             <div className="flex items-center gap-2">
               {role === 'ADMIN' && (
@@ -323,11 +323,11 @@ export function Navbar() {
                   href="/admin/hub"
                   className={`flex items-center gap-1.5 rounded-xl px-3 py-1.5 text-xs font-black transition-all shadow-xs ${
                     isAdminHubActive
-                      ? 'bg-amber-400 text-slate-950 ring-2 ring-amber-400 hover:bg-amber-300 hover:text-slate-950 dark:bg-amber-400 dark:text-slate-950 dark:ring-amber-300 dark:hover:bg-amber-300'
-                      : 'border border-amber-300/80 bg-amber-50/80 text-amber-950 hover:bg-amber-100 hover:text-amber-900 transition-colors dark:border-slate-700 dark:bg-slate-800 dark:text-amber-300 dark:hover:bg-slate-700 dark:hover:text-amber-200'
+                      ? 'bg-amber-400 text-slate-950 ring-2 ring-amber-400 hover:bg-amber-300 hover:text-slate-950'
+                      : 'border border-amber-300/80 bg-amber-50/80 text-amber-950 hover:bg-amber-100 hover:text-amber-900 transition-colors'
                   }`}
                 >
-                  <ShieldCheck className={`h-4 w-4 ${isAdminHubActive ? 'text-slate-950' : 'text-amber-600 dark:text-amber-400'}`} />
+                  <ShieldCheck className={`h-4 w-4 ${isAdminHubActive ? 'text-slate-950' : 'text-amber-600'}`} />
                   <span>Admin Hub</span>
                 </Link>
               )}
@@ -337,11 +337,11 @@ export function Navbar() {
                   href="/consultant/dashboard"
                   className={`flex items-center gap-1.5 rounded-xl px-3 py-1.5 text-xs font-bold transition-all shadow-xs ${
                     isConsultantPortalActive
-                      ? 'bg-emerald-600 text-white ring-2 ring-emerald-500 hover:bg-emerald-700 dark:bg-emerald-600 dark:text-white dark:ring-emerald-400'
-                      : 'border border-emerald-300 bg-emerald-50 text-emerald-900 hover:bg-emerald-100 dark:border-emerald-800 dark:bg-emerald-950 dark:text-emerald-200 dark:hover:bg-emerald-900/60 dark:hover:text-white'
+                      ? 'bg-emerald-600 text-white ring-2 ring-emerald-500 hover:bg-emerald-700'
+                      : 'border border-emerald-300 bg-emerald-50 text-emerald-900 hover:bg-emerald-100'
                   }`}
                 >
-                  <Briefcase className={`h-4 w-4 ${isConsultantPortalActive ? 'text-white' : 'text-emerald-700 dark:text-emerald-400'}`} />
+                  <Briefcase className={`h-4 w-4 ${isConsultantPortalActive ? 'text-white' : 'text-emerald-700'}`} />
                   <span>Advisory Portal</span>
                 </Link>
               )}
@@ -350,18 +350,18 @@ export function Navbar() {
                 href={dashboardHref}
                 className={`flex items-center gap-1.5 rounded-xl px-3.5 py-1.5 text-xs font-black transition-all shadow-xs ${
                   isDashboardActive
-                    ? 'bg-[#0B2A4A] text-white ring-2 ring-blue-500/50 hover:bg-[#071C33] dark:bg-blue-600 dark:text-white dark:ring-blue-400 dark:hover:bg-blue-500'
-                    : 'border border-slate-200 bg-slate-50 text-slate-800 hover:bg-slate-100 hover:text-[#0B2A4A] dark:border-slate-700 dark:bg-slate-800 dark:text-white dark:hover:bg-slate-700 dark:hover:text-amber-300'
+                    ? 'bg-[#0B2A4A] text-white ring-2 ring-blue-500/50 hover:bg-[#071C33]'
+                    : 'border border-slate-200 bg-slate-50 text-slate-800 hover:bg-slate-100 hover:text-[#0B2A4A]'
                 }`}
               >
-                <LayoutDashboard className={`h-4 w-4 ${isDashboardActive ? 'text-white' : 'text-slate-700 dark:text-slate-200'}`} />
+                <LayoutDashboard className={`h-4 w-4 ${isDashboardActive ? 'text-white' : 'text-slate-700'}`} />
                 <span>Dashboard</span>
               </Link>
 
               <button
                 onClick={() => signOut({ callbackUrl: '/' })}
                 title="Sign out"
-                className="rounded-xl p-2 text-slate-500 hover:bg-slate-100 hover:text-red-600 transition-colors dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-red-400"
+                className="rounded-xl p-2 text-slate-500 hover:bg-slate-100 hover:text-red-600 transition-colors"
               >
                 <LogOut className="h-4 w-4" />
               </button>
@@ -370,7 +370,7 @@ export function Navbar() {
             <div className="flex items-center gap-2.5">
               <Link
                 href="/login"
-                className="rounded-xl border border-slate-300 bg-white px-4 py-2 text-xs font-bold text-slate-700 hover:bg-slate-100 hover:text-[#0B2A4A] transition-colors dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200 dark:hover:bg-slate-700 dark:hover:text-white"
+                className="rounded-xl border border-slate-300 bg-white px-4 py-2 text-xs font-bold text-slate-700 hover:bg-slate-100 hover:text-[#0B2A4A] transition-colors"
               >
                 Sign In
               </Link>
@@ -388,7 +388,7 @@ export function Navbar() {
         <div className="flex lg:hidden items-center gap-2">
           <button
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="rounded-xl p-2 text-slate-600 hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-slate-800 transition-colors"
+            className="rounded-xl p-2 text-slate-600 hover:bg-slate-100 transition-colors"
           >
             {mobileMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
           </button>
@@ -397,11 +397,11 @@ export function Navbar() {
 
       {/* Mobile Drawer */}
       {mobileMenuOpen && (
-        <div className="border-b border-slate-200 bg-white px-4 py-3 lg:hidden dark:border-slate-800 dark:bg-slate-950 animate-in slide-in-from-top-2 max-h-[calc(100dvh-5.5rem)] overflow-y-auto overscroll-contain shadow-lg">
+        <div className="border-b border-slate-200 bg-white px-4 py-3 lg:hidden animate-in slide-in-from-top-2 max-h-[calc(100dvh-5.5rem)] overflow-y-auto overscroll-contain shadow-lg">
           <div className="flex flex-col gap-1.5">
             <Link
               href="/quiz/post-10th"
-              className="flex items-center gap-2 rounded-xl py-2 px-3 text-sm font-semibold text-slate-800 hover:bg-slate-100 dark:text-slate-200 dark:hover:bg-slate-800 transition-colors cursor-pointer select-none touch-manipulation"
+              className="flex items-center gap-2 rounded-xl py-2 px-3 text-sm font-semibold text-slate-800 hover:bg-slate-100 transition-colors cursor-pointer select-none touch-manipulation"
               onClick={(e) => {
                 e.preventDefault();
                 handleNavigate('/quiz/post-10th', e);
@@ -412,18 +412,18 @@ export function Navbar() {
             </Link>
             <Link
               href="/quiz/post-12th"
-              className="flex items-center gap-2 rounded-xl py-2 px-3 text-sm font-semibold text-slate-800 hover:bg-slate-100 dark:text-slate-200 dark:hover:bg-slate-800 transition-colors cursor-pointer select-none touch-manipulation"
+              className="flex items-center gap-2 rounded-xl py-2 px-3 text-sm font-semibold text-slate-800 hover:bg-slate-100 transition-colors cursor-pointer select-none touch-manipulation"
               onClick={(e) => {
                 e.preventDefault();
                 handleNavigate('/quiz/post-12th', e);
               }}
             >
-              <GraduationCap className="h-4 w-4 text-[#0B2A4A] dark:text-slate-200 pointer-events-none" />
+              <GraduationCap className="h-4 w-4 text-[#0B2A4A] pointer-events-none" />
               <span className="pointer-events-none">Class 12: Degree & Exam Matrix</span>
             </Link>
             <Link
               href="/careers"
-              className="flex items-center gap-2 rounded-xl py-2 px-3 text-sm font-semibold text-slate-800 hover:bg-slate-100 dark:text-slate-200 dark:hover:bg-slate-800 transition-colors"
+              className="flex items-center gap-2 rounded-xl py-2 px-3 text-sm font-semibold text-slate-800 hover:bg-slate-100 transition-colors"
               onClick={() => setMobileMenuOpen(false)}
             >
               <Briefcase className="h-4 w-4 opacity-70" />
@@ -431,7 +431,7 @@ export function Navbar() {
             </Link>
             <Link
               href="/colleges"
-              className="flex items-center gap-2 rounded-xl py-2 px-3 text-sm font-semibold text-slate-800 hover:bg-slate-100 dark:text-slate-200 dark:hover:bg-slate-800 transition-colors"
+              className="flex items-center gap-2 rounded-xl py-2 px-3 text-sm font-semibold text-slate-800 hover:bg-slate-100 transition-colors"
               onClick={() => setMobileMenuOpen(false)}
             >
               <BookOpen className="h-4 w-4 opacity-70" />
@@ -439,7 +439,7 @@ export function Navbar() {
             </Link>
             <Link
               href="/consultants"
-              className="flex items-center gap-2 rounded-xl py-2 px-3 text-sm font-semibold text-slate-800 hover:bg-slate-100 dark:text-slate-200 dark:hover:bg-slate-800 transition-colors"
+              className="flex items-center gap-2 rounded-xl py-2 px-3 text-sm font-semibold text-slate-800 hover:bg-slate-100 transition-colors"
               onClick={() => setMobileMenuOpen(false)}
             >
               <UserCheck className="h-4 w-4 opacity-70" />
@@ -447,7 +447,7 @@ export function Navbar() {
             </Link>
             <Link
               href="/tools"
-              className="flex items-center gap-2 rounded-xl py-2 px-3 text-sm font-semibold text-slate-800 hover:bg-slate-100 dark:text-slate-200 dark:hover:bg-slate-800 transition-colors"
+              className="flex items-center gap-2 rounded-xl py-2 px-3 text-sm font-semibold text-slate-800 hover:bg-slate-100 transition-colors"
               onClick={() => setMobileMenuOpen(false)}
             >
               <Compass className="h-4 w-4 opacity-70" />
@@ -455,14 +455,14 @@ export function Navbar() {
             </Link>
             <Link
               href="/chat"
-              className="flex items-center gap-2 rounded-xl py-2 px-3 text-sm font-semibold text-slate-800 hover:bg-slate-100 dark:text-slate-200 dark:hover:bg-slate-800 transition-colors"
+              className="flex items-center gap-2 rounded-xl py-2 px-3 text-sm font-semibold text-slate-800 hover:bg-slate-100 transition-colors"
               onClick={() => setMobileMenuOpen(false)}
             >
               <MessageSquare className="h-4 w-4 text-[#D96B00]" />
               AI Academic Counselor
             </Link>
 
-            <div className="mt-2.5 border-t border-slate-200 pt-2.5 dark:border-slate-800">
+            <div className="mt-2.5 border-t border-slate-200 pt-2.5">
               {session ? (
                 <div className="flex flex-col gap-1.5">
                   {role === 'ADMIN' && (
@@ -471,11 +471,11 @@ export function Navbar() {
                       className={`flex items-center gap-2 rounded-xl py-2 px-3 text-xs sm:text-sm font-bold transition-colors ${
                         isAdminHubActive
                           ? 'bg-amber-400 text-slate-950 ring-2 ring-amber-400 font-black shadow-xs hover:bg-amber-300'
-                          : 'border border-amber-300 bg-amber-50 text-amber-900 hover:bg-amber-100 dark:border-amber-800 dark:bg-amber-950 dark:text-amber-200 dark:hover:bg-amber-900/60'
+                          : 'border border-amber-300 bg-amber-50 text-amber-900 hover:bg-amber-100'
                       }`}
                       onClick={() => setMobileMenuOpen(false)}
                     >
-                      <ShieldCheck className={`h-4 w-4 ${isAdminHubActive ? 'text-slate-950' : 'text-amber-600 dark:text-amber-400'}`} />
+                      <ShieldCheck className={`h-4 w-4 ${isAdminHubActive ? 'text-slate-950' : 'text-amber-600'}`} />
                       <span>Admin Hub (Audits & Verifications)</span>
                     </Link>
                   )}
@@ -485,11 +485,11 @@ export function Navbar() {
                       className={`flex items-center gap-2 rounded-xl py-2 px-3 text-xs sm:text-sm font-bold transition-colors ${
                         isConsultantPortalActive
                           ? 'bg-emerald-600 text-white ring-2 ring-emerald-500 font-black shadow-xs hover:bg-emerald-700'
-                          : 'border border-emerald-300 bg-emerald-50 text-emerald-900 hover:bg-emerald-100 dark:border-emerald-800 dark:bg-emerald-950 dark:text-emerald-200 dark:hover:bg-emerald-900/60'
+                          : 'border border-emerald-300 bg-emerald-50 text-emerald-900 hover:bg-emerald-100'
                       }`}
                       onClick={() => setMobileMenuOpen(false)}
                     >
-                      <Briefcase className="h-4 w-4 text-emerald-700 dark:text-emerald-400" />
+                      <Briefcase className="h-4 w-4 text-emerald-700" />
                       <span>Advisory Portal</span>
                     </Link>
                   )}
@@ -498,8 +498,8 @@ export function Navbar() {
                       href={dashboardHref}
                       className={`flex items-center justify-center gap-1.5 rounded-xl py-2 px-3 text-xs sm:text-sm font-bold transition-colors ${
                         isDashboardActive
-                          ? 'bg-[#0B2A4A] text-white ring-2 ring-blue-500/50 font-black dark:bg-blue-600 dark:text-white'
-                          : 'bg-slate-100 text-slate-800 hover:bg-slate-200 dark:bg-slate-800 dark:text-white dark:hover:bg-slate-700'
+                          ? 'bg-[#0B2A4A] text-white ring-2 ring-blue-500/50 font-black'
+                          : 'bg-slate-100 text-slate-800 hover:bg-slate-200'
                       }`}
                       onClick={() => setMobileMenuOpen(false)}
                     >
@@ -508,7 +508,7 @@ export function Navbar() {
                     </Link>
                     <button
                       onClick={() => signOut({ callbackUrl: '/' })}
-                      className="flex items-center justify-center gap-1.5 rounded-xl py-2 px-3 text-xs sm:text-sm font-bold text-red-600 hover:bg-red-50 dark:hover:bg-red-950/30 transition-colors"
+                      className="flex items-center justify-center gap-1.5 rounded-xl py-2 px-3 text-xs sm:text-sm font-bold text-red-600 hover:bg-red-50 transition-colors"
                     >
                       <LogOut className="h-4 w-4" />
                       <span>Sign Out</span>
@@ -519,7 +519,7 @@ export function Navbar() {
                 <div className="grid grid-cols-2 gap-2.5">
                   <Link
                     href="/login"
-                    className="block w-full text-center rounded-xl border border-slate-300 bg-slate-50 py-2.5 text-xs sm:text-sm font-bold text-slate-800 hover:bg-slate-100 hover:text-[#0B2A4A] dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100 dark:hover:bg-slate-700 dark:hover:text-white transition-colors shadow-xs"
+                    className="block w-full text-center rounded-xl border border-slate-300 bg-slate-50 py-2.5 text-xs sm:text-sm font-bold text-slate-800 hover:bg-slate-100 hover:text-[#0B2A4A] transition-colors shadow-xs"
                     onClick={() => setMobileMenuOpen(false)}
                   >
                     Sign In

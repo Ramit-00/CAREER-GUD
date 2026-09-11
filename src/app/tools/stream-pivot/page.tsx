@@ -146,67 +146,67 @@ export default function StreamPivotSimulatorPage() {
   }, [selectedSource]);
 
   return (
-    <div className="min-h-screen bg-slate-50 py-10 dark:bg-slate-950">
+    <div className="min-h-screen bg-white py-10">
       <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
-        {/* Header */}
-        <div className="text-center max-w-3xl mx-auto mb-10">
-          <span className="inline-flex items-center gap-1.5 rounded-full border border-purple-200 bg-purple-50 px-3 py-1 text-xs font-bold text-purple-900 dark:border-purple-900/60 dark:bg-purple-950/40 dark:text-purple-300 mb-3">
-            <Repeat className="h-3.5 w-3.5 text-purple-600 dark:text-purple-400" />
+        {/* Header Hero Container */}
+        <div className="rounded-3xl border-2 border-slate-300 bg-[#EAEFF5] p-6 sm:p-10 shadow-xs mb-8 text-center max-w-4xl mx-auto">
+          <span className="inline-flex items-center gap-1.5 rounded-lg border border-amber-300 bg-white px-3.5 py-1.5 text-xs font-bold text-[#D96B00] mb-3 shadow-2xs">
+            <Repeat className="h-3.5 w-3.5 text-[#D96B00]" />
             National Education Policy 2020 Trajectory Simulator
           </span>
-          <h1 className="text-3xl sm:text-4xl font-black text-slate-900 dark:text-white tracking-tight">
-            NEP 2020 Stream Switch & Pivot Simulator
+          <h1 className="text-3xl sm:text-4xl font-black text-[#0B2A4A] tracking-tight">
+            NEP 2020 Stream Switch &amp; Pivot Simulator
           </h1>
-          <p className="mt-3 text-sm sm:text-base font-medium text-slate-600 dark:text-slate-300 leading-relaxed">
+          <p className="mt-3 text-sm sm:text-base font-medium text-slate-700 leading-relaxed max-w-2xl mx-auto">
             Over 30% of students face severe academic burnout within months of choosing Science or Commerce. Learn the exact regulatory pathways to transition into Aviation, Law, IIM Management, or Economics without losing an academic year.
           </p>
         </div>
 
         {/* Stream Selector Buttons */}
-        <div className="mb-8 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-800 dark:bg-slate-900">
-          <label className="block text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-3">
+        <div className="mb-8 rounded-2xl border-2 border-slate-300 bg-[#EAEFF5] p-6 shadow-xs">
+          <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-3">
             Select Your Current Class 11 / 12 Stream
           </label>
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
             <button
               onClick={() => setSelectedSource('SCIENCE_PCB')}
-              className={`p-3.5 rounded-xl border text-left transition font-bold text-xs ${
+              className={`p-4 rounded-xl border-2 text-left transition font-bold text-xs shadow-2xs cursor-pointer ${
                 selectedSource === 'SCIENCE_PCB'
-                  ? 'border-purple-600 bg-purple-50 text-purple-950 dark:border-purple-400 dark:bg-purple-950/40 dark:text-purple-200'
-                  : 'border-slate-200 text-slate-700 hover:border-slate-300 dark:border-slate-800 dark:text-slate-300'
+                  ? 'border-[#0B2A4A] bg-[#0B2A4A] text-white shadow-xs'
+                  : 'border-slate-300 text-slate-800 hover:border-[#0B2A4A] bg-white'
               }`}
             >
               Science (PCB - Medical)
             </button>
             <button
               onClick={() => setSelectedSource('SCIENCE_PCM')}
-              className={`p-3.5 rounded-xl border text-left transition font-bold text-xs ${
+              className={`p-4 rounded-xl border-2 text-left transition font-bold text-xs shadow-2xs cursor-pointer ${
                 selectedSource === 'SCIENCE_PCM'
-                  ? 'border-purple-600 bg-purple-50 text-purple-950 dark:border-purple-400 dark:bg-purple-950/40 dark:text-purple-200'
-                  : 'border-slate-200 text-slate-700 hover:border-slate-300 dark:border-slate-800 dark:text-slate-300'
+                  ? 'border-[#0B2A4A] bg-[#0B2A4A] text-white shadow-xs'
+                  : 'border-slate-300 text-slate-800 hover:border-[#0B2A4A] bg-white'
               }`}
             >
               Science (PCM - Non-Med)
             </button>
             <button
               onClick={() => setSelectedSource('COMMERCE_NO_MATHS')}
-              className={`p-3.5 rounded-xl border text-left transition font-bold text-xs ${
+              className={`p-4 rounded-xl border-2 text-left transition font-bold text-xs shadow-2xs cursor-pointer ${
                 selectedSource === 'COMMERCE_NO_MATHS'
-                  ? 'border-purple-600 bg-purple-50 text-purple-950 dark:border-purple-400 dark:bg-purple-950/40 dark:text-purple-200'
-                  : 'border-slate-200 text-slate-700 hover:border-slate-300 dark:border-slate-800 dark:text-slate-300'
+                  ? 'border-[#0B2A4A] bg-[#0B2A4A] text-white shadow-xs'
+                  : 'border-slate-300 text-slate-800 hover:border-[#0B2A4A] bg-white'
               }`}
             >
               Commerce (No Maths)
             </button>
             <button
               onClick={() => setSelectedSource('ARTS_HUMANITIES')}
-              className={`p-3.5 rounded-xl border text-left transition font-bold text-xs ${
+              className={`p-4 rounded-xl border-2 text-left transition font-bold text-xs shadow-2xs cursor-pointer ${
                 selectedSource === 'ARTS_HUMANITIES'
-                  ? 'border-purple-600 bg-purple-50 text-purple-950 dark:border-purple-400 dark:bg-purple-950/40 dark:text-purple-200'
-                  : 'border-slate-200 text-slate-700 hover:border-slate-300 dark:border-slate-800 dark:text-slate-300'
+                  ? 'border-[#0B2A4A] bg-[#0B2A4A] text-white shadow-xs'
+                  : 'border-slate-300 text-slate-800 hover:border-[#0B2A4A] bg-white'
               }`}
             >
-              Arts & Humanities
+              Arts &amp; Humanities
             </button>
           </div>
         </div>
@@ -214,11 +214,11 @@ export default function StreamPivotSimulatorPage() {
         {/* Pivot Scenarios List */}
         <div className="space-y-6">
           <div className="flex items-center justify-between">
-            <h3 className="text-base font-black text-slate-900 dark:text-white">
+            <h3 className="text-base font-black text-slate-900">
               Viable Regulatory Pivot Pathways ({matchingScenarios.length})
             </h3>
-            <span className="text-xs text-slate-400 font-semibold">
-              Verified with UGC, AICTE, DGCA & BCI Rules
+            <span className="text-xs text-slate-600 font-bold">
+              Verified with UGC, AICTE, DGCA &amp; BCI Rules
             </span>
           </div>
 
@@ -226,27 +226,27 @@ export default function StreamPivotSimulatorPage() {
             {matchingScenarios.map((scenario) => (
               <div
                 key={scenario.id}
-                className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-800 dark:bg-slate-900 flex flex-col justify-between"
+                className="rounded-2xl border-2 border-slate-300 bg-[#EAEFF5] p-6 shadow-xs hover:bg-white hover:border-[#0B2A4A] hover:shadow-md transition-all flex flex-col justify-between group"
               >
                 <div>
                   <div className="flex items-start justify-between gap-3 mb-3">
                     <div>
-                      <span className="text-xs font-bold text-slate-400 uppercase tracking-wider block">
+                      <span className="text-xs font-bold text-slate-500 uppercase tracking-wider block">
                         Target Trajectory
                       </span>
-                      <h4 className="text-lg font-black text-slate-900 dark:text-white">
+                      <h4 className="text-lg font-black text-slate-900 group-hover:text-[#0B2A4A] transition-colors">
                         {scenario.targetCareer}
                       </h4>
-                      <p className="text-xs font-semibold text-purple-700 dark:text-purple-300 mt-0.5">
+                      <p className="text-xs font-bold text-[#0B2A4A] mt-0.5">
                         {scenario.targetDegree}
                       </p>
                     </div>
 
                     <span
-                      className={`shrink-0 rounded-full px-2.5 py-1 text-[11px] font-bold ${
+                      className={`shrink-0 rounded-lg border px-2.5 py-1 text-[11px] font-bold shadow-2xs ${
                         scenario.regulatoryFeasibility === 'SEAMLESS_NEP2020'
-                          ? 'bg-emerald-100 text-emerald-800 dark:bg-emerald-950/60 dark:text-emerald-300'
-                          : 'bg-amber-100 text-amber-800 dark:bg-amber-950/60 dark:text-amber-300'
+                          ? 'border-emerald-300 bg-white text-[#138808]'
+                          : 'border-amber-300 bg-white text-[#D96B00]'
                       }`}
                     >
                       {scenario.regulatoryFeasibility === 'SEAMLESS_NEP2020'
@@ -255,28 +255,28 @@ export default function StreamPivotSimulatorPage() {
                     </span>
                   </div>
 
-                  <p className="text-xs text-slate-600 dark:text-slate-300 leading-relaxed mb-4">
+                  <p className="text-xs text-slate-700 leading-relaxed mb-4 font-normal">
                     {scenario.universityEligibilitySummary}
                   </p>
 
-                  <div className="rounded-xl bg-slate-50 p-3.5 border border-slate-100 dark:bg-slate-800/60 dark:border-slate-800 text-xs space-y-2 mb-4">
-                    <div className="flex items-start gap-1.5 font-bold text-slate-800 dark:text-slate-200">
-                      <Compass className="h-4 w-4 text-purple-600 dark:text-purple-400 shrink-0 mt-0.5" />
+                  <div className="rounded-xl bg-white p-4 border border-slate-200 text-xs space-y-2 mb-4 shadow-2xs">
+                    <div className="flex items-start gap-1.5 font-bold text-slate-900">
+                      <Compass className="h-4 w-4 text-[#0B2A4A] shrink-0 mt-0.5" />
                       <span>Bridge Mechanism:</span>
                     </div>
-                    <p className="text-slate-600 dark:text-slate-300 pl-5">
+                    <p className="text-slate-700 pl-5 leading-relaxed font-normal">
                       {scenario.bridgeMechanism}
                     </p>
                   </div>
 
                   <div className="space-y-1.5 mb-4">
-                    <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider block">
+                    <span className="text-[11px] font-bold text-slate-500 uppercase tracking-wider block">
                       Step-by-Step Action Roadmap:
                     </span>
-                    <ul className="space-y-1 text-xs text-slate-600 dark:text-slate-300 pl-1">
+                    <ul className="space-y-1.5 text-xs text-slate-700 pl-1">
                       {scenario.actionRoadmap.map((step, sIdx) => (
                         <li key={sIdx} className="flex items-start gap-2">
-                          <CheckCircle2 className="h-3.5 w-3.5 text-emerald-600 shrink-0 mt-0.5" />
+                          <CheckCircle2 className="h-3.5 w-3.5 text-[#138808] shrink-0 mt-0.5" />
                           <span>{step}</span>
                         </li>
                       ))}
@@ -284,13 +284,13 @@ export default function StreamPivotSimulatorPage() {
                   </div>
                 </div>
 
-                <div className="pt-4 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between">
-                  <span className="text-[11px] font-bold text-slate-400">
+                <div className="pt-4 border-t-2 border-slate-200 flex items-center justify-between">
+                  <span className="text-[11px] font-bold text-slate-600">
                     Authority: {scenario.regulatoryBody}
                   </span>
                   <Link
                     href="/consultants"
-                    className="text-xs font-bold text-purple-700 dark:text-purple-300 hover:underline inline-flex items-center gap-1"
+                    className="text-xs font-bold text-[#0B2A4A] group-hover:text-[#D96B00] hover:underline inline-flex items-center gap-1"
                   >
                     Discuss with Mentor <ArrowRight className="h-3.5 w-3.5" />
                   </Link>
