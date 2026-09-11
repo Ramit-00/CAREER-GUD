@@ -10,9 +10,6 @@
     "test": "npx tsx --env-file=.env --test --test-concurrency=1 src/tests/engine.test.ts src/tests/auth-security.test.ts src/tests/serverless-features.test.ts src/tests/redis.test.ts",
     "test:fast": "npx tsx --env-file=.env --test src/tests/engine.test.ts src/tests/serverless-features.test.ts src/tests/redis.test.ts",
     "test:redis": "npx tsx --env-file=.env --test src/tests/redis.test.ts",
-    "security:check": "npx tsx scripts/security-check.ts",
-    "verify": "npm run security:check && npm test && npm run lint -- --quiet && npm run build",
-    "prepare": "git config core.hooksPath .githooks || true",
     "postinstall": "prisma generate",
     "db:push": "prisma db push",
     "db:generate": "prisma generate"

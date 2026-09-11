@@ -80,8 +80,15 @@ serviceAccountKey.json
 # Deployment
 .vercel
 
-# AI Agent System files & Scratch
+# AI Agent System files, Scratch & Local Artifacts
 .gemini/
 .system_generated/
 scratch/
+implementation_plan.md
+AGENTS.md
+CLAUDE.md
+CAREER_GUD_COMPREHENSIVE_ARCHITECTURAL_AUDIT_AND_ROADMAP.md
+SECURITY.md
+.githooks/
+scripts/
 

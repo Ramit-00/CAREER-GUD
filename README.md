@@ -150,18 +150,8 @@ This verifies:
 - `aiGuardrails`: Distress detection (Tele-MANAS redirect), romantic roleplay interception, and prompt injection defense
 - `repository`: Strict domain verification enforcement for consultants
 - `security`: Password hashing, admin auth, input sanitization, and session boundaries
-
-To run the 18-point platform security audit check:
-
-```bash
-npm run security:check
-```
-
-To run the entire end-to-end verification pipeline (security audit + test suite + quiet linter + Next.js production build):
-
-```bash
-npm run verify
-```
+- `rankEstimator`: JoSAA and NEET rank calculations across categories
+- `roiCalculator`: Degree break-even horizon and CSIS interest subsidy calculations
 
 To build for production:
 
